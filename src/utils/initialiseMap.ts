@@ -26,34 +26,34 @@ export default async function initialiseMap(
         antialias: true, // Enable Antialiasing
     });
 
-    // Adding Map Controls
-    map.addControl(new mapboxgl.NavigationControl(), "bottom-right");
+    map.on('load', async () => {
 
-    const supabase = getSupabaseClient()
+        // Adding Map Controls
+        map.addControl(new mapboxgl.NavigationControl(), "bottom-right");
 
-    const {data, error} = await supabase.from('munros').select('*');
-    if (error || !data || data.length === 0) {
-        console.error('Error or empty data:', error?.message);
-        return map;
-    } else {
-        console.log('Munro data:', data)
-    }
+        const supabase = getSupabaseClient()
 
-    const features: Feature<Point, GeoJsonProperties>[] = data.map((row) => ({
-        type: 'Feature',
-        geometry: {
-            type: 'Point',
-            coordinates: [row.longitude, row.latitude]
-        },
-        properties: {...row}
-    }));
+        const {data, error} = await supabase.from('munros').select('*');
+        if (error || !data || data.length === 0) {
+            console.error('Error or empty data:', error?.message);
+            return map;
+        } else {
+            console.log('Munro data:', data)
+        }
 
-    const geojsonData: FeatureCollection<Point, GeoJsonProperties> = {
-        type: 'FeatureCollection',
-        features
-    };
+        const features: Feature<Point, GeoJsonProperties>[] = data.map((row) => ({
+            type: 'Feature',
+            geometry: {
+                type: 'Point',
+                coordinates: [row.longitude, row.latitude]
+            },
+            properties: {...row}
+        }));
 
-    map.on('load', () => {
+        const geojsonData: FeatureCollection<Point, GeoJsonProperties> = {
+            type: 'FeatureCollection',
+            features
+        };
 
         map.addSource('munros', {
             type: 'geojson',
