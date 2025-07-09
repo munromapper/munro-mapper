@@ -1,8 +1,10 @@
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import {supabase} from './supabaseClient';
+import { getSupabaseClient } from './supabaseClient'
 import type {Feature, FeatureCollection, Point, GeoJsonProperties} from 'geojson';
 import createMapMarker from './createMapMarker'
+
+const supabase = getSupabaseClient()
 
 export default async function initialiseMap(
     mapContainer: HTMLElement,
