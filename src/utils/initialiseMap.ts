@@ -1,6 +1,5 @@
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { getSupabaseClient } from './supabaseClient'
 import type {Feature, FeatureCollection, Point, GeoJsonProperties} from 'geojson';
 import createMapMarker from './createMapMarker'
 
@@ -31,6 +30,7 @@ export default async function initialiseMap(
         // Adding Map Controls
         map.addControl(new mapboxgl.NavigationControl(), "bottom-right");
 
+        const { getSupabaseClient } = await import('./supabaseClient')
         const supabase = getSupabaseClient()
 
         const {data, error} = await supabase.from('munros').select('*');
