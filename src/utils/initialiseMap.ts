@@ -4,8 +4,6 @@ import { getSupabaseClient } from './supabaseClient'
 import type {Feature, FeatureCollection, Point, GeoJsonProperties} from 'geojson';
 import createMapMarker from './createMapMarker'
 
-const supabase = getSupabaseClient()
-
 export default async function initialiseMap(
     mapContainer: HTMLElement,
     onDataLoaded: (features: Feature<Point, GeoJsonProperties>[]) => void
@@ -30,6 +28,8 @@ export default async function initialiseMap(
 
     // Adding Map Controls
     map.addControl(new mapboxgl.NavigationControl(), "bottom-right");
+
+    const supabase = getSupabaseClient()
 
     const {data, error} = await supabase.from('munros').select('*');
     if (error || !data || data.length === 0) {
