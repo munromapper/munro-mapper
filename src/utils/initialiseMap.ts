@@ -2,6 +2,7 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import {supabase} from './supabaseClient';
 import type {Feature, FeatureCollection, Point, GeoJsonProperties} from 'geojson';
+import createMapMarker from './createMapMarker'
 
 export default async function initialiseMap(
     mapContainer: HTMLElement,
@@ -51,12 +52,18 @@ export default async function initialiseMap(
     };
 
     map.on('load', () => {
+
         map.addSource('munros', {
             type: 'geojson',
             data: geojsonData
         });
 
+        features.forEach((feature) => {
+            createMapMarker(map, feature);
+        })
+
         onDataLoaded(features);
+
     });
 
     return map;
