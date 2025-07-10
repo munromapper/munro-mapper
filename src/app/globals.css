@@ -89,8 +89,8 @@ p {
 }
 
 .map-marker {
-  width: 31px;
-  height: 34px;
+  width: 25px;
+  height: 27px;
   cursor: pointer;
   position: relative;
   background-image: url('/icons/map-marker-default.svg');

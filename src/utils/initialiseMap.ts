@@ -1,12 +1,13 @@
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import type {Feature, FeatureCollection, Point, GeoJsonProperties} from 'geojson';
+import convertDataToGeoJSON from './convertDataToGeoJSON'
 import createMapMarker from './createMapMarker'
 
 export default async function initialiseMap(
-    mapContainer: HTMLElement,
-    onDataLoaded: (features: Feature<Point, GeoJsonProperties>[]) => void
-): Promise<mapboxgl.Map> {
+    mapContainer: HTMLDivElement,
+    data: any[], // eventually replace `any` with a Munro type
+    onLoad: () => void
+) {
 
     if (!mapContainer) {
         throw new Error("Map container element not found.");
@@ -30,41 +31,18 @@ export default async function initialiseMap(
         // Adding Map Controls
         map.addControl(new mapboxgl.NavigationControl(), "bottom-right");
 
-        const { getSupabaseClient } = await import('./supabaseClient')
-        const supabase = getSupabaseClient()
-
-        const {data, error} = await supabase.from('munros').select('*');
-        if (error || !data || data.length === 0) {
-            console.error('Error or empty data:', error?.message);
-            return map;
-        } else {
-            console.log('Munro data:', data)
-        }
-
-        const features: Feature<Point, GeoJsonProperties>[] = data.map((row) => ({
-            type: 'Feature',
-            geometry: {
-                type: 'Point',
-                coordinates: [row.longitude, row.latitude]
-            },
-            properties: {...row}
-        }));
-
-        const geojsonData: FeatureCollection<Point, GeoJsonProperties> = {
-            type: 'FeatureCollection',
-            features
-        };
+        const geoJsonData = convertDataToGeoJSON(data);
 
         map.addSource('munros', {
             type: 'geojson',
-            data: geojsonData
+            data: geoJsonData
         });
 
-        features.forEach((feature) => {
+        geoJsonData.features.forEach((feature) => {
             createMapMarker(map, feature);
         })
 
-        onDataLoaded(features);
+        onLoad();
 
     });
 

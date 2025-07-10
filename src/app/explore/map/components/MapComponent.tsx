@@ -2,19 +2,28 @@
 
 import { useEffect, useRef, useState } from 'react';
 import initialiseMap from '@/utils/initialiseMap';
-
+import fetchMunroData from '@/utils/fetchMunroData';
 
 export default function MapComponent() {
 
     const mapRef = useRef<HTMLDivElement | null>(null);
+    const [munroData, setMunroData] = useState<any[]>([]);
 
     useEffect(() => {
-        if (!mapRef.current) return;
-        
-        initialiseMap(mapRef.current, () => {
-        console.log('Map loaded');
-        });
+        const loadData = async () => {
+            const data = await fetchMunroData();
+            setMunroData(data);
+        };
+
+        loadData();
     }, []);
+
+    useEffect(() => {
+        if (!mapRef.current || munroData.length === 0) return;
+        initialiseMap(mapRef.current, munroData, () => {
+            console.log('Map loaded');
+        })
+    }, [munroData]);
 
     return (
 

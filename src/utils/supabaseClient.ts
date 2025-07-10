@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 
-export function getSupabaseClient() {
+export default function getSupabaseClient() {
   console.trace('Creating Supabase client')
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
