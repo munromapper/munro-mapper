@@ -87,36 +87,3 @@ p {
   font-family: var(--body-font-family);
   font-size: var(--font-size-medium);
 }
-
-.map-marker {
-  width: 25px;
-  height: 27px;
-  cursor: pointer;
-  position: relative;
-  background-image: url('/icons/map-marker-default.svg');
-  background-size: cover;
-  background-position: center;
-  opacity: 1;
-  transition: opacity 0.25s ease;
-}
-
-.map-marker-icon {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-image: url('/icons/map-marker-active.svg');
-  background-size: cover;
-  background-position: center;
-  opacity: 0;
-  transition: opacity 0.35s ease-in-out;
-}
-
-.map-marker-active {
-  opacity: 1;
-}
-
-.map-marker-focused {
-  opacity: 1;
-}
