@@ -1,6 +1,7 @@
 // src/app/layout.tsx
 import './globals.css';
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Analytics } from "@vercel/analytics/next"
 import { Header } from '@/components/Header';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -12,6 +13,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main className="h-[calc(100vh-85px)]">
             {children}
             <SpeedInsights />
+            <Analytics />
           </main>
         </body>
     </html>
