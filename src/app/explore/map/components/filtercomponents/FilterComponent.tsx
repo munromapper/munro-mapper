@@ -67,7 +67,7 @@ export default function FilterComponent() {
                 <FilterRadioGroup
                     name="routeStyle"
                     selectedValue={filters.routeStyle}
-                    onChange={(val) => handleRadioFilterChange(makeInputChangeEvent('routeStyle', val), setFilters)}
+                    onChange={(val) => handleRadioFilterChange('routeStyle', val, setFilters)}
                     options={[
                         { value: 'all', label: 'All' },
                         { value: 'circular-loop', label: 'Circular Loop' },
@@ -92,7 +92,7 @@ export default function FilterComponent() {
                 <FilterRadioGroup
                     name="difficulty"
                     selectedValue={filters.difficulty}
-                    onChange={(val) => handleRadioFilterChange(makeInputChangeEvent('difficulty', val), setFilters)}
+                    onChange={(val) => handleRadioFilterChange('difficulty', val, setFilters)}
                     options={[
                         { value: 'all', label: 'All' },
                         { value: 'easy', label: 'Easy' },

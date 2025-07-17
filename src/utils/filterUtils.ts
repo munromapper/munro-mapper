@@ -2,10 +2,10 @@
 import { Filters } from '../types';
 
 export function handleRadioFilterChange(
-    event: React.ChangeEvent<HTMLInputElement>,
+    name: string,
+    value: string,
     setFilters: (updateFn: (prev: Filters) => Filters) => void,
 ) {
-    const { name, value } = event.target;
     setFilters((prevFilters) => ({
         ...prevFilters,
         [name]: value,
