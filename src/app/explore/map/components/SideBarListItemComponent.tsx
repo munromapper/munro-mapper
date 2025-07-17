@@ -7,11 +7,11 @@ type Props = {
 
 export default function SideBarListItemComponent({ munro }: Props) {
     return (
-        <div>
+        <a href={`/explore/map/munro/${munro.slug}`}>
             <div className="h-56 bg-moss rounded-t-xl">
 
             </div>
-            <div className="p-9 rounded-b-xl border border-dashed border-sage">
+            <div className="p-9 rounded-b-xl border-l border-b border-r border-dashed border-sage">
                 <div className="mb-6">
                     <h2>{munro.name}</h2>
                     <h3 className="text-moss mt-2">&quot;{munro.nameMeaning || 'Name Meaning'}&quot;</h3>
@@ -34,6 +34,6 @@ export default function SideBarListItemComponent({ munro }: Props) {
                     </div>
                 </div>
             </div>
-        </div>
+        </a>
     )
 }
