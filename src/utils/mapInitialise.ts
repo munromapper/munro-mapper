@@ -12,13 +12,14 @@ export function mapInitialise(
     }
 
     try {
-        let accessToken = mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
+        const accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
         if (!accessToken) {
             setError("Mapbox access token is missing. Set NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN in your environment.");
             return
         }
+        mapboxgl.accessToken = accessToken;
 
-        let map = new mapboxgl.Map({
+        const map = new mapboxgl.Map({
             container: mapRef,
             style: 'mapbox://styles/munromapper/cmcxenw8j002x01sd1wrv9bm4',
             center: [-4.5, 56.8],

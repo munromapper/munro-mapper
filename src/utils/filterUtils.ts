@@ -15,7 +15,7 @@ export function handleRadioFilterChange(
 export function handleSliderFilterChange(
   name: string,
   value: number | number[],
-  setFilters: (updateFn: (prev: any) => any) => void
+  setFilters: (updateFn: (prev: Filters) => Filters) => void
 ) {
   setFilters((prev) => ({ ...prev, [name]: value }));
 }

@@ -12,7 +12,7 @@ export async function fetchMunroData(): Promise<Munro[] | null> {
         return [];
     }
 
-    return data.map((munro: any) => ({
+    return data.map((munro) => ({
         id: munro.id,
         name: munro.name,
         latitude: munro.latitude,
@@ -35,7 +35,7 @@ export async function fetchRouteData(): Promise<Route[] | null> {
         return [];
     }
 
-    return data.map((route: any) => ({
+    return data.map((route) => ({
         id: route.id,
         name: route.name,
         gpxFile: route.gpx_file,
@@ -60,7 +60,7 @@ export async function fetchRouteMunroLinks(): Promise<RouteMunroLink[] | null> {
         return [];
     }
 
-    return data.map((link: any) => ({
+    return data.map((link) => ({
         id: link.id,
         routeId: link.route_id,
         munroId: link.munro_id,

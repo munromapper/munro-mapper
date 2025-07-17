@@ -2,7 +2,6 @@
 import mapboxgl from 'mapbox-gl';
 import { Munro } from '@/types';
 import { markerIconDefault, markerIconActive, hillIcon } from '@/SvgIcons'
-import { mark } from 'framer-motion/client';
 
 export function createMunroMarker(
     munro: Munro, 
