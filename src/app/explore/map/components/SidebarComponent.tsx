@@ -7,8 +7,7 @@ type SidebarComponentProps = {
 
 export function SidebarComponent({ children }: SidebarComponentProps) {
     return(
-        <div className="h-full w-80 bg-mist p-6 rounded-xl" aria-label="Map Munro List Sidebar">
-            Sidebar
+        <div className="h-full w-100 bg-mist rounded-xl" aria-label="Map Munro List Sidebar">
             {children}
         </div>
     )
