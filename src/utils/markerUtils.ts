@@ -7,8 +7,8 @@ export function createMunroMarker(
     munro: Munro, 
     onClick: (munro: Munro) => void,
 ){
-    let defaultIcon = markerIconDefault;
-    let activeIcon = markerIconActive;
+    const defaultIcon = markerIconDefault;
+    const activeIcon = markerIconActive;
 
     const marker = document.createElement('a');
     marker.href = `/explore/map/munro/${munro.slug || "slug-placeholder"}`;

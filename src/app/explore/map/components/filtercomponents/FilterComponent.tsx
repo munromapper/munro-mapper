@@ -16,6 +16,12 @@ export default function FilterComponent() {
     const lengthChanged = isFilterChanged('length', filters, defaultFilters);
     const ascentChanged = isFilterChanged('ascent', filters, defaultFilters);
 
+    function makeInputChangeEvent(name: string, value: string): React.ChangeEvent<HTMLInputElement> {
+        return {
+            target: { name, value } as any,
+        } as React.ChangeEvent<HTMLInputElement>;
+    }
+
     const [lengthRange, setLengthRange] = useState(filters.length);
     const [ascentRange, setAscentRange] = useState(filters.ascent);
 
@@ -61,7 +67,7 @@ export default function FilterComponent() {
                 <FilterRadioGroup
                     name="routeStyle"
                     selectedValue={filters.routeStyle}
-                    onChange={(val) => handleRadioFilterChange({ target: { name: 'routeStyle', value: val } } as any, setFilters)}
+                    onChange={(val) => handleRadioFilterChange(makeInputChangeEvent('routeStyle', val), setFilters)}
                     options={[
                         { value: 'all', label: 'All' },
                         { value: 'circular-loop', label: 'Circular Loop' },
@@ -86,7 +92,7 @@ export default function FilterComponent() {
                 <FilterRadioGroup
                     name="difficulty"
                     selectedValue={filters.difficulty}
-                    onChange={(val) => handleRadioFilterChange({ target: { name: 'difficulty', value: val } } as any, setFilters)}
+                    onChange={(val) => handleRadioFilterChange(makeInputChangeEvent('difficulty', val), setFilters)}
                     options={[
                         { value: 'all', label: 'All' },
                         { value: 'easy', label: 'Easy' },
