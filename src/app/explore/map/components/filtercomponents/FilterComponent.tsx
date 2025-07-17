@@ -16,12 +16,6 @@ export default function FilterComponent() {
     const lengthChanged = isFilterChanged('length', filters, defaultFilters);
     const ascentChanged = isFilterChanged('ascent', filters, defaultFilters);
 
-    function makeInputChangeEvent(name: string, value: string): React.ChangeEvent<HTMLInputElement> {
-        return {
-            target: { name, value } as any,
-        } as React.ChangeEvent<HTMLInputElement>;
-    }
-
     const [lengthRange, setLengthRange] = useState(filters.length);
     const [ascentRange, setAscentRange] = useState(filters.ascent);
 
