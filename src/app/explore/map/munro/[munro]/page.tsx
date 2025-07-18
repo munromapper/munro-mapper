@@ -2,10 +2,6 @@
 import { fetchMunroData } from '@/utils/clientDataFetchers';
 import Link from 'next/link';
 
-type MunroPageProps = {
-  params: { munro: string };
-};
-
 export async function generateStaticParams() {
   const munros = await fetchMunroData();
   return (munros ?? []).map((munro) => ({
@@ -13,8 +9,7 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function MunroSidebarDetail(props: MunroPageProps) {
-  const { params } = props;
+export default async function MunroSidebarDetail({ params }: { params: { munro: string } }) {
   const munros = await fetchMunroData();
   const munro = munros?.find((m) => m.slug === params.munro);
 
