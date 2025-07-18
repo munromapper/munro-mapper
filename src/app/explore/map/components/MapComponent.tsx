@@ -68,7 +68,7 @@ export function MapComponent() {
             markerMap.clear();
         };
 
-    }, [filteredMunros])
+    }, [filteredMunros, router])
 
     if(error) {
         return (

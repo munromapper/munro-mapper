@@ -9,7 +9,8 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function MunroSidebarDetail({ params }: { params: { munro: string } }) {
+export default async function MunroSidebarDetail(props: { params: Promise<{ munro: string }>}) {
+  const params = await props.params;
   const munros = await fetchMunroData();
   const munro = munros?.find((m) => m.slug === params.munro);
 
