@@ -22,8 +22,8 @@ export default function MapList() {
 
     return (
         <div className="h-full flex flex-col">
-            <div className="w-full p-6 flex flex-col gap-2 shadow-md">
-                <h1>Explore</h1>
+            <div className="w-full p-9 flex flex-col gap-2 shadow-md">
+                <h1 className="font-medium">Explore</h1>
                 <div className="flex justify-between items-end">
                     <p className="text-moss">Find your next hill day.</p>
                     <p className="text-l text-moss">{filteredMunros.length} found.</p>
