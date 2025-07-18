@@ -2,6 +2,7 @@
 'use client';
 import { useMapData } from '@/contexts/MapDataContext';
 import { useRef, useEffect, useState, useMemo } from 'react'
+import { useRouter } from 'next/navigation';
 import { mapInitialise } from '@/utils/mapInitialise'
 import { createMunroMarker, removeMarkerWithAnimation } from '@/utils/markerUtils';
 import { filterMunros } from '@/utils/mapFilterFunction';
@@ -16,6 +17,7 @@ export function MapComponent() {
     const markerMapRef = useRef<Map<number, mapboxgl.Marker>>(new Map());
 
     const { munros, routes, routeMunroLinks, filters } = useMapData();
+    const router = useRouter();
 
     const filteredMunros = useMemo(() => {
         return filterMunros({
@@ -52,7 +54,7 @@ export function MapComponent() {
             if (!markerMap.has(munro.id)) {
                 const marker = createMunroMarker(
                     munro,
-                    (clickedMunro) => { console.log("Clicked Munro:", clickedMunro); },
+                    (clickedMunro) => { router.push(`/explore/map/munro/${clickedMunro.slug}`); },
                 );
                 marker.addTo(map);
                 markerMap.set(munro.id, marker);

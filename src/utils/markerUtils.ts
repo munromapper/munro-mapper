@@ -10,8 +10,7 @@ export function createMunroMarker(
     const defaultIcon = markerIconDefault;
     const activeIcon = markerIconActive;
 
-    const marker = document.createElement('a');
-    marker.href = `/explore/map/munro/${munro.slug || "slug-placeholder"}`;
+    const marker = document.createElement('div');
     marker.setAttribute('aria-label', munro.name);
     marker.tabIndex = 0;
     marker.className = 'marker marker-enter';
@@ -58,7 +57,7 @@ export function removeMarkerWithAnimation(marker: mapboxgl.Marker) {
     }, { once: true });
 }
 
-function createPopup(markerEl: HTMLAnchorElement, munro: Munro) {
+function createPopup(markerEl: HTMLDivElement, munro: Munro) {
 
     const popups = markerEl.querySelectorAll('.popup');
     popups.forEach(popup => popup.remove());
@@ -87,7 +86,7 @@ function createPopup(markerEl: HTMLAnchorElement, munro: Munro) {
     });
 }
 
-function removePopupWithAnimation(markerEl: HTMLAnchorElement) {
+function removePopupWithAnimation(markerEl: HTMLDivElement) {
     const popup = markerEl.querySelector('.popup');
     if (popup) {
         popup.classList.add('popup-exit');

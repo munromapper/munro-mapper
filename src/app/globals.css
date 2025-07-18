@@ -205,10 +205,21 @@ h4 {
 
 div[data-testid="virtuoso-item-list"] {
   margin-top: 1.5rem !important;
-  padding: 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  padding: 1.5rem;
 }
 
+div[data-testid="virtuoso-item-list"]::after {
+  content:""
+}
 
+div[data-testid="virtuoso-scroller"] ::-webkit-scrollbar {
+  display: none;
+  }
+
+  div[data-testid="virtuoso-scroller"]  {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

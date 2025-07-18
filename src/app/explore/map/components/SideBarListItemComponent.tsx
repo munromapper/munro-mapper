@@ -1,5 +1,6 @@
 // src/ap[p/explore/map/components/SideBarListItemComponent.tsx
 import { Munro } from '@/types';
+import Link from 'next/link';
 
 type Props = {
     munro: Munro;
@@ -7,9 +8,8 @@ type Props = {
 
 export default function SideBarListItemComponent({ munro }: Props) {
     return (
-        <a href={`/explore/map/munro/${munro.slug}`}>
+        <Link href={`/explore/map/munro/${munro.slug}`}>
             <div className="h-56 bg-moss rounded-t-xl">
-
             </div>
             <div className="p-9 rounded-b-xl border-l border-b border-r border-dashed border-sage">
                 <div className="mb-6">
@@ -26,7 +26,7 @@ export default function SideBarListItemComponent({ munro }: Props) {
                     </div>
                     <div>
                         <h4 className="text-moss">Height</h4>
-                        <p className="text-xl">{munro.height || '1200m'}</p>
+                        <p className="text-xl">{munro.height || '1200m'}m</p>
                     </div>
                     <div>
                         <h4 className="text-moss">Region</h4>
@@ -34,6 +34,6 @@ export default function SideBarListItemComponent({ munro }: Props) {
                     </div>
                 </div>
             </div>
-        </a>
+        </Link>
     )
 }
