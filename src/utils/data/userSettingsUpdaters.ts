@@ -97,7 +97,6 @@ export async function handleUpdateUserSettings({
 }: handleUpdateUserSettingsProps) {
     event.preventDefault();
     setError(null);
-
     setLoading(true);
 
     let profilePhotoUrl: string | null = prevPhotoUrl || null;
