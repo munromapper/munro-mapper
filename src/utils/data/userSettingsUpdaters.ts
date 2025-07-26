@@ -35,7 +35,7 @@ export function handlePhotoChange({
 interface handleDeletePhotoProps {
     setPhotoFile: React.Dispatch<React.SetStateAction<File | null>>;
     setPhotoPreview: React.Dispatch<React.SetStateAction<string>>;
-    setForm: React.Dispatch<React.SetStateAction<any>>;
+    setForm: React.Dispatch<React.SetStateAction<ProfileForm>>;
     setDirty: React.Dispatch<React.SetStateAction<boolean>>;
     fileInputRef: React.RefObject<HTMLInputElement | null>;
 }
@@ -51,7 +51,7 @@ export function handleDeletePhoto({
 
     setPhotoFile(null);
     setPhotoPreview(defaultProfilePicture);
-    setForm((form: Object) => ({ ...form, profilePhotoUrl: defaultProfilePicture }));
+    setForm((form: ProfileForm) => ({ ...form, profilePhotoUrl: defaultProfilePicture }));
     if (fileInputRef.current) fileInputRef.current.value = '';
     setDirty(true);
 }
@@ -77,7 +77,7 @@ interface handleUpdateUserSettingsProps {
     setDirty: React.Dispatch<React.SetStateAction<boolean>>;
     setPhotoFile: React.Dispatch<React.SetStateAction<File | null>>;
     setPhotoPreview: React.Dispatch<React.SetStateAction<string>>;
-    setForm: React.Dispatch<React.SetStateAction<any>>;
+    setForm: React.Dispatch<React.SetStateAction<ProfileForm>>;
 }
 
 export async function handleUpdateUserSettings({

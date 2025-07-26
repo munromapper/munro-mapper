@@ -15,6 +15,14 @@ import { handlePhotoChange, handleDeletePhoto, handleUpdateUserSettings } from '
 export default function ProfileSettings() {
     const { user, userProfile, refreshUserProfile } = useAuthContext();
 
+    interface ProfileForm {
+        profilePhotoUrl: string | null;
+        firstName: string;
+        lastName: string;
+        email: string;
+        emailOptIn: boolean;
+    }
+
     const initialProfile = {
         profilePhotoUrl: userProfile?.profilePhotoUrl || '',
         firstName: userProfile?.firstName || '',
@@ -23,7 +31,7 @@ export default function ProfileSettings() {
         emailOptIn: userProfile?.isEmailOptIn || false
     }
 
-    const [form, setForm] = useState(initialProfile);
+    const [form, setForm] = useState<ProfileForm>(initialProfile);
     const [photoFile, setPhotoFile] = useState<File | null>(null);
     const [photoPreview, setPhotoPreview] = useState(initialProfile.profilePhotoUrl);
     const [dirty, setDirty] = useState(false);

@@ -18,9 +18,9 @@ export default function MapLayout({ children }: MapLayoutProps) {
     <>
       <div className="bg-mist text-slate h-full relative">
         <MapStateProvider>
-          <MapPageComponent 
-            children={children}
-          />
+          <MapPageComponent>
+            {children}
+          </MapPageComponent>
         </MapStateProvider>
       </div>
     </>

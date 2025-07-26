@@ -21,10 +21,6 @@ export async function POST(req: NextRequest) {
 
     // Handle subscription created event
     if (event.type === 'checkout.session.completed') {
-      const session = event.data.object as Stripe.Checkout.Session;
-      const customerId = session.customer as string;
-      const subscriptionId = session.subscription as string;
-      const email = session.customer_email;
 
       // TODO: Lookup your user by email or metadata, then update Supabase
       // Example using supabase-js:
@@ -34,7 +30,10 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ received: true });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 400 });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return NextResponse.json({ error: err.message }, { status: 400 });
+    }
+    return NextResponse.json({ error: 'Unknown error' }, { status: 400 });
   }
 }

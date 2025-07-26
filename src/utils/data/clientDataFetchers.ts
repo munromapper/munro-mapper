@@ -114,7 +114,7 @@ export async function fetchUserProfile(userId: string) {
             user_discriminators: { discriminator: string };
             user_premium_status: { is_premium: boolean };
         } | null;
-        error: any;
+        error: string | null;
         };
 
     if (error) {

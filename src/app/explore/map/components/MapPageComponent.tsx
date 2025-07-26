@@ -19,6 +19,7 @@ export default function MapPageComponent({
         <div className="relative w-full h-full">
             <div className="absolute z-10 top-0 left-0 w-full h-full flex pointer-events-none">
                 {/*Sidebar List, children and filters in here*/}
+                {children}
             </div>
             <div className="w-full h-full relative z-0">
                 <MapComponent />

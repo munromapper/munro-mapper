@@ -5,15 +5,14 @@
 import React, { useRef, useEffect } from 'react';
 import { useMapState } from "@/contexts/MapStateContext";
 import { initialiseMap } from '@/utils/map/initialiseMap';
-import { motion, AnimatePresence } from 'framer-motion';
 
 export default function MapComponent() {
-    const { map, setMap, loading, setLoading, error, setError } = useMapState();
+    const { setMap, setLoading, setError } = useMapState();
     const mapRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         if (mapRef.current) {
-            let map = initialiseMap({
+            const map = initialiseMap({
                 mapContainer: mapRef.current,
                 setLoading,
                 setError
@@ -24,7 +23,7 @@ export default function MapComponent() {
                 setError("Failed to initialize map");
             }
         }
-    }, [mapRef, setMap]);
+    }, [mapRef, setMap, setError, setLoading]);
 
     return (
         <div ref={mapRef} className="w-full h-full"></div>
