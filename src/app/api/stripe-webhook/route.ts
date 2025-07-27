@@ -68,6 +68,8 @@ async function handleCheckoutCompleted(event: Stripe.Event) {
   let status = null;
   let created_at = null;
   let current_period_end = null;
+  let canceled_at = null;
+  let cancel_at_period_end = false;
 
   if (stripe_subscription_id) {
     console.log('🔍 Retrieving subscription:', stripe_subscription_id);
@@ -112,13 +114,15 @@ async function handleCheckoutCompleted(event: Stripe.Event) {
       current_period_end,
       created_at,
       updated_at: new Date().toISOString(),
+      canceled_at,
+      cancel_at_period_end,
     };
 
     console.log('📝 Data to insert:', dataToInsert);
 
     const { data, error } = await supabaseAdmin
       .from('user_subscriptions')
-      .upsert(dataToInsert, { onConflict: 'user_id' });
+      .upsert(dataToInsert, { onConflict: 'stripe_customer_id' });
 
     if (error) {
       console.error('❌ Supabase error:', error);
