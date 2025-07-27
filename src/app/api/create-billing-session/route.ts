@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     );
 
     const { data: user } = await supabaseAdmin
-      .from('users')
+      .from('user_subscriptions')
       .select('stripe_customer_id')
       .eq('id', userId)
       .single();
