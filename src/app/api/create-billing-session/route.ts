@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'User not found or not subscribed' }, { status: 404 });
     }
 
-    let customerId = user.stripe_customer_id;
+    const customerId = user.stripe_customer_id;
 
     const portalSession = await stripe.billingPortal.sessions.create({
       customer: customerId,
