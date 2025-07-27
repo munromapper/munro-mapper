@@ -2,7 +2,7 @@
 // This file handles Stripe webhook events, specifically for subscription creation.
 
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/utils/auth/supabaseClient';
+import { createClient } from '@supabase/supabase-js';
 import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -42,6 +42,18 @@ export async function POST(req: NextRequest) {
       }
 
       if (user_id && stripe_customer_id && stripe_subscription_id) {
+
+        const supabaseAdmin = createClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL!,
+          process.env.SUPABASE_SERVICE_ROLE_KEY!,
+          {
+            auth: {
+              autoRefreshToken: false,
+              persistSession: false
+            }
+          }
+        );
+        
         await supabaseAdmin.from('user_subscriptions').upsert({
           user_id,
           stripe_customer_id,
