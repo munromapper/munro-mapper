@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
     const { data: user } = await supabaseAdmin
       .from('user_subscriptions')
       .select('stripe_customer_id')
-      .eq('id', userId)
+      .eq('user_id', userId)
       .single();
 
     if (!user?.stripe_customer_id) {
