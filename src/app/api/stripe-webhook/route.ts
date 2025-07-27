@@ -68,8 +68,8 @@ async function handleCheckoutCompleted(event: Stripe.Event) {
   let status = null;
   let created_at = null;
   let current_period_end = null;
-  let canceled_at = null;
-  let cancel_at_period_end = false;
+  const canceled_at = null;
+  const cancel_at_period_end = false;
 
   if (stripe_subscription_id) {
     console.log('🔍 Retrieving subscription:', stripe_subscription_id);
