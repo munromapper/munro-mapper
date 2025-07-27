@@ -84,6 +84,8 @@ async function handleCheckoutCompleted(event: Stripe.Event) {
         
     status = subscription.status;
     created_at = subscription.created
+      ? new Date(subscription.created * 1000).toISOString()
+      : null;
     current_period_end = subscription.items.data[0]?.current_period_end
       ? new Date(subscription.items.data[0]?.current_period_end * 1000).toISOString()
       : null;
