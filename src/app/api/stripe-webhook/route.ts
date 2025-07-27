@@ -118,7 +118,7 @@ async function handleCheckoutCompleted(event: Stripe.Event) {
 
     const { data, error } = await supabaseAdmin
       .from('user_subscriptions')
-      .upsert(dataToInsert, { onConflict: 'stripe_subscription_id' });
+      .upsert(dataToInsert, { onConflict: 'user_id' });
 
     if (error) {
       console.error('❌ Supabase error:', error);
@@ -201,7 +201,7 @@ async function handleSubscriptionDeleted(event: Stripe.Event) {
   const { error } = await supabaseAdmin
     .from('user_subscriptions')
     .update({
-      status: 'cancelled',
+      status: 'canceled',
       canceled_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     })

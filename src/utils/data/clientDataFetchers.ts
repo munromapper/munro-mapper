@@ -101,7 +101,7 @@ export async function fetchUserProfile(userId: string) {
             email_opt_in,
             profile_photo_url,
             user_discriminators(discriminator),
-            user_premium_status(is_premium)
+            user_premium_status(premium_status)
         `)
         .eq('user_id', userId)
         .single() as {
@@ -112,7 +112,7 @@ export async function fetchUserProfile(userId: string) {
             email_opt_in: boolean;
             profile_photo_url: string;
             user_discriminators: { discriminator: string };
-            user_premium_status: { is_premium: boolean };
+            user_premium_status: { premium_status: string};
         } | null;
         error: string | null;
         };
@@ -129,7 +129,7 @@ export async function fetchUserProfile(userId: string) {
         isEmailOptIn: data?.email_opt_in,
         profilePhotoUrl: data?.profile_photo_url,
         discriminator: data?.user_discriminators?.discriminator,
-        isPremium: data?.user_premium_status?.is_premium
+        isPremium: data?.user_premium_status?.premium_status
     } as UserProfile;
 }
 

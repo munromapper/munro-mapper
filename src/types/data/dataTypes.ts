@@ -8,7 +8,7 @@ export type UserProfile = {
     isEmailOptIn: boolean;
     profilePhotoUrl: string | null;
     discriminator: string;
-    isPremium: boolean;
+    isPremium: string;
 } | null;
 
 export type Friend = {

@@ -41,7 +41,7 @@ export default function HeaderAccountMenuDropdown({
                             </div>
                         </div>
                         <div className="p-3 flex flex-col gap-1">
-                            {!userProfile?.isPremium && (
+                            {(userProfile && userProfile.isPremium === 'none') && (
                                 <IconLink 
                                     icon={<DashboardIcon />}
                                     label="Discover Plus"
