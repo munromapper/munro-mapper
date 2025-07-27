@@ -1,7 +1,7 @@
 // src/utils/data/userPasswordUpdaters.ts
 // This file contains functions to update user passwords in the application.
 
-import { supabase } from './supabaseClient';
+import { supabase } from '../auth/supabaseClient';
 import { useAuthContext } from '@/contexts/AuthContext';
 
 interface HandleUpdatePasswordProps {

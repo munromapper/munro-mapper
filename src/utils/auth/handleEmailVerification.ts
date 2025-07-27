@@ -1,7 +1,7 @@
 // src/utils/auth/handleVerification.ts
 // This function handles the email verification logic
 
-import { supabase } from "@/utils/data/supabaseClient";
+import { supabase } from "@/utils/auth/supabaseClient";
 
 interface HandleEmailVerificationProps {
     event: React.FormEvent;

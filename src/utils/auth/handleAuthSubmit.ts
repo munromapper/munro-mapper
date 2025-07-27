@@ -2,7 +2,7 @@
 // This function handles the standard authentication form submission logic
 
 import { generateUniqueDiscriminator } from "@/utils/auth/generateDiscriminator";
-import { supabase } from "@/utils/data/supabaseClient";
+import { supabase } from "@/utils/auth/supabaseClient";
 
 interface handleAuthSubmitProps {
     email: string;

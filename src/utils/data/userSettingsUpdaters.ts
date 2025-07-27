@@ -1,7 +1,7 @@
 // src/utils/data/userSettingsUpdaters.ts
 // This file contains functions to update user settings in the application.
 
-import { supabase } from "./supabaseClient";
+import { supabase } from "../auth/supabaseClient";
 
 interface handlePhotoChangeProps {
     event: React.ChangeEvent<HTMLInputElement>;

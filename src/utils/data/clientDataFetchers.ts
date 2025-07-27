@@ -2,7 +2,7 @@
 // This file contains client-side data fetchers for the application
 
 import { map } from 'framer-motion/client';
-import { supabase } from './supabaseClient';
+import { supabase } from '../auth/supabaseClient';
 import { Munro, Route, RouteMunroLink, UserProfile, Friend } from '@/types/data/dataTypes';
 
 /**

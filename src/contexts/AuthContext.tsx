@@ -3,7 +3,7 @@
 
 'use client';
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { supabase } from '@/utils/data/supabaseClient';
+import { supabase } from '@/utils/auth/supabaseClient';
 import type { User } from '@supabase/supabase-js';
 import { UserProfile, Friend } from '@/types/data/dataTypes';
 import { fetchUserProfile, fetchUserFriends } from '@/utils/data/clientDataFetchers';

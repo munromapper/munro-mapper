@@ -1,7 +1,7 @@
 // src/utils/auth/generateDiscriminator.ts
 // This utility function generates a unique discriminator for a user, ensuring it does not conflict with existing ones in the database.
 
-import { supabase } from "@/utils/data/supabaseClient";
+import { supabase } from "@/utils/auth/supabaseClient";
 
 export async function generateUniqueDiscriminator(): Promise<string | null> {
     const { data, error } = await supabase

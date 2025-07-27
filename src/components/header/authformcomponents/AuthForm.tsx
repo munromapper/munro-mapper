@@ -3,7 +3,7 @@
 
 'use client';
 import { useState } from 'react';
-import { supabase } from '@/utils/data/supabaseClient'
+import { supabase } from '@/utils/auth/supabaseClient'
 import Link from 'next/link';
 import handleAuthSubmit from '@/utils/auth/handleAuthSubmit';
 import { handleEmailVerification, handleVerificationCodeResend } from '@/utils/auth/handleEmailVerification';

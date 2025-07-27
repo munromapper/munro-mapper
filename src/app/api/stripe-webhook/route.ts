@@ -2,6 +2,7 @@
 // This file handles Stripe webhook events, specifically for subscription creation.
 
 import { NextRequest, NextResponse } from 'next/server';
+import { supabaseAdmin } from '@/utils/auth/supabaseClient';
 import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -21,12 +22,37 @@ export async function POST(req: NextRequest) {
 
     // Handle subscription created event
     if (event.type === 'checkout.session.completed') {
+      const session = event.data.object as Stripe.Checkout.Session;
 
-      // TODO: Lookup your user by email or metadata, then update Supabase
-      // Example using supabase-js:
-      // await supabase.from('user_subscriptions').insert({ user_id, stripe_subscription_id: subscriptionId, ... });
+      const user_id = session.metadata?.user_id;
+      const stripe_customer_id = session.customer as string;
+      const stripe_subscription_id = session.subscription as string;
 
-      // You may need to fetch the user_id from your users table using the email
+      let plan = null;
+      let status = null;
+      let current_period_end = null;
+
+      if (stripe_subscription_id) {
+        const subscription = await stripe.subscriptions.retrieve(stripe_subscription_id);
+        plan = subscription.items.data[0]?.price.nickname || subscription.items.data[0]?.price.id || null;
+        status = subscription.status;
+        current_period_end = subscription.items.data[0]?.current_period_end
+          ? new Date(subscription.items.data[0].current_period_end * 1000).toISOString()
+          : null;
+      }
+
+      if (user_id && stripe_customer_id && stripe_subscription_id) {
+        await supabaseAdmin.from('user_subscriptions').upsert({
+          user_id,
+          stripe_customer_id,
+          stripe_subscription_id,
+          plan,
+          status,
+          current_period_end,
+          updated_at: new Date().toISOString(),
+        }, { onConflict: 'stripe_subscription_id' });
+      }
+      
     }
 
     return NextResponse.json({ received: true });

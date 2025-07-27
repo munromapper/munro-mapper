@@ -1,7 +1,7 @@
 // src/utils/auth/handleAuthSignOut.ts
 // This file handles the sign-out process for authentication
 
-import { supabase } from "../data/supabaseClient";
+import { supabase } from "./supabaseClient";
 
 export const handleAuthSignOut = async () => {
     const { error } = await supabase.auth.signOut();

@@ -10,10 +10,10 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(req: NextRequest) {
   try {
-    const { priceId } = await req.json();
+    const { priceId, userId } = await req.json(); // Get userId from request body
 
-    if (!priceId) {
-      return NextResponse.json({ error: 'Missing priceId' }, { status: 400 });
+    if (!priceId || !userId) {
+      return NextResponse.json({ error: 'Missing priceId or userId' }, { status: 400 });
     }
 
     const session = await stripe.checkout.sessions.create({
@@ -25,8 +25,11 @@ export async function POST(req: NextRequest) {
           quantity: 1,
         },
       ],
-      success_url: `${req.nextUrl.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${req.nextUrl.origin}/success`,
       cancel_url: `${req.nextUrl.origin}/pricing`,
+      metadata: {
+        user_id: userId, // Pass the user's Supabase ID here
+      },
     });
 
     return NextResponse.json({ url: session.url });
