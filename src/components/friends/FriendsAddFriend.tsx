@@ -17,7 +17,7 @@ export default function FriendsAddFriend({
     const { user } = useAuthContext();
     // Filter user profiles based on the search query
     const filteredProfiles = userProfiles.filter(profile => 
-        profile?.id !== user?.id && // Exclude the current user
+        profile?.id !== user?.id && 
         profile?.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         profile?.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         profile?.discriminator.includes(searchQuery)

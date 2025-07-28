@@ -47,7 +47,7 @@ export default function OtpVerifyPage({
     <div className="bg-mist flex flex-col items-stretch gap-9 max-w-115 p-14">
             <div className="text-center">
                 <p className="font-heading-font-family text-4xl mb-4">Check your email</p>
-                <p className="text-moss text-xl mb-4">We've sent a single use OTP code to your email if you have an account.</p>
+                <p className="text-moss text-xl mb-4">We&apos;ve sent a single use OTP code to your email if you have an account.</p>
                 <p className="text-l text-slate">Once logged in, you can change your password.</p>
             </div>
             <form onSubmit={handleVerifyOtp} className="flex flex-col gap-9">
