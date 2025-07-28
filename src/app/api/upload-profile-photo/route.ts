@@ -40,7 +40,7 @@ const supabase = createClient(
 export async function POST(req: Request) {
   try {
     const { fields, files } = await parseForm(req);
-    let fileField = files.file;
+    const fileField = files.file;
     let file: formidable.File | undefined;
 
     if (Array.isArray(fileField)) {
