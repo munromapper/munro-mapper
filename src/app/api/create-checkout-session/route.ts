@@ -38,8 +38,8 @@ export async function POST(req: NextRequest) {
         mode: 'subscription',
         customer: existingSubscription.stripe_customer_id,
         line_items: [{ price: priceId, quantity: 1 }],
-        success_url: `${origin}/success`,
-        cancel_url: `${origin}/pricing`,
+        success_url: `${req.nextUrl.origin}/success`,
+        cancel_url: `${req.nextUrl.origin}/pricing`,
         metadata: { user_id: userId }
       });
       return NextResponse.json({ url: session.url });

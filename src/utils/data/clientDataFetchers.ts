@@ -3,7 +3,7 @@
 
 import { map } from 'framer-motion/client';
 import { supabase } from '../auth/supabaseClient';
-import { Munro, Route, RouteMunroLink, UserProfile, Friend } from '@/types/data/dataTypes';
+import { Munro, Route, RouteMunroLink, UserProfile, UserSubscription, Friend } from '@/types/data/dataTypes';
 
 /**
  * Fetches Munro data from Supabase.
@@ -100,6 +100,7 @@ export async function fetchUserProfile(userId: string) {
             last_name,
             email_opt_in,
             profile_photo_url,
+            preferences,
             user_discriminators(discriminator),
             user_premium_status(premium_status)
         `)
@@ -111,6 +112,10 @@ export async function fetchUserProfile(userId: string) {
             last_name: string;
             email_opt_in: boolean;
             profile_photo_url: string;
+            preferences: {
+                length_unit: string;
+                elevation_unit: string;
+            }
             user_discriminators: { discriminator: string };
             user_premium_status: { premium_status: string};
         } | null;
@@ -128,9 +133,50 @@ export async function fetchUserProfile(userId: string) {
         lastName: data?.last_name,
         isEmailOptIn: data?.email_opt_in,
         profilePhotoUrl: data?.profile_photo_url,
+        preferences: data?.preferences ? {
+            lengthUnit: data.preferences.length_unit,
+            elevationUnit: data.preferences.elevation_unit
+        } : {
+            lengthUnit: 'meters',
+            elevationUnit: 'meters'
+        },
         discriminator: data?.user_discriminators?.discriminator,
         isPremium: data?.user_premium_status?.premium_status
     } as UserProfile;
+}
+
+/**
+ * Fetches the subscription details for a user.
+ * @param userId The ID of the user whose subscription to fetch
+ * @returns A promise that resolves to the user's subscription or null
+ */
+export async function fetchUserSubscription(userId: string): Promise<UserSubscription[] | null> {
+    if (userId === null) {
+        return null;
+    }
+    const { data, error } = await supabase
+        .from('user_subscriptions')
+        .select('*')
+        .eq('user_id', userId);
+
+    if (error) {
+        console.error('Error fetching user subscription:', error);
+        return null;
+    }
+
+    return data.map((subscription) => ({
+        id: subscription.id,
+        userId: subscription.user_id,
+        stripeCustomerId: subscription.stripe_customer_id,
+        stripeSubscriptionId: subscription.stripe_subscription_id,
+        plan: subscription.plan,
+        status: subscription.status,
+        currentPeriodEnd: subscription.current_period_end,
+        createdAt: subscription.created_at,
+        updatedAt: subscription.updated_at,
+        canceledAt: subscription.canceled_at,
+        cancelAtPeriodEnd: subscription.cancel_at_period_end
+    })) as UserSubscription[];
 }
 
 /**

@@ -2,7 +2,6 @@
 // This file contains functions to update user passwords in the application.
 
 import { supabase } from '../auth/supabaseClient';
-import { useAuthContext } from '@/contexts/AuthContext';
 
 interface HandleUpdatePasswordProps {
     event: React.FormEvent<HTMLFormElement>;

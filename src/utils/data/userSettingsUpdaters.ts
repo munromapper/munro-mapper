@@ -21,15 +21,24 @@ export function handlePhotoChange({
     const file = event.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 5 * 1024 * 1024) {
-        setError("File size exceeds 5MB limit.");
-        return;
+    function validateImageFile(file: File): string | null {
+        const allowedTypes = ['image/jpeg', 'image/png'];
+        if (!allowedTypes.includes(file.type)) return "Only JPG or PNG image files allowed.";
+        if (file.size > 5 * 1024 * 1024) return "File size exceeds 5MB.";
+        return null;
     }
 
-    setPhotoFile(file);
-    setPhotoPreview(URL.createObjectURL(file));
-    setDirty(true);
-    setError(null);
+    const error = validateImageFile(file);
+
+    if (error) {
+        setError(error);
+        return;
+    }  else {
+        setPhotoFile(file);
+        setPhotoPreview(URL.createObjectURL(file));
+        setDirty(true);
+        setError(null);
+    }
 }
 
 interface handleDeletePhotoProps {
@@ -38,6 +47,21 @@ interface handleDeletePhotoProps {
     setForm: React.Dispatch<React.SetStateAction<ProfileForm>>;
     setDirty: React.Dispatch<React.SetStateAction<boolean>>;
     fileInputRef: React.RefObject<HTMLInputElement | null>;
+}
+
+async function uploadProfilePhoto(photoFile: File, userId: string): Promise<string> {
+  const formData = new FormData();
+  formData.append('file', photoFile);
+  formData.append('userId', userId);
+
+  const res = await fetch('/api/upload-profile-photo', {
+    method: 'POST',
+    body: formData,
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Upload failed');
+  return data.url;
 }
 
 export function handleDeletePhoto({
@@ -51,10 +75,30 @@ export function handleDeletePhoto({
 
     setPhotoFile(null);
     setPhotoPreview(defaultProfilePicture);
-    setForm((form: ProfileForm) => ({ ...form, profilePhotoUrl: defaultProfilePicture }));
+    setForm((form: ProfileForm) => ({ ...form, profilePhotoUrl: null }));
     if (fileInputRef.current) fileInputRef.current.value = '';
     setDirty(true);
 }
+
+function sanitizeName(name: string): string {
+  // Remove leading/trailing whitespace
+  let sanitized = name.trim();
+  // Remove any HTML tags or angle brackets
+  sanitized = sanitized.replace(/[<>]/g, '');
+  // Limit to 50 chars
+  sanitized = sanitized.slice(0, 50);
+  return sanitized;
+}
+
+function sanitizeEmail(email: string): string {
+  return email.trim().toLowerCase();
+}
+
+function isValidEmail(email: string): boolean {
+  // Simple RFC 5322 compliant regex for most cases
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 
 interface ProfileForm {
     profilePhotoUrl: string | null;
@@ -119,37 +163,42 @@ export async function handleUpdateUserSettings({
     if (photoFile) {
         await clearUserFileStorage();
 
-        const fileExt = photoFile?.name.split(".").pop();
-        const fileName = `profile-picture-${userId}-${Date.now()}.${fileExt}`;
-        const filePath = `${userId}/${fileName}`;
-
-        const { error: uploadError } = await supabase.storage
-            .from("profilepictures")
-            .upload(filePath, photoFile, { upsert: true });
-
-        if (uploadError) {
-            setError(uploadError.message);
+        try {
+            // Use your API route instead of direct Supabase upload
+            profilePhotoUrl = await uploadProfilePhoto(photoFile, userId);
+        } catch (err: any) {
+            setError(err.message || "Failed to upload photo.");
+            setLoading(false);
             return;
         }
-
-        const { data: publicUrlData } = supabase.storage
-            .from("profilepictures")
-            .getPublicUrl(filePath);
-
-        profilePhotoUrl = publicUrlData.publicUrl;
     }
 
     // If user has removed their profile photo to revert to default
     if (form.profilePhotoUrl === null) {
         await clearUserFileStorage();
-        profilePhotoUrl = null;
+        profilePhotoUrl = "https://zhagbgmbodswwtajijsb.supabase.co/storage/v1/object/public/profilepictures//default-profile-picture.png";
+    }
+
+    const sanitizedFirstName = sanitizeName(form.firstName);
+    const sanitizedLastName = sanitizeName(form.lastName);
+
+    const sanitizedEmail = sanitizeEmail(form.email);
+    if (!isValidEmail(sanitizedEmail)) {
+        setError("Please enter a valid email address.");
+        setLoading(false);
+        return;
+    }
+
+    if (typeof form.emailOptIn !== "boolean") {
+        setError("Invalid value for email opt-in.");
+        return;
     }
 
     let emailUpdateRequired = false;
     if (form.email && form.email !== prevEmail) {
         emailUpdateRequired = true;
         const { error: emailError } = await supabase.auth.updateUser({
-            email: form.email,
+            email: sanitizedEmail,
         });
         if (emailError) {
             setError("Failed to update email: " + emailError.message);
@@ -161,14 +210,14 @@ export async function handleUpdateUserSettings({
         .from("user_profiles")
         .update({
             profile_photo_url: profilePhotoUrl,
-            first_name: form.firstName,
-            last_name: form.lastName,
+            first_name: sanitizedFirstName,
+            last_name: sanitizedLastName,
             email_opt_in: form.emailOptIn,
         })
         .eq("user_id", userId);
 
     if (updateError) {
-        setError("Failed to update profile.");
+        setError("Failed to update profile. Name inputs may only contain letters, spaces, hyphens, and apostrophes.");
         return;
     }
 

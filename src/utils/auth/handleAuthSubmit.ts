@@ -39,6 +39,39 @@ export default async function handleAuthSubmit({
     setLoading(true);
     setError(null);
 
+    function sanitizeName(name: string): string {
+        // Remove leading/trailing whitespace
+        let sanitized = name.trim();
+        // Remove any HTML tags or angle brackets
+        sanitized = sanitized.replace(/[<>]/g, '');
+        // Limit to 50 chars
+        sanitized = sanitized.slice(0, 50);
+        return sanitized;
+    }
+    function sanitizeEmail(email: string): string {
+        return email.trim().toLowerCase();
+    }
+    function isValidEmail(email: string): boolean {
+        // Simple RFC 5322 compliant regex for most cases
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    const sanitizedFirstName = sanitizeName(firstName);
+    const sanitizedLastName = sanitizeName(lastName);
+
+    const sanitizedEmail = sanitizeEmail(email);
+
+    if (!isValidEmail(sanitizedEmail)) {
+        setError("Please enter a valid email address.");
+        setLoading(false);
+        return;
+    }
+
+    if (typeof emailOptIn !== "boolean") {
+        setError("Invalid value for email opt-in.");
+        return;
+    }
+
     if (mode === "signUp") {
 
         const discriminator = await generateUniqueDiscriminator();
@@ -53,8 +86,8 @@ export default async function handleAuthSubmit({
             password,
             options: {
                 data: {
-                    first_name: firstName,
-                    last_name: lastName,
+                    first_name: sanitizedFirstName,
+                    last_name: sanitizedLastName,
                     email_opt_in: emailOptIn,
                     discriminator
                 }

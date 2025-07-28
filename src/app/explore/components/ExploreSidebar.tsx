@@ -9,9 +9,11 @@ import IconLink from "@/components/global/IconLink"
 import SettingsPage from "@/components/settings/SettingsPage";
 import ModalElement from "@/components/global/Modal"
 import { MapIcon, ListIcon, FriendsIcon, DashboardIcon, SupportIcon, SettingsIcon } from "@/components/global/SvgComponents"
+import { useAuthContext } from "@/contexts/AuthContext";
 
 export default function ExploreSidebar() {
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    const { user } = useAuthContext();
 
     return (
         <aside className="bg-slate">
@@ -56,13 +58,15 @@ export default function ExploreSidebar() {
                             label="Support"
                             className="border-slate hover:bg-mist/10"
                         />
-                        <IconLink 
-                            transitionWrapper=""
-                            icon={<SettingsIcon />}
-                            label="User Settings"
-                            className="border-slate hover:bg-mist/10"
-                            onClick={() => setIsSettingsOpen(true)}
-                        />
+                        {user && (
+                            <IconLink 
+                                transitionWrapper=""
+                                icon={<SettingsIcon />}
+                                label="User Settings"
+                                className="border-slate hover:bg-mist/10"
+                                onClick={() => setIsSettingsOpen(true)}
+                            />
+                        )}
                     </div>
                 </div>
                 <div>

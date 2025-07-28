@@ -1,9 +1,5 @@
 @import "tailwindcss";
 
-html {
-  font-size: 18px;
-}
-
 @font-face {
   font-family: 'Erode';
   src: url('/fonts/Erode-Variable.ttf') format('truetype');
@@ -33,6 +29,8 @@ html {
   --color-lilac: #D7BAF8;
   --color-cloud: #F7F4FE;
   --color-rust: #946261;
+  --color-sand: #FFEEC8;
+  --color-bronze: #9C6800;
   --font-body-font-family: 'Mona Sans', sans-serif;
   --font-heading-font-family: 'Erode', serif;
   --text-xs: 0.625rem;
@@ -63,6 +61,8 @@ html {
   --color-lilac: #D7BAF8;
   --color-cloud: #F7F4FE;
   --color-rust: #946261;
+  --color-sand: #FFEEC8;
+  --color-bronze: #9C6800;
   --font-body-font-family: 'Mona Sans', sans-serif;
   --font-heading-font-family: 'Erode', serif;
   --text-xs: 0.625rem;

@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuthContext } from "@/contexts/AuthContext";
 import { handleAuthSignOut } from '@/utils/auth/handleAuthSignOut';
 import IconLink from '../global/IconLink'; 
-import { DashboardIcon, SettingsIcon, LogoutIcon } from '../global/SvgComponents';
+import { DashboardIcon, SettingsIcon, LogoutIcon, PremiumIcon } from '../global/SvgComponents';
 
 interface HeaderAccountMenuDropdownProps {
     isDropdownActive: boolean;
@@ -43,7 +43,7 @@ export default function HeaderAccountMenuDropdown({
                         <div className="p-3 flex flex-col gap-1">
                             {(userProfile && (userProfile.isPremium === 'none' || userProfile.isPremium === 'canceled')) && (
                                 <IconLink 
-                                    icon={<DashboardIcon />}
+                                    icon={<PremiumIcon currentColor='var(--color-heather)'/>}
                                     label="Discover Plus"
                                     href="/pricing"
                                     transitionWrapper='body'

@@ -7,8 +7,26 @@ export type UserProfile = {
     lastName: string;
     isEmailOptIn: boolean;
     profilePhotoUrl: string | null;
+    preferences: {
+        lengthUnit: string;
+        elevationUnit: string;
+    };
     discriminator: string;
     isPremium: string;
+} | null;
+
+export type UserSubscription = {
+    id: string;
+    userId: string;
+    stripeCustomerId: string;
+    stripeSubscriptionId: string;
+    plan: string;
+    status: string;
+    currentPeriodEnd: string;
+    createdAt: string;
+    updatedAt: string;
+    canceledAt: string | null;
+    cancelAtPeriodEnd: boolean;
 } | null;
 
 export type Friend = {

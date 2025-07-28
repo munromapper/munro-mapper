@@ -5,12 +5,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '@/utils/auth/supabaseClient';
 import type { User } from '@supabase/supabase-js';
-import { UserProfile, Friend } from '@/types/data/dataTypes';
-import { fetchUserProfile, fetchUserFriends } from '@/utils/data/clientDataFetchers';
+import { UserProfile, UserSubscription, Friend } from '@/types/data/dataTypes';
+import { fetchUserProfile, fetchUserSubscription, fetchUserFriends } from '@/utils/data/clientDataFetchers';
 
 interface AuthContextType {
     user: User | null;
     userProfile: UserProfile | null;
+    userSubscription: UserSubscription[] | null;
     refreshUserProfile: () => Promise<void>;
     friends: Friend[] | null;
     globalMessage: string | null;
@@ -21,6 +22,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType>({
     user: null,
     userProfile: null,
+    userSubscription: null,
     refreshUserProfile: async () => {},
     friends: null,
     globalMessage: null,
@@ -33,6 +35,7 @@ export const AuthProvider = (
     : { children: React.ReactNode }
 ) => {
     const [user, setUser] = useState<User | null>(null);
+    const [userSubscription, setUserSubscription] = useState<UserSubscription[] | null>(null);
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
     const [friends, setFriends] = useState<Friend[] | null>(null);
     const [globalMessage, setGlobalMessage] = useState<string | null>(null);
@@ -49,6 +52,7 @@ export const AuthProvider = (
             setUser(currentUser);
             if (currentUser !== null) {
                 fetchUserProfile(currentUser.id).then(setUserProfile);
+                fetchUserSubscription(currentUser.id).then(setUserSubscription);
                 fetchUserFriends(currentUser.id).then(setFriends);
             }
         });
@@ -60,6 +64,7 @@ export const AuthProvider = (
 
             if (currentUser !== null) {
                 fetchUserProfile(currentUser.id).then(setUserProfile);
+                fetchUserSubscription(currentUser.id).then(setUserSubscription);
                 fetchUserFriends(currentUser.id).then(setFriends);
             } else {
                 setUserProfile(null);
@@ -78,7 +83,7 @@ export const AuthProvider = (
     };
 
     return (
-        <AuthContext.Provider value={{ user, userProfile, friends, refreshUserProfile, globalMessage, setGlobalMessage, children }}>
+        <AuthContext.Provider value={{ user, userProfile, userSubscription, friends, refreshUserProfile, globalMessage, setGlobalMessage, children }}>
             {children}
         </AuthContext.Provider>
     );
