@@ -166,8 +166,12 @@ export async function handleUpdateUserSettings({
         try {
             // Use your API route instead of direct Supabase upload
             profilePhotoUrl = await uploadProfilePhoto(photoFile, userId);
-        } catch (err: any) {
-            setError(err.message || "Failed to upload photo.");
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                setError(err.message || "Failed to upload photo.");
+            } else {
+                setError("Failed to upload photo.");
+            }
             setLoading(false);
             return;
         }
