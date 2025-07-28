@@ -4,6 +4,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuthContext } from "@/contexts/AuthContext";
 import { handleAuthSignOut } from '@/utils/auth/handleAuthSignOut';
+import UserProfilePicture from '../global/UserProfilePicture';
 import IconLink from '../global/IconLink'; 
 import { DashboardIcon, SettingsIcon, LogoutIcon, PremiumIcon } from '../global/SvgComponents';
 
@@ -27,10 +28,12 @@ export default function HeaderAccountMenuDropdown({
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.25, ease: "easeInOut" }}
-                        className="bg-mist text-slate font-normal whitespace-nowrap rounded-xl mt-2 divide-y divide-sage cursor-auto shadow-standard"
+                        className="bg-mist text-slate min-w-57 font-normal whitespace-nowrap rounded-xl mt-2 divide-y divide-sage cursor-auto shadow-standard"
                     >
                         <div className="p-6 flex items-center gap-3">
-                            <div className={`rounded-full w-9 h-9 bg-cover bg-center`} style={{ backgroundImage: `url(${userProfile?.profilePhotoUrl})`}}></div>
+                            <div className="w-12 h-12">
+                                <UserProfilePicture userId={userProfile?.id || ''} />
+                            </div>
                             <div className="flex flex-col">
                                 <span className="text-l">
                                     {userProfile?.firstName} {userProfile?.lastName}

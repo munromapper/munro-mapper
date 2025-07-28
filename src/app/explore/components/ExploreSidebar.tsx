@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import SidebarGreeting from "./SidebarGreeting"
 import SidebarAccountInfo from "./SidebarAccountInfo"
 import IconLink from "@/components/global/IconLink"
+import FriendsPage from "@/components/friends/FriendsPage";
 import SettingsPage from "@/components/settings/SettingsPage";
 import ModalElement from "@/components/global/Modal"
 import { MapIcon, ListIcon, FriendsIcon, DashboardIcon, SupportIcon, SettingsIcon } from "@/components/global/SvgComponents"
@@ -13,6 +14,7 @@ import { useAuthContext } from "@/contexts/AuthContext";
 
 export default function ExploreSidebar() {
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    const [isFriendsOpen, setIsFriendsOpen] = useState(false);
     const { user } = useAuthContext();
 
     return (
@@ -47,6 +49,7 @@ export default function ExploreSidebar() {
                             icon={<FriendsIcon />}
                             label="Friends"
                             className="border-slate hover:bg-mist/10"
+                            onClick={() => setIsFriendsOpen(true)}
                         />
                     </div>
                     <div className="h-[1px] mx-4 border-b border-dashed border-moss my-6"/>
@@ -78,6 +81,12 @@ export default function ExploreSidebar() {
                 onClose={() => setIsSettingsOpen(false)}
             >
                 <SettingsPage />
+            </ModalElement>
+            <ModalElement 
+                isOpen={isFriendsOpen} 
+                onClose={() => setIsFriendsOpen(false)}
+            >
+                <FriendsPage />
             </ModalElement>
         </aside>
 

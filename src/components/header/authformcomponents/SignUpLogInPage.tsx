@@ -1,13 +1,15 @@
 // src/components/header/authformcomponents/SignUpLogInPage.tsx
 // This file contains the SignUpLogInPage component which handles user authentication for signing up and logging in.
 
+import { useEffect } from "react";
 import handleAuthSubmit from "@/utils/auth/handleAuthSubmit";
 import TextInput from "@/components/global/forms/TextInput";
 import CheckboxInput from "@/components/global/forms/CheckboxInput";
 import ButtonInput from "@/components/global/forms/ButtonInput";
-import NotificationBox from "@/components/global/NotificationBox";
 import { InlineLink } from "@/components/global/Buttons";
-import { AnimatePresence } from "framer-motion";
+import { GoogleLogo } from "@/components/global/SvgComponents";
+import ErrorMessage from "@/components/global/forms/ErrorMessage";
+import { supabase } from "@/utils/auth/supabaseClient";
 
 interface SignUpLogInPageProps {
     mode: "signUp" | "logIn";
@@ -19,6 +21,8 @@ interface SignUpLogInPageProps {
     setEmail: (value: string) => void;
     password: string;
     setPassword: (value: string) => void;
+    passwordConfirm: string;
+    setPasswordConfirm: (value: string) => void;
     emailOptIn: boolean;
     setEmailOptIn: (value: boolean) => void;
     setUserEmail: (value: string) => void;
@@ -27,7 +31,7 @@ interface SignUpLogInPageProps {
     error: string | null;
     setError: (error: string | null) => void;
     onSwapMode: (mode: "logIn" | "signUp") => void;
-    setStep: (step: 'auth' | 'emailConfirmation') => void;
+    setStep: (step: 'auth' | 'emailConfirmation' | 'otpRequest' | 'otpVerify') => void;
     onSuccess: () => void;
 }
 
@@ -41,6 +45,8 @@ export default function SignUpLogInPage({
     setEmail,
     password,
     setPassword,
+    passwordConfirm,
+    setPasswordConfirm,
     emailOptIn,
     setEmailOptIn,
     setUserEmail,
@@ -52,11 +58,23 @@ export default function SignUpLogInPage({
     setStep,
     onSuccess,
 }: SignUpLogInPageProps) {
+
+    useEffect(() => {
+        setFirstName("");
+        setLastName("");
+        setEmail("");
+        setPassword("");
+        setPasswordConfirm("");
+        setEmailOptIn(false);
+        setError(null);
+    }, [mode]);
+
     return (
         <form 
             onSubmit={e => handleAuthSubmit({
                 email,
                 password,
+                passwordConfirm,
                 firstName,
                 lastName,
                 emailOptIn,
@@ -121,20 +139,53 @@ export default function SignUpLogInPage({
                     autoComplete="current-password"
                 />
                 {mode === "signUp" && (
-                    <CheckboxInput 
-                        name="emailOptIn"
-                        label="Sign up for bagging tips and special offers"
-                        checked={emailOptIn}
-                        onChange={e => setEmailOptIn(e.target.checked)}
-                    />
+                    <>
+                        <TextInput 
+                        name="password-confirm"
+                        type="password"
+                        placeholder="Confirm Password"
+                        value={passwordConfirm}
+                        onChange={e => setPasswordConfirm(e.target.value)}
+                        required
+                        autoComplete="current-password"
+                        />
+                        <CheckboxInput 
+                            name="emailOptIn"
+                            label="Sign up for bagging tips and special offers"
+                            checked={emailOptIn}
+                            onChange={e => setEmailOptIn(e.target.checked)}
+                        />
+                    </>
                 )}
             </div>
+            <ErrorMessage error={error} />
             <div className="flex flex-col gap-4">
                 <ButtonInput 
                     label={mode === "signUp" ? "Sign Up" : "Log In"}
                     disabled={loading}
                     loading={loading}
                 />
+                <button 
+                    className="py-2 px-4 flex items-center justify-center gap-4 cursor-pointer border border-sage rounded-full text-l hover:border-slate transition duration-250 ease-in-out"
+                    onClick={async (event) => {
+                        event?.preventDefault();
+                        setLoading(true);
+                        setError(null);
+                        const { error } = await supabase.auth.signInWithOAuth({
+                            provider: "google",
+                            options: {
+                                redirectTo: window.location.origin, // or your desired redirect URL
+                            },
+                        });
+                        if (error) setError(error.message);
+                        setLoading(false);
+                    }}
+                >
+                    <div className="w-4 h-4">
+                        <GoogleLogo />
+                    </div>
+                    {mode === "signUp" ? "Sign Up with Google" : "Log In with Google"}
+                </button>
             </div>
             <div className="flex flex-col gap-2 text-center">
                 <p className="text-l">
@@ -158,7 +209,8 @@ export default function SignUpLogInPage({
                     </>
                     )}
                 </p>
-                <p className="text-m text-moss">
+                {mode === "signUp" && (
+                    <p className="text-m text-moss">
                     By continuing to use Munro Mapper, you agree to our{' '}
                     <InlineLink
                         href="/terms"
@@ -174,17 +226,17 @@ export default function SignUpLogInPage({
                         transitionWrapper=""
                     />
                 </p>
-            </div>
-            <AnimatePresence>
-                {error && (
-                    <NotificationBox 
-                        message={error} 
-                        type="error"
-                        onClose={() => setError(null)}
-                        duration={10000} 
-                    />
                 )}
-            </AnimatePresence>
+                {mode === "logIn" && (
+                    <p className="text-m text-moss">
+                        <InlineLink 
+                            label="Forgot your password?"
+                            onClick={() => setStep('otpRequest')}
+                            transitionWrapper=""
+                        />
+                    </p>
+                )}
+            </div>
         </form>
     )
 }

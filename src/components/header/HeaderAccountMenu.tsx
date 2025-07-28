@@ -6,8 +6,7 @@ import React, { useState } from 'react';
 import { useAuthContext } from "@/contexts/AuthContext"
 import HeaderAccountMenuDropdown from './HeaderAccountMenuDropdown';
 import { ThinDownChevron } from "../global/SvgComponents";
-import SettingsPage from '../settings/SettingsPage';
-import ModalElement from '../global/Modal';
+import UserProfilePicture from '../global/UserProfilePicture';
 
 interface HeaderAccountMenuProps {
     isDark: boolean;
@@ -27,7 +26,9 @@ export default function HeaderAccountMenu({
             onMouseEnter={() => setIsDropdownActive(true)}
             onMouseLeave={() => setIsDropdownActive(false)}
         >
-            <div className={`rounded-full w-7 h-7 bg-cover bg-sage bg-center`} style={{ backgroundImage: `url(${userProfile?.profilePhotoUrl})` }}></div>
+            <div className="w-8 h-8">
+                <UserProfilePicture userId={userProfile?.id || ''} />
+            </div>
             <span 
                 className={`
                     w-2 h-2 flex items-center justify-center mt-1

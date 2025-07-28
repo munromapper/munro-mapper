@@ -137,12 +137,68 @@ export async function fetchUserProfile(userId: string) {
             lengthUnit: data.preferences.length_unit,
             elevationUnit: data.preferences.elevation_unit
         } : {
-            lengthUnit: 'meters',
-            elevationUnit: 'meters'
+            lengthUnit: 'kilometres',
+            elevationUnit: 'metres'
         },
         discriminator: data?.user_discriminators?.discriminator,
         isPremium: data?.user_premium_status?.premium_status
     } as UserProfile;
+}
+
+export async function fetchAllUserProfiles() {
+    const { data, error } = await supabase
+        .from('user_profiles')
+        .select(`
+            user_id,
+            first_name,
+            last_name,
+            email_opt_in,
+            profile_photo_url,
+            preferences,
+            user_discriminators(discriminator),
+            user_premium_status(premium_status)
+        `) as {
+        data: {
+            user_id: string;
+            first_name: string;
+            last_name: string;
+            email_opt_in: boolean;
+            profile_photo_url: string;
+            preferences: {
+                length_unit: string;
+                elevation_unit: string;
+            }
+            user_discriminators: { discriminator: string };
+            user_premium_status: { premium_status: string};
+        }[] | null;
+        error: string | null;
+    };
+
+    if (error) {
+        console.error('Error fetching user profiles:', error);
+        return null;
+    }
+
+    if (!data || !Array.isArray(data)) {
+        return [];
+    }
+
+    return data.map((item) => ({
+        id: item.user_id,
+        firstName: item.first_name,
+        lastName: item.last_name,
+        isEmailOptIn: item.email_opt_in,
+        profilePhotoUrl: item.profile_photo_url,
+        preferences: item.preferences ? {
+            lengthUnit: item.preferences.length_unit,
+            elevationUnit: item.preferences.elevation_unit
+        } : {
+            lengthUnit: 'kilometres',
+            elevationUnit: 'metres'
+        },
+        discriminator: item.user_discriminators?.discriminator,
+        isPremium: item.user_premium_status?.premium_status
+    })) as UserProfile[];
 }
 
 /**

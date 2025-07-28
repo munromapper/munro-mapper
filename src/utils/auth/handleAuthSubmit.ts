@@ -7,6 +7,7 @@ import { supabase } from "@/utils/auth/supabaseClient";
 interface handleAuthSubmitProps {
     email: string;
     password: string;
+    passwordConfirm: string;
     firstName: string;
     lastName: string;
     emailOptIn: boolean;
@@ -23,6 +24,7 @@ interface handleAuthSubmitProps {
 export default async function handleAuthSubmit({
     email,
     password,
+    passwordConfirm,
     firstName,
     lastName,
     emailOptIn,
@@ -74,9 +76,8 @@ export default async function handleAuthSubmit({
 
     if (mode === "signUp") {
 
-        const discriminator = await generateUniqueDiscriminator();
-        if (!discriminator) {
-            setError("Failed to generate a unique discriminator.");
+        if (password !== passwordConfirm) {
+            setError("Passwords do not match.");
             setLoading(false);
             return;
         }
@@ -89,7 +90,6 @@ export default async function handleAuthSubmit({
                     first_name: sanitizedFirstName,
                     last_name: sanitizedLastName,
                     email_opt_in: emailOptIn,
-                    discriminator
                 }
             }
         });

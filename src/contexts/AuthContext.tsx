@@ -7,6 +7,7 @@ import { supabase } from '@/utils/auth/supabaseClient';
 import type { User } from '@supabase/supabase-js';
 import { UserProfile, UserSubscription, Friend } from '@/types/data/dataTypes';
 import { fetchUserProfile, fetchUserSubscription, fetchUserFriends } from '@/utils/data/clientDataFetchers';
+import patchGoogleUserProfile from '@/utils/auth/patchGoogleUserProfile';
 
 interface AuthContextType {
     user: User | null;
@@ -73,6 +74,16 @@ export const AuthProvider = (
 
         return () => listener?.subscription.unsubscribe();
 
+    }, []);
+
+    useEffect(() => {
+        const checkAndPatch = async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session && session.user && session.user.app_metadata.provider === "google") {
+            await patchGoogleUserProfile(session.user.id);
+        }
+        };
+        checkAndPatch();
     }, []);
 
     const refreshUserProfile = async () => {

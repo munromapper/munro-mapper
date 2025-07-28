@@ -3,6 +3,7 @@
 
 'use client';
 import { useAuthContext } from "@/contexts/AuthContext";
+import UserProfilePicture from "@/components/global/UserProfilePicture";
 
 export default function SidebarAccountInfo() {
     const { userProfile } = useAuthContext();
@@ -11,7 +12,9 @@ export default function SidebarAccountInfo() {
 
     return (
         <div className="px-4 flex items-center gap-3">
-            <div className={`rounded-full w-9 h-9 bg-cover bg-center`} style={{ backgroundImage: `url(${userProfile?.profilePhotoUrl})` }}></div>
+            <div className="w-9 h-9">
+                <UserProfilePicture userId={userProfile.id} />
+            </div>
             <div className="flex flex-col">
                 <span className="text-l">
                     {userProfile?.firstName} {userProfile?.lastName}

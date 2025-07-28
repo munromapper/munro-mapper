@@ -58,7 +58,7 @@ export default function PricingButtons() {
                     />
                 </div>
             )}
-            {user && (userProfile?.isPremium === 'active' || userProfile?.isPremium === 'paused') && (
+            {user && (userProfile?.isPremium === 'active' || userProfile?.isPremium === 'paused' || userProfile?.isPremium === 'canceling') && (
                 <div>
                     <PrimaryButton 
                         label="You are subscribed to Plus"

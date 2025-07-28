@@ -3,14 +3,10 @@
 
 'use client';
 import { useState } from 'react';
-import { supabase } from '@/utils/auth/supabaseClient'
-import Link from 'next/link';
-import handleAuthSubmit from '@/utils/auth/handleAuthSubmit';
-import { handleEmailVerification, handleVerificationCodeResend } from '@/utils/auth/handleEmailVerification';
 import EmailVerificationPage from './EmailVerificationPage';
 import SignUpLogInPage from './SignUpLogInPage';
-import { TickIcon, GoogleLogo } from '@/components/global/SvgComponents';
-import { Sign } from 'crypto';
+import OtpRequestPage from './OtpRequestPage';
+import OtpVerifyPage from './OtpVerificationPage';
 
 interface AuthFormProps {
     mode: 'logIn' | 'signUp';
@@ -27,10 +23,11 @@ export default function AuthForm({
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [passwordConfirm, setPasswordConfirm] = useState('');
     const [emailOptIn, setEmailOptIn] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [step, setStep] = useState<'auth' | 'emailConfirmation'>('auth');
+    const [step, setStep] = useState<'auth' | 'emailConfirmation' | 'otpRequest' | 'otpVerify'>('auth');
     const [userEmail, setUserEmail] = useState('');
     const [verificationCode, setVerificationCode] = useState('');
 
@@ -51,6 +48,31 @@ export default function AuthForm({
         )
     }
 
+    if (step === 'otpRequest') {
+        return (
+            <OtpRequestPage
+            setStep={setStep}
+            setUserEmail={setUserEmail}
+            setError={setError}
+            setLoading={setLoading}
+            loading={loading}
+            />
+        );
+        }
+
+        if (step === 'otpVerify') {
+        return (
+            <OtpVerifyPage
+            userEmail={userEmail}
+            setStep={setStep}
+            setError={setError}
+            setLoading={setLoading}
+            loading={loading}
+            onSuccess={onSuccess}
+            />
+        );
+    }
+
     return (
         <SignUpLogInPage 
             mode={mode}
@@ -62,6 +84,8 @@ export default function AuthForm({
             setEmail={setEmail}
             password={password}
             setPassword={setPassword}
+            passwordConfirm={passwordConfirm}
+            setPasswordConfirm={setPasswordConfirm}
             emailOptIn={emailOptIn}
             setEmailOptIn={setEmailOptIn}
             setUserEmail={setUserEmail}

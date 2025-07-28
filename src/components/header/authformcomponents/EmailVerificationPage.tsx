@@ -1,7 +1,10 @@
 // src/components/header/authformcomponents/EmailVerificationPage.tsx
 // This file contains the EmailVerificationPage component for handling email verification in the authentication flow
 import { handleEmailVerification, handleVerificationCodeResend } from "@/utils/auth/handleEmailVerification";
-import ErrorMessage from "@/components/global/forms/ErrorMessage";
+import ErrorMessage from "@/components/global/forms/ErrorMessage"
+import TextInput from "@/components/global/forms/TextInput";
+import ButtonInput from "@/components/global/forms/ButtonInput";
+import { InlineLink } from "@/components/global/Buttons";
 
 interface EmailVerificationPageProps {
     userEmail: string;
@@ -29,14 +32,18 @@ export default function EmailVerificationPage({
     onSuccess
 }: EmailVerificationPageProps) {
     return (
-        <div className="flex flex-col items-center justify-center max-w-115 p-14 bg-mist">
-            <h2 className="text-xxxl font-medium mb-4">
-                Check your email
-            </h2>
-            <p className="text-moss text-center mb-6">
-                We&apos;ve sent a verification code to <span className="font-semibold">{userEmail}</span>.<br />
-                Please enter the code below to complete verification.
-            </p>
+        <div className="flex flex-col gap-9 items-center justify-center max-w-100 p-14 bg-mist">
+            <div className="flex flex-col items-center gap-4 text-center">
+                <p className="text-4xl font-heading-font-family">
+                    Check your email
+                </p>
+                <p className="text-moss text-l">
+                    We&apos;ve sent a verification code to <span className="text-slate">{userEmail}</span>.<br />
+                </p>
+                <p className="text-l text-moss">
+                    Please enter the code below.
+                </p>
+            </div>
 
             <form 
                 onSubmit={e => handleEmailVerification({
@@ -47,48 +54,42 @@ export default function EmailVerificationPage({
                     setError,
                     onSuccess
                 })}
-                className="w-full"
+                className="w-full flex flex-col gap-6"
             >
-                <input
+                <TextInput 
+                    name="verificationCode"
                     type="text"
                     placeholder="Enter 6-digit code"
-                    className="text-center text-xl tracking-widest"
                     value={verificationCode}
                     onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                     required
                     maxLength={6}
                     autoFocus
                 />
-
-                <ErrorMessage error={error} />
-                            
-                <button
-                    type="submit"
-                    className="bg-moss text-white py-2 px-4 rounded w-full"
+                <ButtonInput 
+                    label="Verify email"
                     disabled={loading || verificationCode.length !== 6}
-                >
-                    {loading ? "Verifying..." : "Verify Email"}
-                </button>
+                    loading={loading}
+                />   
             </form>
-                        
-            <div className="flex flex-col items-center gap-4">
-            <button
-                type="button"
-                onClick={() => handleVerificationCodeResend({
-                    userEmail,
-                    setLoading,
-                    setError,
-                })}
-                disabled={loading}
-                className="underline decoration-dotted underline-offset-4 cursor-pointer text-moss"
-            >
-                Resend Code
-            </button>
-                        
+            <ErrorMessage error={error} />         
+            <div className="flex flex-col items-center text-center text-l">
+                <div className="flex items-end gap-2">
+                    <p>Need a new one?</p>
+                    <InlineLink
+                        label="Resend code."
+                        transitionWrapper="" 
+                        onClick={() => handleVerificationCodeResend({
+                            userEmail,
+                            setLoading,
+                            setError,
+                        })}
+                    />
+                </div>                        
             <button
                 type="button"
                 onClick={() => setStep('auth')}
-                className="underline decoration-dotted underline-offset-4 cursor-pointer text-moss"
+                className="cursor-pointer text-moss mt-4"
             >
                 Back to {mode === "signUp" ? "Sign Up" : "Sign In"}
             </button>

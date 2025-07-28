@@ -14,11 +14,13 @@ export async function generateUniqueDiscriminator(): Promise<string | null> {
     }
 
     const existing = new Set(
-        data.map((d: { discriminator: string | number }) =>
+    data
+        .filter((d: { discriminator: string | number | null | undefined }) => d.discriminator != null)
+        .map((d: { discriminator: string | number }) =>
             d.discriminator.toString().padStart(4, "0")
         )
     );
-
+    
     const allowFiveDigits = existing.size >= 9950;
 
     let discriminator: string;
