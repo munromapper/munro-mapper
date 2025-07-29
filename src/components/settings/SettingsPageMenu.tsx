@@ -19,28 +19,24 @@ export default function SettingsPageMenu({
                 <IconLink
                     icon={<ProfileIcon />}
                     label="Profile"
-                    transitionWrapper=""
                     onClick={() => setActiveTab('profile')}
                     className={`${activeTab === 'profile' ? 'bg-mist/10' : ''} border-transparent hover:bg-mist/10`}
                 />
                 <IconLink
                     icon={<LockIcon />}
                     label="Security"
-                    transitionWrapper=""
                     onClick={() => setActiveTab('security')}
                     className={`${activeTab === 'security' ? 'bg-mist/10' : ''} border-transparent hover:bg-mist/10`}
                 />
                 <IconLink
                     icon={<PreferencesIcon />}
                     label="Preferences"
-                    transitionWrapper=""
                     onClick={() => setActiveTab('preferences')}
                     className={`${activeTab === 'preferences' ? 'bg-mist/10' : ''} border-transparent hover:bg-mist/10`}
                 />
                 <IconLink
                     icon={<PaymentIcon />}
                     label="Subscription"
-                    transitionWrapper=""
                     onClick={() => setActiveTab('subscription')}
                     className={`${activeTab === 'subscription' ? 'bg-mist/10' : ''} border-transparent hover:bg-mist/10`}
                 />
