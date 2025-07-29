@@ -21,7 +21,6 @@ export default function SidebarFriendsButton({
 
     return (
         <IconLink 
-            transitionWrapper=""
             icon={
                 <div>
                     <FriendsIcon />
