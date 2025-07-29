@@ -52,22 +52,18 @@ export function addMapMarker({
 }
 
 interface RemoveMapMarkerProps {
-    munro: Munro;
-    markerList: { [id: number]: mapboxgl.Marker };
+    marker: mapboxgl.Marker;
 }
 
 export function removeMapMarker({
-    munro,
-    markerList
+    marker
 }: RemoveMapMarkerProps) {
-    const marker = markerList[munro.id];
-    if (!marker) return;
+    if (!marker || !marker.getElement()) return;
 
     const markerDiv = marker.getElement();
     markerDiv.classList.add("marker-exit");
 
     markerDiv.addEventListener('animationend', () => {
         marker.remove();
-        delete markerList[munro.id];
     }, { once: true });
 }

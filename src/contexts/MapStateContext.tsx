@@ -24,7 +24,7 @@ type MapStateContextType = {
     visibleMunros?: Munro[];
     setVisibleMunros?: (munros: Munro[]) => void;
     markerList: { [id: number]: mapboxgl.Marker };
-    setMarkerList: (markerList: { [id: number]: mapboxgl.Marker }) => void;
+    setMarkerList: React.Dispatch<React.SetStateAction<{ [id: number]: mapboxgl.Marker }>>;
     map: mapboxgl.Map | null;
     setMap: (map: mapboxgl.Map | null) => void;
     userAscentUnits: 'm' | 'ft';
