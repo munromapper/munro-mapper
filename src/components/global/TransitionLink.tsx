@@ -27,12 +27,20 @@ export default function TransitionLink({
 }: TransitionLinkProps) {
     const router = useRouter();
 
+    const getSelector = (selector: string) => {
+        if (!selector) return '';
+        if (/^[a-z]+$/.test(selector)) return selector;
+        if (selector.startsWith('#') || selector.startsWith('.')) return selector;
+        return `#${selector}`;
+    };
+
     const handleTransition = async (event: React.MouseEvent<HTMLAnchorElement>) => {
         if (target === '_blank') return;
 
         event.preventDefault();
 
-        const transitionElement = document.querySelector(transitionWrapper);
+        const selector = getSelector(transitionWrapper);
+        const transitionElement = document.querySelector(selector);
         if (transitionElement) {
             transitionElement.classList.add('page-transition');
             await sleep(250);

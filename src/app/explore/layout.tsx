@@ -14,7 +14,7 @@ export default function ExploreLayout({ children }: ExploreLayoutProps) {
         <Header isAppHeader={true} />
         <main className="h-[calc(100vh-5.5rem)] flex items-stretch">
             <ExploreSidebar />
-            <div id="explore-page-content" className="flex-1">
+            <div id="explore-page-content" className="flex-1 transition duration-250 ease-in-out">
               {children}
             </div>
         </main>

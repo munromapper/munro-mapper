@@ -9,7 +9,7 @@ interface InitialiseMapParams {
     setError: (error: string | null) => void;
 }
 
-export function initialiseMap({
+export default function initialiseMap({
     mapContainer,
     setLoading,
     setError

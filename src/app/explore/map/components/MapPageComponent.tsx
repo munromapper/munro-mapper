@@ -35,10 +35,7 @@ export default function MapPageComponent({
                             className="w-full h-full"
                         >
                             <div className="w-full h-full flex items-center justify-center gap-4 bg-mist text-slate">
-                                <div
-                                    className="animate-spin rounded-full h-4 w-4 border-t-1 border-b-1 border-slate border-solid"
-                                    style={{ borderTopColor: 'transparent' }}
-                                />
+                                <div className="w-4 h-4 border-2 border-moss border-t-transparent rounded-full animate-spin" />
                                 <p className="text-2xl">Loading...</p>
                             </div>
                         </motion.div>

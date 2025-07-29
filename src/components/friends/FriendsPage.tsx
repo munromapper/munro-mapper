@@ -32,8 +32,6 @@ export default function FriendsPage() {
         f => f?.addresseeId === user?.id && f?.requestStatus === "pending"
     ).length;
 
-    console.log('User Profiles:', userProfiles);
-
     return (
         <div className="divide-y-1 divide-sage bg-mist min-h-125 min-w-100 flex flex-col">
             <div className="p-6 flex flex-col gap-6">

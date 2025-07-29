@@ -9,6 +9,7 @@ interface CheckboxInputProps {
     checked: boolean,
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
     label: string,
+    disabled?: boolean,
     className?: string
 }
 
@@ -18,15 +19,17 @@ export default function CheckboxInput({
     value,
     onChange,
     label,
+    disabled,
     className
 }: CheckboxInputProps) {
     return (
-        <label className={`flex items-center justify-center text-l cursor-pointer gap-3 ${className}`}>
+        <label className={`flex items-center justify-center py-1 px-3 text-l cursor-pointer gap-3 ${className}`}>
             <input
                 type="checkbox"
                 checked={checked}
                 onChange={onChange}
                 className="hidden peer"
+                disabled={disabled}
                 value={value} // Optional value prop for checkbox
             />
             <span className="w-3.75 h-3.75 flex items-center justify-center border border-dashed border-sage text-mist rounded-full transition-all duration-250 ease-in-out

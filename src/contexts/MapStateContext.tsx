@@ -5,6 +5,8 @@
 import React, { createContext, useContext, useEffect, useState, useRef, useMemo } from 'react';
 import { Munro, Route, RouteMunroLink } from '../types/data/dataTypes';
 import { fetchMunroData, fetchRouteData, fetchRouteMunroLinks } from '@/utils/data/clientDataFetchers';
+import { useAuthContext } from './AuthContext';
+import { convertHeight, getHeightUnitLabel, convertLength, getLengthUnitLabel } from '@/utils/misc/unitConverters';
 import mapboxgl from 'mapbox-gl';
 
 type MapStateContextType = {
@@ -19,8 +21,14 @@ type MapStateContextType = {
     setHoveredMunro: (munro: Munro | null) => void;
     activeMunro: Munro | null;
     setActiveMunro: (munro: Munro | null) => void;
+    visibleMunros?: Munro[];
+    setVisibleMunros?: (munros: Munro[]) => void;
+    markerList: { [id: number]: mapboxgl.Marker };
+    setMarkerList: (markerList: { [id: number]: mapboxgl.Marker }) => void;
     map: mapboxgl.Map | null;
     setMap: (map: mapboxgl.Map | null) => void;
+    userAscentUnits: 'm' | 'ft';
+    userLengthUnits: 'km' | 'mi';
 }
 
 const MapStateContext = createContext<MapStateContextType | undefined>(undefined);
@@ -33,7 +41,12 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
     const [error, setError] = useState<string | null>(null);
     const [hoveredMunro, setHoveredMunro] = useState<Munro | null>(null);
     const [activeMunro, setActiveMunro] = useState<Munro | null>(null);
+    const [visibleMunros, setVisibleMunros] = useState<Munro[]>([]);
+    const [markerList, setMarkerList] = useState<{ [id: number]: mapboxgl.Marker }>({});
     const [map, setMap] = useState<mapboxgl.Map | null>(null);
+    const [userAscentUnits, setUserAscentUnits] = useState<'m' | 'ft'>('m');
+    const [userLengthUnits, setUserLengthUnits] = useState<'km' | 'mi'>('km');
+    const { userProfile } = useAuthContext();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -45,6 +58,7 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
             const routeMunroLinkData = await fetchRouteMunroLinks();
 
             if (munroData) setMunros(munroData);
+            setVisibleMunros(munroData || []);
             if (routeData) setRoutes(routeData);
             if (routeMunroLinkData) setRouteMunroLinks(routeMunroLinkData);
 
@@ -54,7 +68,18 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
         fetchData();
     }, []);
 
-    console.log('MapStateProvider initialized with munros:', munros.length, 'routes:', routes.length, 'routeMunroLinks:', routeMunroLinks.length);
+    useEffect(() => {
+        if (userProfile) {
+            const elevationUnit = userProfile.preferences.elevationUnit;
+            if (elevationUnit === 'metres' || elevationUnit === 'feet') {
+                setUserAscentUnits(getHeightUnitLabel(elevationUnit) as 'm' | 'ft');
+            }
+            const lengthUnit = userProfile.preferences.lengthUnit;
+            if (lengthUnit === 'kilometres' || lengthUnit === 'miles') {
+                setUserLengthUnits(getLengthUnitLabel(lengthUnit) as 'km' | 'mi');
+            }
+        }
+    }, [userProfile]);
 
     return (
         <MapStateContext.Provider value={
@@ -73,8 +98,14 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
                 setHoveredMunro,
                 activeMunro,
                 setActiveMunro,
+                visibleMunros,
+                setVisibleMunros,
+                markerList,
+                setMarkerList,
                 map,
-                setMap
+                setMap,
+                userAscentUnits,
+                userLengthUnits,
             } as MapStateContextType
         }>
             {children}

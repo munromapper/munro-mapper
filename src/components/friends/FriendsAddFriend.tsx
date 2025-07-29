@@ -43,7 +43,7 @@ export default function FriendsAddFriend({
     if (searchQuery === "") {
         return (
             <div className="absolute inset-0 p-6">
-                <div className="h-full flex flex-col items-center justify-center gap-4 text-center">
+                <div className="h-full flex flex-col items-center justify-center gap-4 px-5 text-center">
                     <p className="font-heading-font-family text-4xl">Search for your friends.</p>
                     <p className="text-l text-moss">Use the search bar to find friends by name or ID number and send them a request.</p>
                 </div>
@@ -54,7 +54,7 @@ export default function FriendsAddFriend({
     if (filteredProfiles.length === 0) {
         return (
             <div className="absolute inset-0 p-6">
-                <div className="h-full flex flex-col items-center justify-center gap-4 text-center">
+                <div className="h-full flex flex-col items-center justify-center gap-4 px-5 text-center">
                     <p className="font-heading-font-family text-4xl">No results found.</p>
                     <p className="text-l text-moss">We couldn&apos;t find a match. Double-check the spelling or try a different name.</p>
                 </div>

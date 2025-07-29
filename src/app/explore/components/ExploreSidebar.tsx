@@ -26,21 +26,18 @@ export default function ExploreSidebar() {
                     <div className="flex flex-col gap-1 mt-9">
                         <IconLink 
                             href="/explore/dashboard"
-                            transitionWrapper="explore-page-content"
                             icon={<DashboardIcon />}
                             label="Dashboard"
                             className="border-slate hover:bg-mist/10"
                         />
                         <IconLink 
                             href="/explore/map"
-                            transitionWrapper="explore-page-content"
                             icon={<MapIcon />}
                             label="Map View"
                             className="border-slate hover:bg-mist/10"
                         />
                         <IconLink 
                             href="/explore/list"
-                            transitionWrapper="explore-page-content"
                             icon={<ListIcon />}
                             label="List View"
                             className="border-slate hover:bg-mist/10"
@@ -51,14 +48,12 @@ export default function ExploreSidebar() {
                     <div className="flex flex-col gap-1">
                         <IconLink 
                             href="/contact"
-                            transitionWrapper="body"
                             icon={<SupportIcon />}
                             label="Support"
                             className="border-slate hover:bg-mist/10"
                         />
                         {user && (
                             <IconLink 
-                                transitionWrapper=""
                                 icon={<SettingsIcon />}
                                 label="User Settings"
                                 className="border-slate hover:bg-mist/10"

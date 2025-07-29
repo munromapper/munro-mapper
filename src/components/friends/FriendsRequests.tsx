@@ -39,7 +39,7 @@ export default function FriendsRequests({
     if (requestProfiles.length === 0) {
         return (
             <div className="absolute inset-0 p-6">
-                <div className="h-full flex flex-col items-center justify-center gap-4 text-center">
+                <div className="h-full flex flex-col items-center justify-center gap-4 px-5 text-center">
                     <p className="font-heading-font-family text-4xl">Your inbox is empty.</p>
                     <p className="text-l text-moss">Add some friends to explore Munros together. It&apos;s way more fun with company.</p>
                     <PrimaryButton
@@ -58,7 +58,7 @@ export default function FriendsRequests({
     if (filteredProfiles.length === 0) {
         return (
             <div className="absolute inset-0 p-6">
-                <div className="h-full flex flex-col items-center justify-center gap-4 text-center">
+                <div className="h-full flex flex-col items-center justify-center gap-4 px-5 text-center">
                     <p className="font-heading-font-family text-4xl">No results found.</p>
                     <p className="text-l text-moss">We couldn&apos;t find a match. Double-check the spelling or try a different name.</p>
                 </div>

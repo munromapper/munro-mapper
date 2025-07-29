@@ -47,7 +47,11 @@ export default function UserProfilePicture({
         <div className="relative w-full h-full">
             <div
                 className="w-full h-full bg-sage rounded-full bg-cover bg-center relative overflow-hidden"
-                style={{ backgroundImage: `url(${userProfile?.profilePhotoUrl})` }}
+                style={
+                userProfile?.profilePhotoUrl
+                    ? { backgroundImage: `url(${userProfile.profilePhotoUrl})` }
+                    : undefined
+                }
             >
                 {!imageLoaded && <Spinner />}
             </div>

@@ -263,3 +263,23 @@ export async function fetchUserFriends(userId: string): Promise<Friend[] | null>
         respondedAt: item.responded_at,
     })) as Friend[];
 }
+
+/**
+ * Bags a Munro for a user.
+ * @param userId The ID of the user.
+ * @param munroId The ID of the Munro to bag.
+ * @returns A promise that resolves when the operation is complete.
+ */
+export async function bagMunro(userId: string, munroId: number) {
+  return supabase.from('bagged_munros').upsert({ user_id: userId, munro_id: munroId });
+}
+
+/**
+ * Unbags a Munro for a user.
+ * @param userId The ID of the user.
+ * @param munroId The ID of the Munro to unbag.
+ * @returns A promise that resolves when the operation is complete.
+ */
+export async function unbagMunro(userId: string, munroId: number) {
+  return supabase.from('bagged_munros').delete().eq('user_id', userId).eq('munro_id', munroId);
+}

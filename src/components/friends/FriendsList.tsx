@@ -56,7 +56,7 @@ export default function FriendsList({
     if (friendProfiles.length === 0) {
         return (
             <div className="absolute inset-0 p-6">
-                <div className="h-full flex flex-col items-center justify-center gap-4 text-center">
+                <div className="h-full flex flex-col items-center justify-center gap-4 px-5 text-center">
                     <p className="font-heading-font-family text-4xl">No friends yet.</p>
                     <p className="text-l text-moss">Add some friends to explore Munros together. It&apos;s way more fun with company.</p>
                     <PrimaryButton
@@ -73,7 +73,7 @@ export default function FriendsList({
     if (filteredProfiles.length === 0) {
         return (
             <div className="absolute inset-0 p-6">
-                <div className="h-full flex flex-col items-center justify-center gap-4 text-center">
+                <div className="h-full flex flex-col items-center justify-center gap-4 px-5 text-center">
                     <p className="font-heading-font-family text-4xl">No results found.</p>
                     <p className="text-l text-moss">We couldn&apos;t find a match. Double-check the spelling or try a different name.</p>
                 </div>
@@ -84,7 +84,7 @@ export default function FriendsList({
     // Otherwise, show the filtered list
     return (
         <div className="absolute inset-0 py-6 px-3">
-            <ul className="flex flex-col gap-6">
+            <ul className="flex flex-col gap-2">
                 {filteredProfiles.map(({ profile, connection }) => (
                     <li key={profile?.id} className="flex items-center gap-9 justify-between relative rounded-full px-4 py-2 hover:bg-mint transition duration-250 ease-in-out">
                         <div className="flex items-center gap-3">

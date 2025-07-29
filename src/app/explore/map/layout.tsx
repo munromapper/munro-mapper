@@ -2,6 +2,7 @@
 // This file contains the layout for the 'map view' page of the 'explore' section of the application
 
 import { MapStateProvider } from "@/contexts/MapStateContext";
+import { BaggedMunroProvider } from "@/contexts/BaggedMunroContext";
 import MapPageComponent from "./components/MapPageComponent";
 
 export const metadata = {
@@ -18,9 +19,11 @@ export default function MapLayout({ children }: MapLayoutProps) {
     <>
       <div className="bg-mist text-slate h-full relative">
         <MapStateProvider>
-          <MapPageComponent>
-            {children}
-          </MapPageComponent>
+          <BaggedMunroProvider>
+            <MapPageComponent>
+              {children}
+            </MapPageComponent>
+          </BaggedMunroProvider>
         </MapStateProvider>
       </div>
     </>
