@@ -29,16 +29,22 @@ export default function MapComponent() {
     }, [mapRef, setMap, setError, setLoading]);
 
     useEffect(() => {
-        if (!map) return;
+        if (!map || !map.loaded()) return;
 
         const newMarkerList = { ...markerList };
         const visibleIds = new Set(visibleMunros?.map(m => m.id));
         let changed = false;
 
+        if (!map.isStyleLoaded()) {
+            map.once('styledata', () => {
+                setMarkerList({...markerList});
+            });
+            return;
+        }
+
         Object.entries(markerList).forEach(([idStr]) => {
             const id = Number(idStr);
             if (!visibleIds.has(id)) {
-                // Find the full Munro object by id from markerList or visibleMunros
                 const munro = visibleMunros?.find(m => m.id === id);
                 if (munro) {
                     removeMapMarker({ munro, markerList: newMarkerList });
@@ -60,7 +66,6 @@ export default function MapComponent() {
         if (changed) {
             setMarkerList(newMarkerList);
         }
-
     }, [map, visibleMunros, markerList, userBaggedMunros]);
 
     return (
