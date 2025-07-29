@@ -19,7 +19,7 @@ export default function FriendsRequests({
     userProfiles,
     setActiveTab
 }: FriendsRequestsProps) {
-    const { user, friends } = useAuthContext();
+    const { user, friends, refreshFriends } = useAuthContext();
     const [loadingId, setLoadingId] = useState<string | null>(null);
 
     const incomingRequests = (friends ?? []).filter(
@@ -89,8 +89,8 @@ export default function FriendsRequests({
                                     onClick={async () => {
                                         setLoadingId(profile!.id);
                                         await acceptFriendRequest({ requesterId: profile!.id, addresseeId: user!.id });
+                                        await refreshFriends();
                                         setLoadingId(null);
-                                        // Optionally, trigger a refresh of friends in AuthContext here
                                     }}
                                 >
                                     Accept
@@ -101,8 +101,8 @@ export default function FriendsRequests({
                                     onClick={async () => {
                                         setLoadingId(profile!.id);
                                         await declineFriendRequest({ requesterId: profile!.id, addresseeId: user!.id });
+                                        await refreshFriends();
                                         setLoadingId(null);
-                                        // Optionally, trigger a refresh of friends in AuthContext here
                                     }}
                                 >
                                     Decline

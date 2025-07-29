@@ -14,6 +14,7 @@ interface AuthContextType {
     userProfile: UserProfile | null;
     userSubscription: UserSubscription[] | null;
     refreshUserProfile: () => Promise<void>;
+    refreshFriends: () => Promise<void>;
     friends: Friend[] | null;
     globalMessage: string | null;
     setGlobalMessage: (msg: string | null) => void;
@@ -25,6 +26,7 @@ const AuthContext = createContext<AuthContextType>({
     userProfile: null,
     userSubscription: null,
     refreshUserProfile: async () => {},
+    refreshFriends: async () => {},
     friends: null,
     globalMessage: null,
     setGlobalMessage: () => {},
@@ -93,8 +95,15 @@ export const AuthProvider = (
         }
     };
 
+    const refreshFriends = async () => {
+        if (user?.id) {
+            const updated = await fetchUserFriends(user.id);
+            setFriends(updated);
+        }
+    };
+
     return (
-        <AuthContext.Provider value={{ user, userProfile, userSubscription, friends, refreshUserProfile, globalMessage, setGlobalMessage, children }}>
+        <AuthContext.Provider value={{ user, userProfile, userSubscription, friends, refreshUserProfile, refreshFriends, globalMessage, setGlobalMessage, children }}>
             {children}
         </AuthContext.Provider>
     );

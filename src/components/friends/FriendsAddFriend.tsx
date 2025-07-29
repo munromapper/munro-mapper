@@ -16,7 +16,7 @@ export default function FriendsAddFriend({
     searchQuery, 
     userProfiles 
 }: FriendsAddFriendProps) {
-    const { user, friends } = useAuthContext();
+    const { user, friends, refreshFriends } = useAuthContext();
     const [loadingId, setLoadingId] = useState<string | null>(null);
 
     // Helper to get friend status between current user and another user
@@ -105,8 +105,8 @@ export default function FriendsAddFriend({
                                     if (disabled) return;
                                     setLoadingId(profile?.id);
                                     await sendFriendRequest({ requesterId: user!.id, addresseeId: profile!.id });
+                                    await refreshFriends();
                                     setLoadingId(null);
-                                    // Optionally, trigger a refresh of friends in AuthContext here
                                 }}
                             >
                                 {buttonText}
