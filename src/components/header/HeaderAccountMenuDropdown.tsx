@@ -49,7 +49,6 @@ export default function HeaderAccountMenuDropdown({
                                     icon={<PremiumIcon currentColor='var(--color-heather)'/>}
                                     label="Discover Plus"
                                     href="/pricing"
-                                    transitionWrapper='body'
                                     className="bg-linear-to-r from-cloud from-0% to-lilac to-100% bg-opacity-100 border-mist
                                                hover:border hover:border-heather
                                                transition duration-250 ease-in-out"
@@ -58,14 +57,12 @@ export default function HeaderAccountMenuDropdown({
                             <IconLink 
                                 icon={<DashboardIcon />}
                                 label="Dashboard"
-                                transitionWrapper='body'
                                 href="/explore/dashboard"
                                 className="hover:bg-pebble hover:border-pebble border-mist transition duration-250 ease-in-out"
                             />
                             <IconLink 
                                 icon={<SettingsIcon />}
                                 label="User Settings"
-                                transitionWrapper=''
                                 className="hover:bg-pebble hover:border-pebble border-mist transition duration-250 ease-in-out"
                                 onClick ={() => setIsSettingsOpen(true)}
                             />
@@ -74,7 +71,6 @@ export default function HeaderAccountMenuDropdown({
                             <IconLink 
                                 icon={<LogoutIcon />}
                                 label="Logout"
-                                transitionWrapper=''
                                 className="hover:bg-pebble hover:border-pebble border-mist transition duration-250 ease-in-out"
                                 onClick={() => handleAuthSignOut()}
                             />
