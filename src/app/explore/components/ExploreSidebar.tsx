@@ -5,6 +5,7 @@
 import React, { useState } from "react";
 import SidebarGreeting from "./SidebarGreeting"
 import SidebarAccountInfo from "./SidebarAccountInfo"
+import SidebarFriendsButton from "./SidebarFriendsButton";
 import IconLink from "@/components/global/IconLink"
 import FriendsPage from "@/components/friends/FriendsPage";
 import SettingsPage from "@/components/settings/SettingsPage";
@@ -44,13 +45,7 @@ export default function ExploreSidebar() {
                             label="List View"
                             className="border-slate hover:bg-mist/10"
                         />
-                        <IconLink 
-                            transitionWrapper=""
-                            icon={<FriendsIcon />}
-                            label="Friends"
-                            className="border-slate hover:bg-mist/10"
-                            onClick={() => setIsFriendsOpen(true)}
-                        />
+                        <SidebarFriendsButton setIsFriendsOpen={setIsFriendsOpen} />
                     </div>
                     <div className="h-[1px] mx-4 border-b border-dashed border-moss my-6"/>
                     <div className="flex flex-col gap-1">

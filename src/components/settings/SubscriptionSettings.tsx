@@ -59,7 +59,7 @@ export default function SubscriptionSettings() {
                     <p className="text-l text-moss w-70 text-right">
                         {
                             !userSubscription?.[0] && subscriptionState === 'Active'
-                                ? 'Gifted'
+                                ? "Gifted Plus for free"
                                 : (!userSubscription?.[0] || subscriptionState === 'None')
                                 ? 'Free'
                                 : userSubscription?.[0]?.plan

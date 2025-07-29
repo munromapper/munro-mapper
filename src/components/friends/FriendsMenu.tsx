@@ -5,15 +5,17 @@ interface FriendsMenuProps {
     activeTab: 'friends' | 'requests' | 'addFriends';
     setActiveTab: (tab: 'friends' | 'requests' | 'addFriends') => void;
     setSearchQuery: (query: string) => void;
+    pendingRequestsCount?: number;
 }
 
 export default function FriendsMenu({ 
     activeTab, 
     setActiveTab, 
-    setSearchQuery 
+    setSearchQuery,
+    pendingRequestsCount = 0 
 }: FriendsMenuProps) {
 
-    console.log('setSearchQuery type:', typeof setSearchQuery);
+    console.log("pending requests:", pendingRequestsCount)
 
     return (
         <div className="flex gap-6">
@@ -23,12 +25,19 @@ export default function FriendsMenu({
             >
                 Friends
             </button>
-            <button 
-                className={`text-l cursor-pointer ${activeTab === 'requests' ? 'underline underline-offset-4' : ''}`}
-                onClick={() => { setActiveTab('requests'); setSearchQuery(''); }}
-            >
+            <div className="flex items-center gap-2">
+                <button 
+                    className={`text-l cursor-pointer ${activeTab === 'requests' ? 'underline underline-offset-4' : ''}`}
+                    onClick={() => { setActiveTab('requests'); setSearchQuery(''); }}
+                >
                 Requests
-            </button>
+                </button>
+                {pendingRequestsCount > 0 && (
+                    <span className="flex justify-center items-center bg-apple text-slate text-xs rounded h-4 w-4 pr-0.5">
+                        {pendingRequestsCount}
+                    </span>
+                )}
+            </div>
             <button 
                 className={`text-l cursor-pointer ${activeTab === 'addFriends' ? 'underline underline-offset-4' : ''}`}
                 onClick={() => { setActiveTab('addFriends'); setSearchQuery(''); }}

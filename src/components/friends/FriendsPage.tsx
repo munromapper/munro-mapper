@@ -28,6 +28,10 @@ export default function FriendsPage() {
         fetchData();
     }, []);
 
+    const pendingRequestsCount = (friends ?? []).filter(
+        f => f?.addresseeId === user?.id && f?.requestStatus === "pending"
+    ).length;
+
     console.log('User Profiles:', userProfiles);
 
     return (
@@ -35,7 +39,7 @@ export default function FriendsPage() {
             <div className="p-6 flex flex-col gap-6">
                 <div className="px-2 flex flex-col gap-4">
                     <h2 className="font-heading-font-family text-4xl">Friends</h2>
-                    <FriendsMenu activeTab={activeTab} setActiveTab={setActiveTab} setSearchQuery={setSearchQuery} />
+                    <FriendsMenu activeTab={activeTab} setActiveTab={setActiveTab} setSearchQuery={setSearchQuery} pendingRequestsCount={pendingRequestsCount} />
                 </div>
                 <SearchInput
                     name="friend-search"

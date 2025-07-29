@@ -67,6 +67,7 @@ export async function POST(req: Request) {
     
     // Process and compress the image
     const processedBuffer = await sharp(buffer)
+      .rotate()
       .resize(400, 400, { 
         fit: 'cover', 
         position: 'center' 

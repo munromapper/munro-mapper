@@ -8,6 +8,9 @@ import type { UserProfile } from "@/types/data/dataTypes";
 import { useState } from "react";
 import { declineFriendRequest } from "@/utils/data/userFriendUpdaters";
 import type { Friend } from "@/types/data/dataTypes";
+import { motion, AnimatePresence } from "framer-motion";
+import ContextualMenu from "../global/ContextualMenu";
+import { ContextMenuIcon, TickIcon, CrossIcon } from "../global/SvgComponents";
 
 interface FriendsListProps {
     searchQuery: string;
@@ -21,7 +24,7 @@ export default function FriendsList({
     setActiveTab
 }: FriendsListProps) {
     const { user, friends, refreshFriends } = useAuthContext();
-    const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
+    const [contextualMenuOpenId, setContextualMenuOpenId] = useState<string | null>(null);
     const [confirmRemoveId, setConfirmRemoveId] = useState<string | null>(null);
     const [loadingId, setLoadingId] = useState<string | null>(null);
 
@@ -80,10 +83,10 @@ export default function FriendsList({
 
     // Otherwise, show the filtered list
     return (
-        <div className="absolute inset-0 p-6">
+        <div className="absolute inset-0 py-6 px-3">
             <ul className="flex flex-col gap-6">
                 {filteredProfiles.map(({ profile, connection }) => (
-                    <li key={profile?.id} className="flex items-center gap-9 justify-between relative">
+                    <li key={profile?.id} className="flex items-center gap-9 justify-between relative rounded-full px-4 py-2 hover:bg-mint transition duration-250 ease-in-out">
                         <div className="flex items-center gap-3">
                             <div className="w-9 h-9">
                                 <UserProfilePicture userId={profile?.id} />
@@ -93,44 +96,68 @@ export default function FriendsList({
                                 <span className="text-m text-moss">#{profile?.discriminator}</span>
                             </div>
                         </div>
-                        {/* Context menu trigger */}
-                        <div className="relative">
-                            <button
-                                className="p-2 rounded-full hover:bg-gray-100"
-                                onClick={() => setMenuOpenId(menuOpenId === profile?.id ? null : profile!.id)}
+                        <div className="relative flex items-center">
+                            <button 
+                                className="w-4 h-4 cursor-pointer text-moss"
+                                onClick={() => {
+                                    if (contextualMenuOpenId === (profile?.id ?? null)) {
+                                        setContextualMenuOpenId(null);
+                                        setConfirmRemoveId(null);
+                                    } else {
+                                        setContextualMenuOpenId(profile?.id ?? null);
+                                        setConfirmRemoveId(null);
+                                    }
+                                }}
                             >
-                                <span style={{ fontSize: 24 }}>⋮</span>
+                                <ContextMenuIcon />
                             </button>
-                            {menuOpenId === profile?.id && (
-                                <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-10 flex flex-col p-2">
-                                    {/* Remove Friend Button */}
-                                    <button
-                                        className={
-                                            confirmRemoveId === profile?.id
-                                                ? "bg-red-100 text-red-600 rounded-full px-3 py-2 font-semibold"
-                                                : "hover:bg-gray-100 rounded-full px-3 py-2 text-left"
-                                        }
-                                        disabled={loadingId === profile?.id}
-                                        onClick={async () => {
-                                            if (confirmRemoveId === profile.id) {
-                                                setLoadingId(profile.id);
-                                                await declineFriendRequest({
-                                                    requesterId: connection?.requesterId,
-                                                    addresseeId: connection?.addresseeId
-                                                });
-                                                setLoadingId(null);
-                                                setMenuOpenId(null);
-                                                setConfirmRemoveId(null);
-                                                await refreshFriends?.();
-                                            } else {
-                                                setConfirmRemoveId(profile.id);
-                                            }
-                                        }}
-                                    >
-                                        {confirmRemoveId === profile.id ? "Are you sure?" : "Remove friend"}
-                                    </button>
+                            <ContextualMenu
+                                isOpen={contextualMenuOpenId === profile?.id}
+                                onClose={() => {
+                                    setContextualMenuOpenId(null);
+                                    setConfirmRemoveId(null);
+                                }}
+                            >
+                                <div className="flex items-center gap-2">
+                                    {confirmRemoveId === profile?.id ? (
+                                        <>
+                                            <span className="text-rust text-l px-3 py-1 rounded-full bg-petal">Are you sure?</span>
+                                            <button
+                                                className="bg-apple/50 hover:bg-apple text-green-800 rounded-full w-5 h-5 p-1 flex items-center justify-center cursor-pointer transition duration-250 ease-in-out"
+                                                disabled={loadingId === profile?.id}
+                                                onClick={async () => {
+                                                    setLoadingId(profile.id);
+                                                    await declineFriendRequest({
+                                                        requesterId: connection?.requesterId,
+                                                        addresseeId: connection?.addresseeId
+                                                    });
+                                                    setLoadingId(null);
+                                                    setContextualMenuOpenId(null);
+                                                    setConfirmRemoveId(null);
+                                                    await refreshFriends?.();
+                                                }}
+                                                title="Confirm remove"
+                                            >
+                                                <TickIcon />
+                                            </button>
+                                            <button
+                                                className="bg-petal hover:bg-blush text-rust rounded-full w-5 h-5 p-1 flex items-center justify-center cursor-pointer transition duration-250 ease-in-out"
+                                                onClick={() => setConfirmRemoveId(null)}
+                                                title="Cancel"
+                                            >
+                                                <CrossIcon />
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <button
+                                            className="text-rust text-l cursor-pointer px-3 py-1 rounded-full hover:bg-petal transition duration-250 ease-in-out"
+                                            onClick={() => setConfirmRemoveId(profile?.id ?? null)}
+                                        >
+                                            Remove friend
+                                        </button>
+                                    )}
                                 </div>
-                            )}
+                            </ContextualMenu>
                         </div>
                     </li>
                 ))}

@@ -85,7 +85,7 @@ export default function FriendsRequests({
                             <div className="flex gap-2">
                                 <button
                                     disabled={isLoading}
-                                    className="text-m bg-apple px-3 py-1 rounded-full cursor-pointer"
+                                    className="text-m bg-apple/50 px-3 py-1 rounded-full cursor-pointer hover:bg-apple transition duration-250 ease-in-out"
                                     onClick={async () => {
                                         setLoadingId(profile!.id);
                                         await acceptFriendRequest({ requesterId: profile!.id, addresseeId: user!.id });
@@ -97,7 +97,7 @@ export default function FriendsRequests({
                                 </button>
                                 <button
                                     disabled={isLoading}
-                                    className="text-m bg-gray-300 px-3 py-1 rounded-full cursor-pointer"
+                                    className="text-m px-3 py-1 text-rust border border-blush rounded-full cursor-pointer hover:bg-petal transition duration-250 ease-in-out"
                                     onClick={async () => {
                                         setLoadingId(profile!.id);
                                         await declineFriendRequest({ requesterId: profile!.id, addresseeId: user!.id });

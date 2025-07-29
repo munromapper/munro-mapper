@@ -70,20 +70,20 @@ export default function FriendsAddFriend({
                     const status = getFriendStatus(profile.id);
                     const isLoading = loadingId === profile.id;
                     let buttonText = "Add Friend +";
-                    let buttonClass = "text-m bg-apple px-3 py-1 rounded-full cursor-pointer";
+                    let buttonClass = "text-m bg-apple/50 px-3 py-1 rounded-full cursor-pointer hover:bg-apple transition duration-250 ease-in-out";
                     let disabled = false;
 
                     if (status === "pending") {
-                        buttonText = "Request Sent";
-                        buttonClass = "text-m bg-gray-300 px-3 py-1 rounded-full cursor-not-allowed";
+                        buttonText = "Request sent";
+                        buttonClass = "text-m bg-apple px-3 py-1 rounded-full cursor-not-allowed";
                         disabled = true;
                     } else if (status === "accepted") {
-                        buttonText = "Friends";
-                        buttonClass = "text-m bg-gray-200 px-3 py-1 rounded-full cursor-not-allowed";
+                        buttonText = "Already friends";
+                        buttonClass = "text-m bg-apple px-3 py-1 rounded-full cursor-not-allowed";
                         disabled = true;
                     } else if (isLoading) {
                         buttonText = "Sending...";
-                        buttonClass = "text-m bg-gray-300 px-3 py-1 rounded-full cursor-wait";
+                        buttonClass = "text-m bg-apple/50 px-3 py-1 rounded-full cursor-pointer hover:bg-apple transition duration-250 ease-in-out";
                         disabled = true;
                     }
 

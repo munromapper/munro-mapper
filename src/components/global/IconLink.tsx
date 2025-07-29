@@ -24,7 +24,7 @@ export default function IconLink({
     return (
         <button 
             className={`
-                px-4 py-2 border rounded-full flex items-center gap-4 cursor-pointer transition duration-250 ease-in-out ${className}`}
+                relative px-4 py-2 border rounded-full flex items-center gap-4 cursor-pointer transition duration-250 ease-in-out ${className}`}
             onClick={onClick}
         >
             <span className="w-3 h-3 flex items-center justify-center">
