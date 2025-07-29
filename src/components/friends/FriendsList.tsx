@@ -5,6 +5,8 @@ import { useAuthContext } from "@/contexts/AuthContext";
 import UserProfilePicture from "../global/UserProfilePicture";
 import { PrimaryButton } from "../global/Buttons";
 import type { UserProfile } from "@/types/data/dataTypes";
+import { useState } from "react";
+import { declineFriendRequest } from "@/utils/data/userFriendUpdaters";
 
 interface FriendsListProps {
     searchQuery: string;
@@ -17,7 +19,10 @@ export default function FriendsList({
     userProfiles,
     setActiveTab
 }: FriendsListProps) {
-    const { user, friends } = useAuthContext();
+    const { user, friends, refreshFriends } = useAuthContext();
+    const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
+    const [confirmRemoveId, setConfirmRemoveId] = useState<string | null>(null);
+    const [loadingId, setLoadingId] = useState<string | null>(null);
 
     // Find all accepted friends (where status is 'accepted' and current user is either requester or addressee)
     const acceptedConnections = (friends ?? []).filter(
@@ -29,12 +34,15 @@ export default function FriendsList({
     const friendProfiles = acceptedConnections
         .map(conn => {
             const friendId = conn?.requesterId === user?.id ? conn?.addresseeId : conn?.requesterId;
-            return userProfiles.find(profile => profile?.id === friendId);
+            return {
+                profile: userProfiles.find(profile => profile?.id === friendId),
+                connection: conn
+            };
         })
-        .filter(Boolean) as UserProfile[];
+        .filter(fp => fp.profile) as { profile: UserProfile, connection: any }[];
 
     // Apply search filter
-    const filteredProfiles = friendProfiles.filter(profile =>
+    const filteredProfiles = friendProfiles.filter(({ profile }) =>
         profile?.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         profile?.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         profile?.discriminator.includes(searchQuery)
@@ -73,8 +81,8 @@ export default function FriendsList({
     return (
         <div className="absolute inset-0 p-6">
             <ul className="flex flex-col gap-6">
-                {filteredProfiles.map(profile => (
-                    <li key={profile?.id} className="flex items-center gap-9 justify-between">
+                {filteredProfiles.map(({ profile, connection }) => (
+                    <li key={profile?.id} className="flex items-center gap-9 justify-between relative">
                         <div className="flex items-center gap-3">
                             <div className="w-9 h-9">
                                 <UserProfilePicture userId={profile?.id} />
@@ -84,7 +92,45 @@ export default function FriendsList({
                                 <span className="text-m text-moss">#{profile?.discriminator}</span>
                             </div>
                         </div>
-                        {/* You can add more friend actions here if needed */}
+                        {/* Context menu trigger */}
+                        <div className="relative">
+                            <button
+                                className="p-2 rounded-full hover:bg-gray-100"
+                                onClick={() => setMenuOpenId(menuOpenId === profile?.id ? null : profile!.id)}
+                            >
+                                <span style={{ fontSize: 24 }}>⋮</span>
+                            </button>
+                            {menuOpenId === profile?.id && (
+                                <div className="absolute right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-10 flex flex-col p-2">
+                                    {/* Remove Friend Button */}
+                                    <button
+                                        className={
+                                            confirmRemoveId === profile?.id
+                                                ? "bg-red-100 text-red-600 rounded-full px-3 py-2 font-semibold"
+                                                : "hover:bg-gray-100 rounded-full px-3 py-2 text-left"
+                                        }
+                                        disabled={loadingId === profile?.id}
+                                        onClick={async () => {
+                                            if (confirmRemoveId === profile.id) {
+                                                setLoadingId(profile.id);
+                                                await declineFriendRequest({
+                                                    requesterId: connection.requesterId,
+                                                    addresseeId: connection.addresseeId
+                                                });
+                                                setLoadingId(null);
+                                                setMenuOpenId(null);
+                                                setConfirmRemoveId(null);
+                                                await refreshFriends?.();
+                                            } else {
+                                                setConfirmRemoveId(profile.id);
+                                            }
+                                        }}
+                                    >
+                                        {confirmRemoveId === profile.id ? "Are you sure?" : "Remove friend"}
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </li>
                 ))}
             </ul>
