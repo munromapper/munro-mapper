@@ -41,7 +41,7 @@ export const BaggedMunroProvider = ({ children }: { children: React.ReactNode })
                 .eq('user_id', user.id);
 
             if (userError) throw userError;
-            setUserBaggedMunros(userData?.map((row: any) => row.munro_id) || []);
+            setUserBaggedMunros(userData?.map((row) => row.munro_id) || []);
 
             // Fetch friends' bagged munros
             const friendsMap: { [friendUserId: string]: number[] } = {};
@@ -54,14 +54,18 @@ export const BaggedMunroProvider = ({ children }: { children: React.ReactNode })
 
                 if (friendsError) throw friendsError;
 
-                friendsData?.forEach((row: any) => {
+                friendsData?.forEach((row) => {
                     if (!friendsMap[row.user_id]) friendsMap[row.user_id] = [];
                     friendsMap[row.user_id].push(row.munro_id);
                 });
             }
             setFriendsBaggedMunros(friendsMap);
-        } catch (err: any) {
-            setError(err.message || 'Failed to fetch bagged munros');
+        } catch (err) {
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError('Failed to fetch bagged munros');
+            }
         } finally {
             setLoading(false);
         }

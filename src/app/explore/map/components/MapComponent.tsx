@@ -38,7 +38,11 @@ export default function MapComponent() {
         Object.entries(markerList).forEach(([idStr]) => {
             const id = Number(idStr);
             if (!visibleIds.has(id)) {
-                removeMapMarker({ munro: { id } as any, markerList: newMarkerList });
+                // Find the full Munro object by id from markerList or visibleMunros
+                const munro = visibleMunros?.find(m => m.id === id);
+                if (munro) {
+                    removeMapMarker({ munro, markerList: newMarkerList });
+                }
                 delete newMarkerList[id];
                 changed = true;
             }
