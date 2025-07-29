@@ -103,7 +103,7 @@ export default function FriendsAddFriend({
                                 className={buttonClass}
                                 onClick={async () => {
                                     if (disabled) return;
-                                    setLoadingId(profile?.id!);
+                                    setLoadingId(profile?.id);
                                     await sendFriendRequest({ requesterId: user!.id, addresseeId: profile!.id });
                                     setLoadingId(null);
                                     // Optionally, trigger a refresh of friends in AuthContext here
