@@ -8,10 +8,12 @@ import { PremiumIcon } from "./SvgComponents";
 
 interface UserProfilePictureProps {
     userId: string | undefined;
+    refreshTrigger?: number;
 }
 
 export default  function UserProfilePicture({
-    userId
+    userId,
+    refreshTrigger
 }: UserProfilePictureProps) {
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 
@@ -20,7 +22,7 @@ export default  function UserProfilePicture({
         fetchUserProfile(userId).then(profile => {
             setUserProfile(profile);
         });
-    }, [userId]);
+    }, [userId, refreshTrigger]);
 
     return (
         <div className="relative w-full h-full">

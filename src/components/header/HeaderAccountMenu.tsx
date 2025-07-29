@@ -27,7 +27,10 @@ export default function HeaderAccountMenu({
             onMouseLeave={() => setIsDropdownActive(false)}
         >
             <div className="w-8 h-8">
-                <UserProfilePicture userId={userProfile?.id || ''} />
+                <UserProfilePicture 
+                    userId={userProfile?.id || ''}
+                    refreshTrigger={Date.now()}
+                />
             </div>
             <span 
                 className={`

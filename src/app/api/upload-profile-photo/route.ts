@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import formidable from 'formidable';
 import { fileTypeFromBuffer } from 'file-type';
 import fs from 'fs';
+import sharp from 'sharp';
 import { createClient } from '@supabase/supabase-js';
 import { Readable } from 'stream';
 import type { IncomingMessage } from 'http';
@@ -23,7 +24,11 @@ function requestToIncomingMessage(req: Request): IncomingMessage {
 
 function parseForm(req: Request): Promise<{ fields: formidable.Fields; files: formidable.Files }> {
   return new Promise((resolve, reject) => {
-    const form = formidable();
+    const form = formidable({
+      maxFileSize: 10 * 1024 * 1024, // 10MB to allow larger uploads before compression
+      maxTotalFileSize: 10 * 1024 * 1024, // 10MB total
+      keepExtensions: true,
+    });
     const nodeReq = requestToIncomingMessage(req);
     form.parse(nodeReq, (err, fields, files) => {
       if (err) reject(err);
@@ -54,21 +59,38 @@ export async function POST(req: Request) {
     const buffer = await fs.promises.readFile(file.filepath);
     const type = await fileTypeFromBuffer(buffer);
 
-    if (!type || !['image/jpeg', 'image/png'].includes(type.mime)) {
-      return NextResponse.json({ error: 'Invalid file type.' }, { status: 400 });
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      return NextResponse.json({ error: 'File too large.' }, { status: 400 });
+    if (!type || !['image/jpeg', 'image/png', 'image/webp'].includes(type.mime)) {
+      return NextResponse.json({ error: 'Invalid file type. Only JPEG, PNG, and WebP are allowed.' }, { status: 400 });
     }
 
     const userId = Array.isArray(fields.userId) ? fields.userId[0] : fields.userId;
-    const fileExt = type.ext;
-    const fileName = `profile-picture-${userId}-${Date.now()}.${fileExt}`;
+    
+    // Process and compress the image
+    const processedBuffer = await sharp(buffer)
+      .resize(400, 400, { 
+        fit: 'cover', 
+        position: 'center' 
+      }) // Resize to 400x400 for profile pictures
+      .jpeg({ 
+        quality: 85, 
+        progressive: true 
+      }) // Convert to JPEG with 85% quality
+      .toBuffer();
+
+    // Check final size after compression
+    if (processedBuffer.length > 2 * 1024 * 1024) { // 2MB limit after compression
+      return NextResponse.json({ error: 'File too large even after compression.' }, { status: 400 });
+    }
+
+    const fileName = `profile-picture-${userId}-${Date.now()}.jpg`;
     const filePath = `${userId}/${fileName}`;
 
     const { error: uploadError } = await supabase.storage
       .from('profilepictures')
-      .upload(filePath, buffer, { contentType: type.mime, upsert: true });
+      .upload(filePath, processedBuffer, { 
+        contentType: 'image/jpeg', 
+        upsert: true 
+      });
 
     if (uploadError) return NextResponse.json({ error: uploadError.message }, { status: 500 });
 

@@ -13,7 +13,10 @@ export default function SidebarAccountInfo() {
     return (
         <div className="px-4 flex items-center gap-3">
             <div className="w-9 h-9">
-                <UserProfilePicture userId={userProfile.id} />
+                <UserProfilePicture 
+                    userId={userProfile.id}
+                    refreshTrigger={Date.now()}
+                />
             </div>
             <div className="flex flex-col">
                 <span className="text-l">
