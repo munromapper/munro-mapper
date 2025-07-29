@@ -73,7 +73,7 @@ export default function FriendsAddFriend({
                     let buttonClass = "text-m bg-apple px-3 py-1 rounded-full cursor-pointer";
                     let disabled = false;
 
-                    if (status === "requested") {
+                    if (status === "pending") {
                         buttonText = "Request Sent";
                         buttonClass = "text-m bg-gray-300 px-3 py-1 rounded-full cursor-not-allowed";
                         disabled = true;

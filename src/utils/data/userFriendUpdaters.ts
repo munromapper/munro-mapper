@@ -18,7 +18,7 @@ export async function sendFriendRequest({
       {
         requester_id: requesterId,
         addressee_id: addresseeId,
-        status: 'requested',
+        status: 'pending',
       },
     ])
     .select()

@@ -23,7 +23,7 @@ export default function FriendsRequests({
     const [loadingId, setLoadingId] = useState<string | null>(null);
 
     const incomingRequests = (friends ?? []).filter(
-        f => f?.addresseeId === user?.id && f?.requestStatus === "requested"
+        f => f?.addresseeId === user?.id && f?.requestStatus === "pending"
     );
 
     const requestProfiles = incomingRequests
