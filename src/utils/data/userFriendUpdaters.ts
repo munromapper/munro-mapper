@@ -44,8 +44,8 @@ export async function acceptFriendRequest({
 }
 
 interface DeclineFriendRequestProps {
-    requesterId: string;
-    addresseeId: string;
+    requesterId: string | undefined;
+    addresseeId: string | undefined;
 }
 
 export async function declineFriendRequest({ 

@@ -7,6 +7,7 @@ import { PrimaryButton } from "../global/Buttons";
 import type { UserProfile } from "@/types/data/dataTypes";
 import { useState } from "react";
 import { declineFriendRequest } from "@/utils/data/userFriendUpdaters";
+import type { Friend } from "@/types/data/dataTypes";
 
 interface FriendsListProps {
     searchQuery: string;
@@ -39,7 +40,7 @@ export default function FriendsList({
                 connection: conn
             };
         })
-        .filter(fp => fp.profile) as { profile: UserProfile, connection: any }[];
+        .filter(fp => fp.profile) as { profile: UserProfile, connection: Friend }[];
 
     // Apply search filter
     const filteredProfiles = friendProfiles.filter(({ profile }) =>
@@ -114,8 +115,8 @@ export default function FriendsList({
                                             if (confirmRemoveId === profile.id) {
                                                 setLoadingId(profile.id);
                                                 await declineFriendRequest({
-                                                    requesterId: connection.requesterId,
-                                                    addresseeId: connection.addresseeId
+                                                    requesterId: connection?.requesterId,
+                                                    addresseeId: connection?.addresseeId
                                                 });
                                                 setLoadingId(null);
                                                 setMenuOpenId(null);
