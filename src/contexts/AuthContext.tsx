@@ -44,39 +44,60 @@ export const AuthProvider = (
     const [globalMessage, setGlobalMessage] = useState<string | null>(null);
 
     useEffect(() => {
-        
-        // Fetch the current user session and set the user state when the component mounts
-        supabase.auth.getSession().then(({ data: { session }, error }) => {
-            if (error) {
-                console.error('Error fetching user session:', error);
+    const checkSession = async () => {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error || !session) {
+            setUser(null);
+            setUserProfile(null);
+            setUserSubscription(null);
+            setFriends(null);
+            return;
+        }
+        // Double-check with Supabase if the session is valid
+        const { data: userData, error: userError } = await supabase.auth.getUser();
+        if (userError || !userData?.user) {
+            setUser(null);
+            setUserProfile(null);
+            setUserSubscription(null);
+            setFriends(null);
+            return;
+        }
+        const currentUser = userData.user;
+        setUser(currentUser);
+        fetchUserProfile(currentUser.id).then(setUserProfile);
+        fetchUserSubscription(currentUser.id).then(setUserSubscription);
+        fetchUserFriends(currentUser.id).then(setFriends);
+    };
+
+    checkSession();
+
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+        if (!session) {
+            setUser(null);
+            setUserProfile(null);
+            setUserSubscription(null);
+            setFriends(null);
+            return;
+        }
+        // Double-check with Supabase if the session is valid
+        supabase.auth.getUser().then(({ data: userData, error: userError }) => {
+            if (userError || !userData?.user) {
+                setUser(null);
+                setUserProfile(null);
+                setUserSubscription(null);
+                setFriends(null);
                 return;
             }
-            const currentUser = session?.user || null;
+            const currentUser = userData.user;
             setUser(currentUser);
-            if (currentUser !== null) {
-                fetchUserProfile(currentUser.id).then(setUserProfile);
-                fetchUserSubscription(currentUser.id).then(setUserSubscription);
-                fetchUserFriends(currentUser.id).then(setFriends);
-            }
+            fetchUserProfile(currentUser.id).then(setUserProfile);
+            fetchUserSubscription(currentUser.id).then(setUserSubscription);
+            fetchUserFriends(currentUser.id).then(setFriends);
         });
+    });
 
-        // Set up a listener for authentication state changes to update user state
-        const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-            const currentUser = session?.user ?? null;
-            setUser(currentUser);
-
-            if (currentUser !== null) {
-                fetchUserProfile(currentUser.id).then(setUserProfile);
-                fetchUserSubscription(currentUser.id).then(setUserSubscription);
-                fetchUserFriends(currentUser.id).then(setFriends);
-            } else {
-                setUserProfile(null);
-            }
-        });
-
-        return () => listener?.subscription.unsubscribe();
-
-    }, []);
+    return () => listener?.subscription.unsubscribe();
+}, []);
 
     useEffect(() => {
         const checkAndPatch = async () => {
@@ -101,6 +122,8 @@ export const AuthProvider = (
             setFriends(updated);
         }
     };
+
+    console.log("userProfile", userProfile, "user", user);
 
     return (
         <AuthContext.Provider value={{ user, userProfile, userSubscription, friends, refreshUserProfile, refreshFriends, globalMessage, setGlobalMessage, children }}>

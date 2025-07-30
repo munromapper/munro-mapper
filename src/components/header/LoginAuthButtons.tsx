@@ -61,8 +61,7 @@ export default function LoginAuthButtons({
                 <AuthForm
                     mode={formMode}
                     onSuccess={() => {
-                        setIsModalOpen(false);
-                        {/* Add post success logic here */}
+                        window.location.reload();
                     }}
                     onSwapMode={(mode) => setFormMode(mode)}
                 />

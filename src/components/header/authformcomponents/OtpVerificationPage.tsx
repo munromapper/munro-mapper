@@ -40,6 +40,7 @@ export default function OtpVerifyPage({
       setError(error.message);
     } else {
       onSuccess();
+      window.location.reload();
     }
   }
 

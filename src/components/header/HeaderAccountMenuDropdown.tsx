@@ -72,7 +72,12 @@ export default function HeaderAccountMenuDropdown({
                                 icon={<LogoutIcon />}
                                 label="Logout"
                                 className="hover:bg-pebble hover:border-pebble border-mist transition duration-250 ease-in-out"
-                                onClick={() => handleAuthSignOut()}
+                                onClick={async () => {
+                                    const success = await handleAuthSignOut();
+                                    if (success) {
+                                        window.location.reload();
+                                    }
+                                }}
                             />
                         </div>
                     </motion.div>
