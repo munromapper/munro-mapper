@@ -3,10 +3,12 @@
 
 'use client';
 import React, { createContext, useContext, useEffect, useState, useRef, useMemo } from 'react';
-import { Munro, Route, RouteMunroLink } from '../types/data/dataTypes';
+import { Munro, Route, RouteMunroLink, Filters } from '../types/data/dataTypes';
 import { fetchMunroData, fetchRouteData, fetchRouteMunroLinks } from '@/utils/data/clientDataFetchers';
 import { useAuthContext } from './AuthContext';
 import { convertHeight, getHeightUnitLabel, convertLength, getLengthUnitLabel } from '@/utils/misc/unitConverters';
+import { useBaggedMunroContext } from './BaggedMunroContext';
+import { filterMunros } from '@/utils/map/filterFunction';
 import mapboxgl from 'mapbox-gl';
 
 type MapStateContextType = {
@@ -17,6 +19,14 @@ type MapStateContextType = {
     setLoading: (loading: boolean) => void;
     error: string | null;
     setError: (error: string | null) => void;
+    defaultAscentRanges: { m: [number, number]; ft: [number, number] };
+    defaultLengthRanges: { km: [number, number]; mi: [number, number] };
+    defaultFilters: Filters;
+    filters: Filters;
+    setFilters: React.Dispatch<React.SetStateAction<Filters>>;
+    openFilter: string | null;
+    setOpenFilter: React.Dispatch<React.SetStateAction<string | null>>;
+    filteredMunros: Munro[];
     hoveredMunro: Munro | null;
     setHoveredMunro: (munro: Munro | null) => void;
     activeMunro: Munro | null;
@@ -39,6 +49,23 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
     const [routeMunroLinks, setRouteMunroLinks] = useState<RouteMunroLink[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const defaultAscentRanges: { m: [number, number]; ft: [number, number] } = {
+        m: [0, 3000],
+        ft: [0, 10000],
+    };
+    const defaultLengthRanges: { km: [number, number]; mi: [number, number] } = {
+        km: [0, 50],
+        mi: [0, 35],
+    };
+    const defaultFilters = {
+        routeStyle: "all",
+        difficulty: "all",
+        length: defaultLengthRanges.km,
+        ascent: defaultAscentRanges.m,
+        excludeBagged: false,
+    } as Filters;
+    const [filters, setFilters] = useState(defaultFilters);
+    const [openFilter, setOpenFilter] = useState<string | null>(null);
     const [hoveredMunro, setHoveredMunro] = useState<Munro | null>(null);
     const [activeMunro, setActiveMunro] = useState<Munro | null>(null);
     const [visibleMunros, setVisibleMunros] = useState<Munro[]>([]);
@@ -47,6 +74,7 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
     const [userAscentUnits, setUserAscentUnits] = useState<'m' | 'ft'>('m');
     const [userLengthUnits, setUserLengthUnits] = useState<'km' | 'mi'>('km');
     const { userProfile } = useAuthContext();
+    const { userBaggedMunros } = useBaggedMunroContext();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -93,15 +121,23 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
         return routes.map(route => ({
             ...route,
             length: userLengthUnits === 'mi'
-            ? convertLength(route.length, 'miles')
-            : +(route.length / 1000).toFixed(2),
+                ? Number(convertLength(route.length, 'miles'))
+                : Number(route.length),
             ascent: userAscentUnits === 'ft'
-            ? convertHeight(route.ascent, 'feet')
-            : route.ascent,
+                ? convertHeight(route.ascent, 'feet')
+                : route.ascent,
         }));
     }, [routes, userLengthUnits, userAscentUnits]);
 
-    
+    const filteredMunros = useMemo(() => {
+        return filterMunros({
+            filters,
+            munros: munrosConverted,    
+            routeData: routesConverted,
+            routeLinks: routeMunroLinks,
+            baggedMunroIds: userBaggedMunros
+        });
+    }, [filters, munrosConverted, routesConverted, routeMunroLinks, userBaggedMunros]);
 
     return (
         <MapStateContext.Provider value={
@@ -116,6 +152,14 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
                 setLoading,
                 error,
                 setError,
+                defaultAscentRanges,
+                defaultLengthRanges,
+                defaultFilters,
+                filters,
+                setFilters,
+                openFilter,
+                setOpenFilter,
+                filteredMunros,
                 hoveredMunro,
                 setHoveredMunro,
                 activeMunro,

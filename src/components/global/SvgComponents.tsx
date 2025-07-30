@@ -65,6 +65,13 @@ export const CrossIcon = () => {
     )
 }
 
+export const ChevronIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 10 5" fill="none">
+        <path d="M1 0.5L5 4.5L9 0.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+);
+
+
 export const HillIcon = `
     <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 17 9" fill="none">
       <path d="M1 8.5L4.5 4.5L7.5625 6.31818L13.4219 0.5L16 4.62121" stroke="currentColor" strokeWidth="0.8" strokeLinecap="round" strokeLinejoin="round"/>

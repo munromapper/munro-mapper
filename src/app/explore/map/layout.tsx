@@ -18,13 +18,13 @@ export default function MapLayout({ children }: MapLayoutProps) {
   return (
     <>
       <div className="bg-mist text-slate h-full relative">
-        <MapStateProvider>
           <BaggedMunroProvider>
-            <MapPageComponent>
-              {children}
-            </MapPageComponent>
+            <MapStateProvider>
+              <MapPageComponent>
+                {children}
+              </MapPageComponent>
+            </MapStateProvider>
           </BaggedMunroProvider>
-        </MapStateProvider>
       </div>
     </>
   );

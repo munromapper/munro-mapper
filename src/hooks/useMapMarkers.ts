@@ -87,6 +87,12 @@ export default function useMapMarkers({
         markerDiv.addEventListener('animationend', () => {
             marker.remove();
         }, { once: true });
+
+        setTimeout(() => {
+            if (markerDiv.parentNode) {
+                marker.remove();
+            }
+    }, 400);
     }
 
     function setMarkerSelected(marker: mapboxgl.Marker, isSelected: boolean) {

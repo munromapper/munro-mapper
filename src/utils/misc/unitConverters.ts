@@ -7,8 +7,10 @@ export function getHeightUnitLabel(unit: 'metres' | 'feet') {
   return unit === 'feet' ? 'ft' : 'm';
 }
 
-export function convertLength(lengthMeters: number, to: 'kilometres' | 'miles') {
-  return to === 'miles' ? (lengthMeters / 1609.344).toFixed(2) : (lengthMeters / 1000).toFixed(2);
+export function convertLength(lengthKm: number, to: 'kilometres' | 'miles') {
+  return to === 'miles'
+    ? (lengthKm * 0.621371).toFixed(2)
+    : lengthKm.toFixed(2);
 }
 
 export function getLengthUnitLabel(unit: 'kilometres' | 'miles') {

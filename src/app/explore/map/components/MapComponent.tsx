@@ -9,7 +9,7 @@ import useMapMarkers from '@/hooks/useMapMarkers';
 import { useBaggedMunroContext } from '@/contexts/BaggedMunroContext';
 
 export default function MapComponent() {
-    const { map, setMap, munros, markerList, userAscentUnits, setMarkerList, setLoading, setError } = useMapState();
+    const { map, setMap, filteredMunros, markerList, userAscentUnits, setMarkerList, setLoading, setError } = useMapState();
     const { userBaggedMunros } = useBaggedMunroContext();
     const { addMapMarker, removeMapMarker } = useMapMarkers({ userAscentUnits });
     const mapRef = useRef<HTMLDivElement | null>(null);
@@ -37,13 +37,15 @@ export default function MapComponent() {
         setMarkerList({});
 
         // Add new markers
-        munros?.forEach(munro => {
+        const newMarkers: { [id: number]: mapboxgl.Marker } = {};
+        filteredMunros?.forEach(munro => {
             const isBagged = userBaggedMunros.includes(munro.id);
             const marker = addMapMarker({ map, munro, isBagged });
-            setMarkerList((prev: { [id: number]: mapboxgl.Marker }) => ({ ...prev, [munro.id]: marker }));
+            newMarkers[munro.id] = marker;
         });
+        setMarkerList(newMarkers);
 
-    }, [map, munros, userBaggedMunros]);
+    }, [map, filteredMunros, userBaggedMunros]);
 
     return (
         <div ref={mapRef} className="w-full h-full"></div>

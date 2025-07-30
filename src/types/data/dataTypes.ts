@@ -77,3 +77,64 @@ export type GpxRoute = {
   name: string;
   rawGpx: string;
 };
+
+export type Filters = {
+    routeStyle: string;
+    difficulty: string;
+    length: [number, number];
+    ascent: [number, number];
+    excludeBagged: boolean;
+}
+
+export type FilterGroupProps = {
+    id: string;
+    label: string;
+    currentValue?: string;
+    isOpen: boolean;
+    isActive: boolean;
+    onToggle: () => void;
+    onReset: (e: React.MouseEvent) => void;
+    children: React.ReactNode;
+}
+
+export type FilterHeaderProps = {
+    label: string;
+    currentValue?: string;
+    isActive: boolean;
+    isOpen: boolean;
+    onClick: () => void;
+    onReset: (e: React.MouseEvent) => void;
+}
+
+export type FilterFieldWrapperProps = {
+    isOpen: boolean;
+    children: React.ReactNode;
+}
+
+export type FilterCheckboxProps = {
+    checked: boolean;
+    onChange: (checked: boolean) => void;
+    label: string;
+}
+
+export type RadioOption = {
+    value: string;
+    label: string;
+}
+
+export type FilterRadioGroupProps = {
+    name: string;
+    selectedValue: string;
+    options: RadioOption[];
+    onChange: (value: string) => void;
+}
+
+export type FilterSliderGroupProps = {
+    value: [number, number];
+    onChange: (value: [number, number]) => void;
+    onAfterChange?: (value: [number, number]) => void;
+    min: number;
+    max: number;
+    step?: number;
+    unit?: string;
+}
