@@ -135,7 +135,6 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
             munros: munrosConverted,    
             routeData: routesConverted,
             routeLinks: routeMunroLinks,
-            baggedMunroIds: userBaggedMunros
         });
     }, [filters, munrosConverted, routesConverted, routeMunroLinks, userBaggedMunros]);
 
