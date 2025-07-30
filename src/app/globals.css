@@ -143,43 +143,148 @@
   width: 4rem !important;
 }
 
-.map-marker-base {
-  width: 1.75rem;
-  height: 1.75rem;
+.marker {
+  width: 27px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  position: relative;
-  background-image: url('/images/map-icon-default.svg');
-  background-size: contain;
-  background-position: 50%;
-  background-repeat: no-repeat;
+  z-index: 1;
 }
 
-.map-marker-base.icon-bagged {
-  background-image: url('/images/map-icon-bagged.svg') !important;
-}
-
-.map-marker-active {
-  position: absolute;
+.marker-inner {
   width: 100%;
   height: 100%;
-  background-image: url('/images/map-icon-active.svg');
-  background-size: contain;
-  background-position: 50%;
-  background-repeat: no-repeat;
-  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  transition: transform 0.2s, opacity 0.2s;
+  opacity: 1;
+  transform: scale(1);
 }
 
-.marker-enter {
-  animation: markerFadeIn 0.3s;
+.marker-hover {
+  z-index: 10;
 }
-.marker-exit {
-  animation: markerFadeOut 0.3s;
+
+.marker-selected {
+  z-index: 20;
 }
-@keyframes markerFadeIn {
-  from { opacity: 0; transform: scale(0.5);}
-  to { opacity: 1; transform: scale(1);}
+
+.marker-enter .marker-inner {
+  opacity: 0;
+  transform: scale(0.5);
+  animation: marker-pop-in 0.2s forwards;
 }
-@keyframes markerFadeOut {
-  from { opacity: 1; transform: scale(1);}
-  to { opacity: 0; transform: scale(0.5);}
+
+@keyframes marker-pop-in {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.marker-exit .marker-inner{
+  opacity: 0;
+  transform: scale(0.5);
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.marker-hover .marker-inner {
+  transform: scale(1.15) !important;
+}
+
+.marker .icon-marker {
+  --marker-bg: var(--color-moss);
+  --marker-mountain: var(--color-mist);
+  --marker-border: var(--color-mist);
+}
+.marker.is-bagged .icon-marker {
+  --marker-bg: var(--color-apple);
+  --marker-mountain: var(--color-slate);
+  --marker-border: var(--color-mist);
+}
+.marker.marker-hover .icon-marker,
+.marker.marker-selected .icon-marker {
+  --marker-bg: var(--color-slate);
+  --marker-mountain: var(--color-apple);
+  --marker-border: var(--color-mist);
+}
+
+.popup {
+  position: absolute;
+  width: auto;
+  z-index: 25;
+  display: flex;
+  gap: 0.25rem;
+  flex-direction: column;
+  white-space: nowrap;
+  top: -5rem;
+  font-family: var(--font-body-font-family);
+  background: var(--color-mist);
+  color: var(--slate);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  transition: opacity 0.2s ease-in-out;
+  pointer-events: none;
+}
+
+.popup-upper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.popup-title {
+  font-size: var(--text-xl);
+  font-weight: 500;
+}
+
+.popup-height-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.popup-height-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup-height {
+  font-size: var(--text-l);
+}
+
+.popup-region {
+  font-size: var(--text-l);
+  color: var(--color-moss);
+}
+
+.popup.popup-enter {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: popup-fade-in 0.1s forwards;
+}
+
+@keyframes popup-fade-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes popup-fade-out {
+  to {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+.popup.popup-exit {
+  animation: popup-fade-out 0.1s forwards;
 }

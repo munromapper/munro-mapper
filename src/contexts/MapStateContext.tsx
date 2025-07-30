@@ -58,7 +58,6 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
             const routeMunroLinkData = await fetchRouteMunroLinks();
 
             if (munroData) setMunros(munroData);
-            setVisibleMunros(munroData || []);
             if (routeData) setRoutes(routeData);
             if (routeMunroLinkData) setRouteMunroLinks(routeMunroLinkData);
 
@@ -81,12 +80,35 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
         }
     }, [userProfile]);
 
+    const munrosConverted = useMemo(() => {
+        return munros.map(munro => ({
+            ...munro,
+            height: userAscentUnits === 'ft'
+            ? convertHeight(munro.height, 'feet')
+            : munro.height,
+        }));
+    }, [munros, userAscentUnits]);
+
+    const routesConverted = useMemo(() => {
+        return routes.map(route => ({
+            ...route,
+            length: userLengthUnits === 'mi'
+            ? convertLength(route.length, 'miles')
+            : +(route.length / 1000).toFixed(2),
+            ascent: userAscentUnits === 'ft'
+            ? convertHeight(route.ascent, 'feet')
+            : route.ascent,
+        }));
+    }, [routes, userLengthUnits, userAscentUnits]);
+
+    
+
     return (
         <MapStateContext.Provider value={
             {
-                munros,
+                munros: munrosConverted,
                 setMunros,
-                routes,
+                routes: routesConverted,
                 setRoutes,
                 routeMunroLinks,
                 setRouteMunroLinks,

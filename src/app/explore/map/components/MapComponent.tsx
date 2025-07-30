@@ -5,12 +5,13 @@
 import React, { useRef, useEffect } from 'react';
 import { useMapState } from "@/contexts/MapStateContext";
 import initialiseMap from '@/utils/map/initialiseMap';
-import { addMapMarker, removeMapMarker } from '@/utils/map/markerUtils';
+import useMapMarkers from '@/hooks/useMapMarkers';
 import { useBaggedMunroContext } from '@/contexts/BaggedMunroContext';
 
 export default function MapComponent() {
-    const { map, setMap, visibleMunros, markerList, setMarkerList, setLoading, setError } = useMapState();
+    const { map, setMap, munros, markerList, userAscentUnits, setMarkerList, setLoading, setError } = useMapState();
     const { userBaggedMunros } = useBaggedMunroContext();
+    const { addMapMarker, removeMapMarker } = useMapMarkers({ userAscentUnits });
     const mapRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
@@ -36,13 +37,13 @@ export default function MapComponent() {
         setMarkerList({});
 
         // Add new markers
-        visibleMunros?.forEach(munro => {
+        munros?.forEach(munro => {
             const isBagged = userBaggedMunros.includes(munro.id);
             const marker = addMapMarker({ map, munro, isBagged });
             setMarkerList((prev: { [id: number]: mapboxgl.Marker }) => ({ ...prev, [munro.id]: marker }));
         });
 
-    }, [map, visibleMunros, userBaggedMunros]);
+    }, [map, munros, userBaggedMunros]);
 
     return (
         <div ref={mapRef} className="w-full h-full"></div>
