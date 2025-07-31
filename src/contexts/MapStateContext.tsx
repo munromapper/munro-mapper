@@ -40,6 +40,8 @@ type MapStateContextType = {
     setMap: (map: mapboxgl.Map | null) => void;
     userAscentUnits: 'm' | 'ft';
     userLengthUnits: 'km' | 'mi';
+    routeStyleMode: 'gradient' | 'standard';
+    setRouteStyleMode: React.Dispatch<React.SetStateAction<'gradient' | 'standard'>>;
 }
 
 const MapStateContext = createContext<MapStateContextType | undefined>(undefined);
@@ -81,6 +83,7 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
     const { userBaggedMunros, friendsBaggedMunros } = useBaggedMunroContext();
     const params = useParams();
     const munroSlug = params?.munro as string | undefined;
+    const [routeStyleMode, setRouteStyleMode] = useState<'gradient' | 'standard'>('standard');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -192,6 +195,8 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
                 setMap,
                 userAscentUnits,
                 userLengthUnits,
+                routeStyleMode,
+                setRouteStyleMode
             } as MapStateContextType
         }>
             {children}

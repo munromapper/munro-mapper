@@ -10,6 +10,7 @@ import { useBaggedMunroContext } from '@/contexts/BaggedMunroContext';
 import useGpxRoutes from '@/hooks/useGpxRoutes';
 import useMapNavigation from '@/hooks/useMapNavigation';
 import { RecenterButton } from './RecenterButton';
+import RouteStyleToggle from './RouteStyleToggle';
 
 export default function MapComponent() {
     const { 
@@ -26,7 +27,8 @@ export default function MapComponent() {
         userAscentUnits, 
         setMarkerList, 
         setLoading, 
-        setError 
+        setError,
+        routeStyleMode 
     } = useMapState();
     const { userBaggedMunros } = useBaggedMunroContext();
     const { 
@@ -127,14 +129,74 @@ export default function MapComponent() {
     }, [activeMunro, map, routeMunroLinks, routes]);
 
     useEffect(() => {
+        if (!map) return;
+        
+        // Re-add all visible routes with the new style
+        if (activeMunro) {
+            const links = routeMunroLinks.filter(link => link.munroId === activeMunro.id);
+            links.forEach(async link => {
+                const route = routes.find(r => r.id === link.routeId);
+                if (route && route.gpxFile) {
+                    const geojson = await fetchAndCacheGeoJson(route.id, route.gpxFile);
+                    removeRouteFromMap(map, `${route.id}-selected`);
+                    addRouteToMap(map, geojson, `${route.id}-selected`, { color: "#E1FF9E", width: 4, opacity: 1 });
+                }
+            });
+        }
+        
+        // Re-add any hovered routes
+        if (hoveredMunro) {
+            const links = routeMunroLinks.filter(link => link.munroId === hoveredMunro.id);
+            links.forEach(async link => {
+                const route = routes.find(r => r.id === link.routeId);
+                if (route && route.gpxFile) {
+                    const geojson = await fetchAndCacheGeoJson(route.id, route.gpxFile);
+                    removeRouteFromMap(map, `${route.id}-hovered`);
+                    addRouteToMap(map, geojson, `${route.id}-hovered`, { color: "#686F68", width: 2, opacity: 0.7 });
+                }
+            });
+        }
+    }, [routeStyleMode, map]);
+
+    useEffect(() => {
         Object.values(markerList).forEach(marker => setMarkerSelected(marker, false));
         if (activeMunro && markerList[activeMunro.id]) {
             setMarkerSelected(markerList[activeMunro.id], true);
         }
     }, [activeMunro, markerList, setMarkerSelected]);
 
+    useEffect(() => {
+        if (!map || !activeMunro) return;
+
+        // Check if active munro is in the filtered list
+        const activeStillVisible = filteredMunros?.some(munro => munro.id === activeMunro.id) || false;
+        
+        // Get route links for the active munro
+        const links = routeMunroLinks.filter(link => link.munroId === activeMunro.id);
+
+        // Handle route visibility based on filter status
+        if (activeStillVisible) {
+            // Show routes - add them if they're not already visible
+            links.forEach(async link => {
+            const route = routes.find(r => r.id === link.routeId);
+            if (route && route.gpxFile) {
+                const geojson = await fetchAndCacheGeoJson(route.id, route.gpxFile);
+                // We remove first to avoid duplicates
+                removeRouteFromMap(map, `${route.id}-selected`);
+                addRouteToMap(map, geojson, `${route.id}-selected`, { color: "#E1FF9E", width: 4, opacity: 1 });
+            }
+            });
+        } else {
+            // Hide routes - remove them from the map
+            links.forEach(link => {
+            removeRouteFromMap(map, `${link.routeId}-selected`);
+            });
+        }
+    }, [filteredMunros, activeMunro, map, routeMunroLinks, routes]);
+
     return (
         <div ref={mapRef} className="w-full h-full">
+            <RouteStyleToggle />
             {offCenter && activeMunro && (
                 <RecenterButton 
                     selectedMunro={activeMunro}
