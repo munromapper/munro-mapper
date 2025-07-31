@@ -1,7 +1,9 @@
+import type { FeatureCollection } from "geojson";
+
 declare module "@mapbox/togeojson" {
     const toGeoJSON: {
-        gpx: (doc: Document) => any;
-        kml: (doc: Document) => any;
+        gpx: (doc: Document) => FeatureCollection;
+        kml: (doc: Document) => FeatureCollection;
     };
     export default toGeoJSON;
 }
