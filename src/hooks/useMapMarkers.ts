@@ -4,6 +4,7 @@
 import type { Munro } from "@/types/data/dataTypes";
 import { mapMarker, HillIcon } from "@/components/global/SvgComponents";
 import mapboxgl from "mapbox-gl";
+import { useRouter } from 'next/navigation';
 
 interface UseMapMarkersProps {
     userAscentUnits: 'm' | 'ft';
@@ -12,6 +13,8 @@ interface UseMapMarkersProps {
 export default function useMapMarkers({
     userAscentUnits
 }: UseMapMarkersProps) {
+
+    const router = useRouter();
 
     interface CreateMapMarkerProps {
         munro: Munro
@@ -57,8 +60,13 @@ export default function useMapMarkers({
     function addMapMarker({
         map,
         munro,
-        isBagged = false
-    }: AddMapMarkerProps) {
+        isBagged = false,
+        setHoveredMunro,
+        setActiveMunro
+    }: AddMapMarkerProps & {
+        setHoveredMunro: (munro: Munro | null) => void;
+        setActiveMunro: (munro: Munro | null) => void;
+    })  {
         const marker = createMapMarker({ munro, isBagged });
         const markerDiv = marker.getElement();
         const markerInner = markerDiv.querySelector('.map-marker-inner');
@@ -68,6 +76,16 @@ export default function useMapMarkers({
         markerDiv.addEventListener('animationend', () => {
             markerInner?.classList.remove("marker-enter");
         }, { once: true });
+
+        markerDiv.addEventListener('mouseenter', () => {
+            setHoveredMunro(munro);
+        });
+        markerDiv.addEventListener('mouseleave', () => {
+            setHoveredMunro(null);
+        });
+        markerDiv.addEventListener('click', () => {
+            router.push(`/explore/map/munro/${munro.slug}`);
+        });
 
         return marker;
     }

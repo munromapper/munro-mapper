@@ -196,6 +196,10 @@
   transform: scale(1.15) !important;
 }
 
+.marker-selected .marker-inner {
+  transform: scale(1.15) !important;
+}
+
 .marker .icon-marker {
   --marker-bg: var(--color-moss);
   --marker-mountain: var(--color-mist);

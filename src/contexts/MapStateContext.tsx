@@ -9,6 +9,7 @@ import { useAuthContext } from './AuthContext';
 import { convertHeight, getHeightUnitLabel, convertLength, getLengthUnitLabel } from '@/utils/misc/unitConverters';
 import { useBaggedMunroContext } from './BaggedMunroContext';
 import { filterMunros } from '@/utils/map/filterFunction';
+import { useParams } from 'next/navigation';
 import mapboxgl from 'mapbox-gl';
 
 type MapStateContextType = {
@@ -78,6 +79,8 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
     const [userLengthUnits, setUserLengthUnits] = useState<'km' | 'mi'>('km');
     const { userProfile } = useAuthContext();
     const { userBaggedMunros, friendsBaggedMunros } = useBaggedMunroContext();
+    const params = useParams();
+    const munroSlug = params?.munro as string | undefined;
 
     useEffect(() => {
         const fetchData = async () => {
@@ -143,6 +146,18 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
             currentUserId: userProfile?.id || ''
         });
     }, [filters, munrosConverted, routesConverted, routeMunroLinks, userBaggedMunros, friendsBaggedMunros]);
+
+    useEffect(() => {
+        if (!munroSlug) {
+            if (activeMunro) setActiveMunro(null);
+            return;
+        }
+        if (!filteredMunros?.length) return;
+        const munro = filteredMunros.find(m => m.slug === munroSlug);
+        if (munro && (!activeMunro || activeMunro.id !== munro.id)) {
+            setActiveMunro(munro);
+        }
+    }, [munroSlug, filteredMunros, activeMunro]);
 
     return (
         <MapStateContext.Provider value={

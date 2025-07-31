@@ -11,6 +11,7 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@mapbox/togeojson": "^0.16.2",
     "@mui/material": "^7.2.0",
     "@supabase/supabase-js": "^2.52.1",
     "date-fns": "^4.1.0",
