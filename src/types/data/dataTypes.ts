@@ -83,7 +83,10 @@ export type Filters = {
     difficulty: string;
     length: [number, number];
     ascent: [number, number];
-    excludeBagged: boolean;
+    friends: {
+        selectedPeople: string[];
+        baggedMode: 'bagged' | 'incomplete';
+    };
 }
 
 export type FilterGroupProps = {

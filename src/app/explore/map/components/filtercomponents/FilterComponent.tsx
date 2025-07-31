@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { useMapState } from '@/contexts/MapStateContext';
 import { handleRadioFilterChange, handleSliderFilterChange, resetFilter, isFilterChanged, handleFilterToggle } from '@/utils/map/filterUtils';
 import FilterGroup from './FilterGroup';
+import FilterFriendsGroup from './FilterFriendsGroup';
 import FilterRadioGroup from './FilterRadioGroup';
 import FilterSliderGroup from './FilterSliderGroup';
 import FilterCheckboxGroup from './FilterCheckboxGroup';
@@ -64,6 +65,23 @@ export default function FilterComponent() {
 
     return (
         <div className="relative self-start flex items-start gap-4 text-l pointer-events-auto">
+
+            <FilterGroup
+                id="friends"
+                label="Friends"
+                isOpen={openFilter === 'friends'}
+                isActive={filters.friends.selectedPeople.length > 0}
+                onToggle={() => handleFilterToggle('friends', openFilter, setOpenFilter)}
+                onReset={(e) => {
+                    e.stopPropagation();
+                    resetFilter('friends', setFilters, defaultFilters);
+                }}
+            >
+                <FilterFriendsGroup 
+                    value={filters.friends}
+                    onChange={val => setFilters(f => ({ ...f, friends: val }))}
+                />
+            </FilterGroup>
 
             <FilterGroup
                 id="routeStyle"

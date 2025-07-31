@@ -8,6 +8,8 @@ interface FilterParams {
     munros: Munro[];
     routeData: Route[];
     routeLinks: RouteMunroLink[];
+    userBaggedMunros: number[];
+    friendsBaggedMunros: Record<string, number[]>;
 }
 
 /**
@@ -23,7 +25,9 @@ export function filterMunros({
     filters,
     munros,
     routeData,
-    routeLinks
+    routeLinks,
+    userBaggedMunros,
+    friendsBaggedMunros
 }: FilterParams): Munro[] {
 
     const routeById = new Map<number, Route>(routeData.map(route => [route.id, route]));
@@ -38,6 +42,28 @@ export function filterMunros({
             routesByMunro.set(link.munroId, []);
         }
         routesByMunro.get(link.munroId)!.push(route);
+    }
+
+    if (filters.friends && filters.friends.selectedPeople.length > 0) {
+        const baggedLists = filters.friends.selectedPeople.map(id => {
+            if (id === 'me') {
+                return userBaggedMunros;
+            } else if (friendsBaggedMunros[id]) {
+                return friendsBaggedMunros[id];
+            } else {
+                return [];
+            }
+        });
+
+        if (filters.friends.baggedMode === 'bagged') {
+            munros = munros.filter(munro =>
+                baggedLists.every(list => list.includes(munro.id))
+            );
+        } else {
+            munros = munros.filter(munro =>
+                baggedLists.every(list => !list.includes(munro.id))
+            );
+        }
     }
 
     return munros.filter(munro => {

@@ -62,7 +62,10 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
         difficulty: "all",
         length: defaultLengthRanges.km,
         ascent: defaultAscentRanges.m,
-        excludeBagged: false,
+        friends: {
+            selectedPeople: [],
+            baggedMode: 'bagged'
+        }
     } as Filters;
     const [filters, setFilters] = useState(defaultFilters);
     const [openFilter, setOpenFilter] = useState<string | null>(null);
@@ -74,7 +77,7 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
     const [userAscentUnits, setUserAscentUnits] = useState<'m' | 'ft'>('m');
     const [userLengthUnits, setUserLengthUnits] = useState<'km' | 'mi'>('km');
     const { userProfile } = useAuthContext();
-    const { userBaggedMunros } = useBaggedMunroContext();
+    const { userBaggedMunros, friendsBaggedMunros } = useBaggedMunroContext();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -135,8 +138,10 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
             munros: munrosConverted,    
             routeData: routesConverted,
             routeLinks: routeMunroLinks,
+            userBaggedMunros,
+            friendsBaggedMunros
         });
-    }, [filters, munrosConverted, routesConverted, routeMunroLinks, userBaggedMunros]);
+    }, [filters, munrosConverted, routesConverted, routeMunroLinks, userBaggedMunros, friendsBaggedMunros]);
 
     return (
         <MapStateContext.Provider value={
