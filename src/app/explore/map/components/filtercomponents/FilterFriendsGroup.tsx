@@ -3,8 +3,8 @@
 
 'use client';
 import { useAuthContext } from "@/contexts/AuthContext";
-import { useBaggedMunroContext } from "@/contexts/BaggedMunroContext";
 import { useState, useEffect } from "react";
+import type { UserProfile } from "@/types/data/dataTypes";
 import RadioInput from "@/components/global/forms/RadioInput";
 import SearchInput from "@/components/global/forms/SearchInput";
 import { fetchUserProfile } from "@/utils/data/clientDataFetchers";
@@ -22,7 +22,7 @@ export default function FilterFriendsGroup({
     onChange 
 }: FilterFriendsGroupProps) {
     const { friends, user } = useAuthContext();
-    const [friendProfiles, setFriendProfiles] = useState<any[]>([]);
+    const [friendProfiles, setFriendProfiles] = useState<UserProfile[]>([]);
 
     const [searchedFriends, setSearchedFriends] = useState<string>('');
     const selectedPeople = value.selectedPeople;
@@ -42,10 +42,10 @@ export default function FilterFriendsGroup({
     const people = [
         { id: 'me', name: 'Me' },
         ...friendProfiles
-            .filter(profile => profile)
+            .filter(profile => profile && profile.id)
             .map(profile => ({
-                id: profile.id,
-                name: `${profile.firstName} ${profile.lastName}`.trim()
+                id: profile!.id as string,
+                name: `${profile!.firstName} ${profile!.lastName}`.trim()
             }))
     ];
 
