@@ -26,7 +26,7 @@ export const BaggedMunroProvider = ({ children }: { children: React.ReactNode })
     const [friendsBaggedMunros, setFriendsBaggedMunros] = useState<{ [friendUserId: string]: number[] }>({});
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-     const [lastToggledMunroId, setLastToggledMunroId] = useState<number | null>(null);
+    const [lastToggledMunroId, setLastToggledMunroId] = useState<number | null>(null);
 
     const fetchBaggedMunros = useCallback(async () => {
         if (!user) return;
@@ -46,18 +46,23 @@ export const BaggedMunroProvider = ({ children }: { children: React.ReactNode })
             // Fetch friends' bagged munros
             const friendsMap: { [friendUserId: string]: number[] } = {};
             if (friends && friends.length > 0) {
-                const friendIds = friends.map(f => f?.id);
-                const { data: friendsData, error: friendsError } = await supabase
-                    .from('bagged_munros')
-                    .select('user_id, munro_id')
-                    .in('user_id', friendIds);
+                const friendUserIds = friends
+                    .filter(f => f && f.requestStatus === 'accepted')
+                    .map(f => (f?.requesterId === user.id ? f?.addresseeId : f?.requesterId));
 
-                if (friendsError) throw friendsError;
+                if (friendUserIds.length > 0) {
+                    const { data: friendsData, error: friendsError } = await supabase
+                        .from('bagged_munros')
+                        .select('user_id, munro_id')
+                        .in('user_id', friendUserIds);
 
-                friendsData?.forEach((row) => {
-                    if (!friendsMap[row.user_id]) friendsMap[row.user_id] = [];
-                    friendsMap[row.user_id].push(row.munro_id);
-                });
+                    if (friendsError) throw friendsError;
+
+                    friendsData?.forEach((row) => {
+                        if (!friendsMap[row.user_id]) friendsMap[row.user_id] = [];
+                        friendsMap[row.user_id].push(row.munro_id);
+                    });
+                }
             }
             setFriendsBaggedMunros(friendsMap);
         } catch (err) {

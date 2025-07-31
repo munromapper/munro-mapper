@@ -10,6 +10,7 @@ interface FilterParams {
     routeLinks: RouteMunroLink[];
     userBaggedMunros: number[];
     friendsBaggedMunros: Record<string, number[]>;
+    currentUserId: string;
 }
 
 /**
@@ -27,7 +28,8 @@ export function filterMunros({
     routeData,
     routeLinks,
     userBaggedMunros,
-    friendsBaggedMunros
+    friendsBaggedMunros,
+    currentUserId
 }: FilterParams): Munro[] {
 
     const routeById = new Map<number, Route>(routeData.map(route => [route.id, route]));
@@ -46,7 +48,7 @@ export function filterMunros({
 
     if (filters.friends && filters.friends.selectedPeople.length > 0) {
         const baggedLists = filters.friends.selectedPeople.map(id => {
-            if (id === 'me') {
+            if (id === currentUserId) {
                 return userBaggedMunros;
             } else if (friendsBaggedMunros[id]) {
                 return friendsBaggedMunros[id];

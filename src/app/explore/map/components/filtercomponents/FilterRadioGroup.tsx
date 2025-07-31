@@ -11,7 +11,7 @@ export default function FilterRadioGroup({
     onChange
 }: FilterRadioGroupProps) {
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col pt-4 pr-9 pb-4 pl-6">
             {options.map((option) => (
                 <label key={option.value} className="flex gap-2 py-1 items-center cursor-pointer">
                 <input

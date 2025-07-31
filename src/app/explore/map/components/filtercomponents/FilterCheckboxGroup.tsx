@@ -11,7 +11,7 @@ export default function FilterCheckboxGroup({
 }: FilterCheckboxProps) {
 
   return (
-    <>
+    <div className="p-6">
       <div
         className="inline-flex relative items-center"
         style={{ position: "relative" }}
@@ -48,6 +48,6 @@ export default function FilterCheckboxGroup({
           </span>
         </label>
       </div>
-    </>
+    </div>
   );
 }

@@ -68,7 +68,7 @@ export default function FilterComponent() {
 
             <FilterGroup
                 id="friends"
-                label="Friends"
+                label="Bagged Status"
                 isOpen={openFilter === 'friends'}
                 isActive={filters.friends.selectedPeople.length > 0}
                 onToggle={() => handleFilterToggle('friends', openFilter, setOpenFilter)}

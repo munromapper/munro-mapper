@@ -4,10 +4,12 @@
 'use client';
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useState, useEffect } from "react";
+import { TickIcon } from "@/components/global/SvgComponents";
 import type { UserProfile } from "@/types/data/dataTypes";
 import RadioInput from "@/components/global/forms/RadioInput";
 import SearchInput from "@/components/global/forms/SearchInput";
 import { fetchUserProfile } from "@/utils/data/clientDataFetchers";
+import UserProfilePicture from "@/components/global/UserProfilePicture";
 
 interface FilterFriendsGroupProps {
     value: {
@@ -21,7 +23,7 @@ export default function FilterFriendsGroup({
     value, 
     onChange 
 }: FilterFriendsGroupProps) {
-    const { friends, user } = useAuthContext();
+    const { friends, user, userProfile } = useAuthContext();
     const [friendProfiles, setFriendProfiles] = useState<UserProfile[]>([]);
 
     const [searchedFriends, setSearchedFriends] = useState<string>('');
@@ -29,6 +31,7 @@ export default function FilterFriendsGroup({
     const baggedMode = value.baggedMode;
 
     useEffect(() => {
+        if (!user) return;
         const acceptedFriendIds = friends
             ?.filter(f => f && f.requestStatus === 'accepted')
             .map(f => {
@@ -40,7 +43,7 @@ export default function FilterFriendsGroup({
     }, [friends, user?.id]);
 
     const people = [
-        { id: 'me', name: 'Me' },
+        { id: user?.id ?? 'me', name: 'Me' },
         ...friendProfiles
             .filter(profile => profile && profile.id)
             .map(profile => ({
@@ -57,12 +60,12 @@ export default function FilterFriendsGroup({
             );
 
     return (
-        <>
-            <div>
-            <p className="font-heading-font-family text-xxxl">Compare friends</p>
-            <p className="text-moss text-l">Enim mollit occaecat id proident esse in ulla eiusmod mollit laboris id pariatur.</p>  
+        <div className="w-75 whitespace-normal">
+            <div className="space-y-4 mb-4 px-6 pt-6">
+                <p className="font-heading-font-family text-4xl">Compare status</p>
+                <p className="text-moss text-l">Enim mollit occaecat id proident esse in ulla eiusmod mollit laboris id pariatur.</p>  
             </div>
-            <div>
+            <div className="mb-4 px-6">
                 <SearchInput 
                     name="friends"
                     value={searchedFriends}
@@ -70,29 +73,52 @@ export default function FilterFriendsGroup({
                     placeholder="Search..."
                 />
             </div>
-            <div className="max-h-48 overflow-y-auto mt-2 flex flex-col gap-2">
-                {filteredPeople.length === 0 && searchedFriends.trim() !== "" ? (
-                    <span className="text-moss text-sm">No friends found.</span>
-                ) : (
-                    filteredPeople.map(person => (
-                        <label key={person.id} className="flex items-center gap-2 cursor-pointer">
-                            <input
-                                type="checkbox"
-                                checked={selectedPeople.includes(person.id)}
-                                onChange={() => {
-                                    const newSelected =
-                                        selectedPeople.includes(person.id)
-                                            ? selectedPeople.filter(id => id !== person.id)
-                                            : [...selectedPeople, person.id];
-                                    onChange({ selectedPeople: newSelected, baggedMode });
-                                }}
-                            />
-                            <span>{person.name}</span>
-                        </label>
-                    ))
-                )}
+            <div className="px-3 mb-4">
+                <div className="flex flex-col gap-1 max-h-40 overflow-y-auto">
+                    {(!user || !userProfile || !['active', 'canceling'].includes(userProfile.isPremium)) ? (
+                        <span className="text-moss text-sm px-3">Upgrade to Munro Mapper Plus to enable bagged status filtering and friends comparison</span>
+                    ) : filteredPeople.length === 0 && searchedFriends.trim() !== "" ? (
+                        <span className="text-moss text-sm">No friends found.</span>
+                    ) : (
+                        filteredPeople.map(person => (
+                            <label key={person.id} className="flex items-center gap-4 rounded-full px-3 py-2 cursor-pointer hover:bg-sage/50 transition duration-250 ease-in-out">
+                                <input
+                                    type="checkbox"
+                                    className="hidden peer"
+                                    checked={selectedPeople.includes(person.id)}
+                                    onChange={() => {
+                                        const newSelected =
+                                            selectedPeople.includes(person.id)
+                                                ? selectedPeople.filter(id => id !== person.id)
+                                                : [...selectedPeople, person.id];
+                                        onChange({ selectedPeople: newSelected, baggedMode });
+                                    }}
+                                    disabled={!user || !userProfile || !['active', 'canceling'].includes(userProfile.isPremium)}
+                                />
+                                <div
+                                    className={`
+                                        w-4 h-4 p-0.5 flex items-center justify-center rounded-full border border-dashed pointer-events-none
+                                        transition-all duration-300 ease-in-out
+                                        border-sage bg-transparent text-transparent
+                                        peer-checked:bg-slate peer-checked:text-apple peer-checked:border-slate
+                                    `}
+                                >
+                                    <TickIcon />
+                                </div>
+                                <div className="w-8 h-8">
+                                    <UserProfilePicture 
+                                        userId={person.id}
+                                        refreshTrigger={Date.now()}
+                                    />
+                                </div>
+                                <span>{person.name}</span>
+                            </label>
+                        ))
+                    )}
+                </div>
             </div>
-            <div>
+            <div className="h-1 w-full border-b border-sage"></div>
+            <div className="p-6 flex flex-col items-start gap-3">
                 <RadioInput
                     label="Show bagged"
                     name="baggedMode"
@@ -100,6 +126,7 @@ export default function FilterFriendsGroup({
                     checked={baggedMode === 'bagged'}
                     onChange={() => onChange({ selectedPeople, baggedMode: 'bagged' })}
                 />
+                <span className="text-moss text-m pl-7 italic mt-[-0.5rem]">Only display hills that are already bagged by all the selected people.</span>
                 <RadioInput
                     label="Show incomplete"
                     name="baggedMode"
@@ -107,7 +134,8 @@ export default function FilterFriendsGroup({
                     checked={baggedMode === 'incomplete'}
                     onChange={() => onChange({ selectedPeople, baggedMode: 'incomplete' })}
                 />
+                <span className="text-moss text-m pl-7 italic mt-[-0.5rem]">Only display hills that have not been bagged by all the selected people.</span>
             </div>
-        </>
+        </div>
     )
 }

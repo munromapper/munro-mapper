@@ -14,7 +14,7 @@ export default function FilterSliderGroup({
   unit
 }: FilterSliderGroupProps) {
   return (
-    <div className='w-36 display-flex flex-col items-center gap-2'>
+    <div className='w-40 py-4 px-6 display-flex flex-col items-center gap-2'>
       <div className="mb-2">{value[0]} – {value[1]}{unit}</div>
       <Slider
         min={min}

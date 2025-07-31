@@ -139,7 +139,8 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
             routeData: routesConverted,
             routeLinks: routeMunroLinks,
             userBaggedMunros,
-            friendsBaggedMunros
+            friendsBaggedMunros,
+            currentUserId: userProfile?.id || ''
         });
     }, [filters, munrosConverted, routesConverted, routeMunroLinks, userBaggedMunros, friendsBaggedMunros]);
 

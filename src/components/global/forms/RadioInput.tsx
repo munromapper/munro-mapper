@@ -28,9 +28,9 @@ export default function RadioInput({
                 className="hidden peer"
                 value={value}
             />
-            <span className="w-3.75 h-3.75 p-0.5 flex items-center justify-center border border-dashed border-sage text-mist rounded-full transition-all duration-250 ease-in-out
+            <span className="w-4 h-4 flex items-center justify-center border border-dashed border-sage text-mist rounded-full transition-all duration-250 ease-in-out
                           peer-checked:bg-moss peer-checked:border-moss">
-                <span className="w-full h-full bg-mist rounded-full transition-all duration-250 ease-in-out flex items-center justify-center"></span>
+                <span className="w-2 h-2 bg-mist rounded-full transition-all duration-250 ease-in-out flex items-center justify-center"></span>
             </span>
             {label}
         </label>

@@ -123,8 +123,6 @@ export const AuthProvider = (
         }
     };
 
-    console.log("userProfile", userProfile, "user", user);
-
     return (
         <AuthContext.Provider value={{ user, userProfile, userSubscription, friends, refreshUserProfile, refreshFriends, globalMessage, setGlobalMessage, children }}>
             {children}
