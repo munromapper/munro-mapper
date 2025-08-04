@@ -29,6 +29,15 @@ export async function fetchMunroData(): Promise<Munro[] | null> {
         nameMeaning: munro.name_meaning,
         description: munro.description,
         slug: munro.slug,
+        gridRef: munro.grid_reference,
+        harveyMM: munro.harvey_mm,
+        harveyMMUrl: munro.harvey_mm_link,
+        harveySW: munro.harvey_sw,
+        harveySWUrl: munro.harvey_sw_link,
+        osExplorer: munro.os_explorer,
+        osExplorerUrl: munro.os_explorer_link,
+        osLandranger: munro.os_landranger,
+        osLandrangerUrl: munro.os_landranger_link,
     })) as Munro[];
 }
 
@@ -55,10 +64,11 @@ export async function fetchRouteData(): Promise<Route[] | null> {
         ascent: route.ascent,
         difficulty: route.difficulty,
         startLocation: route.start_location,
-        startLink: route.start_link,
         style: route.style,
         estimatedTime: route.estimated_time,
         garminLink: route.garmin_link,
+        startLongitude: route.start_longitude,
+        startLatitude: route.start_latitude,
     })) as Route[];
 }
 
@@ -282,4 +292,12 @@ export async function bagMunro(userId: string, munroId: number) {
  */
 export async function unbagMunro(userId: string, munroId: number) {
   return supabase.from('bagged_munros').delete().eq('user_id', userId).eq('munro_id', munroId);
+}
+
+export function getGpxFileUrl(filename: string): string {
+  const { data } = supabase.storage
+    .from('routes')
+    .getPublicUrl(`standard/${filename}`);
+  
+  return data.publicUrl;
 }

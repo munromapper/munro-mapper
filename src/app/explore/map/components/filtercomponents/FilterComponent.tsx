@@ -64,7 +64,7 @@ export default function FilterComponent() {
     const ascentLabel = ascentChanged ? `${ascentRange[0]}–${ascentRange[1]}${userAscentUnits}` : undefined;
 
     return (
-        <div className="relative self-start flex items-start gap-4 text-l pointer-events-auto">
+        <div className="relative self-start flex items-start gap-4 flex-wrap flex-1 text-l pointer-events-auto">
 
             <FilterGroup
                 id="friends"

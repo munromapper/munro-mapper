@@ -13,7 +13,7 @@ export default function SidebarWrapperComponent({
 }: SidebarWrapperComponentProps) {
 
     return (
-        <div className="flex flex-col w-90">
+        <div className="flex min-w-95 flex-0">
             {children}
         </div>
     );

@@ -42,6 +42,8 @@ type MapStateContextType = {
     userLengthUnits: 'km' | 'mi';
     routeStyleMode: 'gradient' | 'standard';
     setRouteStyleMode: React.Dispatch<React.SetStateAction<'gradient' | 'standard'>>;
+    isSidebarExpanded: boolean;
+    setSidebarExpanded: (expanded: boolean) => void;
 }
 
 const MapStateContext = createContext<MapStateContextType | undefined>(undefined);
@@ -84,6 +86,7 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
     const params = useParams();
     const munroSlug = params?.munro as string | undefined;
     const [routeStyleMode, setRouteStyleMode] = useState<'gradient' | 'standard'>('standard');
+    const [isSidebarExpanded, setSidebarExpanded] = useState<boolean>(true);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -196,7 +199,9 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
                 userAscentUnits,
                 userLengthUnits,
                 routeStyleMode,
-                setRouteStyleMode
+                setRouteStyleMode,
+                isSidebarExpanded,
+                setSidebarExpanded
             } as MapStateContextType
         }>
             {children}

@@ -2,6 +2,7 @@
 // Page component for displaying a specific Munro's route and hill details
 
 import { fetchMunroData, fetchRouteData, fetchRouteMunroLinks } from '@/utils/data/clientDataFetchers';
+import MunroDetailPage from './components/MunroDetailPage';
 import type { Munro } from '@/types/data/dataTypes';
 
 type MunroRouteParams = {
@@ -57,8 +58,8 @@ export default async function MunroSidebarDetail({ params }: MunroRouteParams) {
   }
 
   return (
-    <div>
-        <h1>{munro.name}</h1>
+    <div className="rounded-xl">
+        <MunroDetailPage munro={munro} route={route} routeMunros={routeMunros} />
     </div>
   )
 }

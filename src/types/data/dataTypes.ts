@@ -47,7 +47,16 @@ export type Munro = {
     region: string;
     nameMeaning: string;
     description: string;
+    gridRef: string;
     slug: string;
+    harveyMM: string;
+    harveyMMUrl: string;
+    harveySW: string;
+    harveySWUrl: string;
+    osExplorer: string;
+    osExplorerUrl: string;
+    osLandranger: string;
+    osLandrangerUrl: string;
 }
 
 export type Route = {
@@ -59,7 +68,8 @@ export type Route = {
     ascent: number;
     difficulty: string;
     startLocation: string;
-    startLink: string;
+    startLongitude: number;
+    startLatitude: number;
     style: string;
     estimatedTime: number;
     garminLink: string;
