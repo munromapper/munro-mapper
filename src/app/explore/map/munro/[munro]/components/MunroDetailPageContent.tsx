@@ -59,8 +59,8 @@ export default function MunroDetailPageContent({
         totalMinutes = Math.round(totalMinutes / 15) * 15;
         
         // Format the time
-        let hours = Math.floor(totalMinutes / 60);
-        let mins = totalMinutes % 60;
+        const hours = Math.floor(totalMinutes / 60);
+        const mins = totalMinutes % 60;
         
         if (hours === 0) {
             return `${mins} mins`;
