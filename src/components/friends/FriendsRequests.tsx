@@ -7,6 +7,7 @@ import { useState } from "react";
 import { acceptFriendRequest, declineFriendRequest } from "@/utils/data/userFriendUpdaters";
 import type { UserProfile } from "@/types/data/dataTypes";
 import { PrimaryButton } from "../global/Buttons";
+import SignInPrompt from "./SignInPrompt";
 
 interface FriendsRequestsProps {
     searchQuery: string;
@@ -35,6 +36,11 @@ export default function FriendsRequests({
         profile?.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         profile?.discriminator.includes(searchQuery)
     );
+
+    if (!user) {
+        return <SignInPrompt />;
+    }
+  
 
     if (requestProfiles.length === 0) {
         return (

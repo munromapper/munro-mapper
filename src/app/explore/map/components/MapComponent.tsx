@@ -218,6 +218,13 @@ export default function MapComponent() {
         }
     }, [filteredMunros, activeMunro, map, routeMunroLinks, routes]);
 
+    useEffect(() => {
+        // Clear the hoveredMunro when activeMunro changes
+        if (activeMunro) {
+            setHoveredMunro(null);
+        }
+    }, [activeMunro, setHoveredMunro]);
+
     return (
         <div ref={mapRef} className="w-full h-full">
             <RouteStyleToggle />

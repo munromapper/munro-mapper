@@ -6,6 +6,7 @@ import { sendFriendRequest } from "@/utils/data/userFriendUpdaters";
 import { useAuthContext } from "@/contexts/AuthContext";
 import UserProfilePicture from "../global/UserProfilePicture";
 import { useState } from "react";
+import SignInPrompt from "./SignInPrompt";
 
 interface FriendsAddFriendProps {
     searchQuery: string;
@@ -39,6 +40,10 @@ export default function FriendsAddFriend({
             profile?.discriminator.includes(searchQuery)
         )
     );
+
+    if (!user) {
+        return <SignInPrompt />;
+    }
 
     if (searchQuery === "") {
         return (

@@ -10,6 +10,7 @@ import { declineFriendRequest } from "@/utils/data/userFriendUpdaters";
 import type { Friend } from "@/types/data/dataTypes";
 import { motion, AnimatePresence } from "framer-motion";
 import ContextualMenu from "../global/ContextualMenu";
+import SignInPrompt from "./SignInPrompt";
 import { ContextMenuIcon, TickIcon, CrossIcon } from "../global/SvgComponents";
 
 interface FriendsListProps {
@@ -51,6 +52,11 @@ export default function FriendsList({
         profile?.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         profile?.discriminator.includes(searchQuery)
     );
+
+    if (!user) {
+        return <SignInPrompt />;
+    }
+  
 
     // If you have no friends at all, show "No friends" content
     if (friendProfiles.length === 0) {
