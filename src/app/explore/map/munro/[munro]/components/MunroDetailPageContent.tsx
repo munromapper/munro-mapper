@@ -89,7 +89,7 @@ export default function MunroDetailPageContent({
                 height: isSidebarExpanded ? 'auto' : 0,
             }}
             transition={{ duration: 0.6, ease: "easeInOut" }}
-            className="bg-mist relative z-1 pointer-events-auto"
+            className="bg-mist relative z-0 pointer-events-auto"
         >
             <div className="overflow-hidden h-full">
                 <div className="px-6 py-8">
@@ -148,7 +148,7 @@ export default function MunroDetailPageContent({
                             )}
                         </ul>
                     </div>
-                    <div>
+                    <div className="mt-3">
                         <FriendsBagged munroId={munro.id} />
                     </div>
                 </div>

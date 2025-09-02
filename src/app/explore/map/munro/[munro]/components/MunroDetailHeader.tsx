@@ -6,6 +6,7 @@ import { useMapState } from "@/contexts/MapStateContext";
 import BaggedIndicator from "@/components/global/BaggedIndicator";
 import MunroDetailBackButton from "./MunroDetailBackButton";
 import { LocationIcon, ThinDownChevron } from "@/components/global/SvgComponents";
+import { motion } from "framer-motion";
 
 interface MunroDetailHeaderProps {
     munro: Munro;
@@ -17,7 +18,7 @@ export default function MunroDetailHeader({
     const { isSidebarExpanded, setSidebarExpanded } = useMapState();
 
     return (
-        <div className={`bg-mist sticky top-0 z-10 p-6 pointer-events-auto border-b border-sage shadow-standard`}>
+        <div className="bg-mist sticky top-0 z-1 p-6 pointer-events-auto border-b border-sage shadow-standard">
             <div className="flex justify-between items-center gap-6 mb-6">
                 <MunroDetailBackButton />
                 <BaggedIndicator munroId={munro.id} />
@@ -35,7 +36,12 @@ export default function MunroDetailHeader({
                             onClick={() => setSidebarExpanded(!isSidebarExpanded)}
                             aria-label={isSidebarExpanded ? "Collapse details" : "Expand details"}
                     >
-                        <ThinDownChevron />
+                        <span
+                            className={`transition-transform duration-300 ease-in-out ${isSidebarExpanded ? 'rotate-180' : ''}`}
+                            aria-hidden="true"
+                        >
+                            <ThinDownChevron />
+                        </span>
                     </button>
                 </div>
             </div>

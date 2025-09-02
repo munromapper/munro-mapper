@@ -34,7 +34,9 @@ export default function MapComponent() {
     const { 
         addMapMarker, 
         removeMapMarker,
-        setMarkerSelected 
+        setMarkerSelected,
+        createPopup,
+        removePopup 
     } = useMapMarkers({ userAscentUnits });
     const {
         fetchAndCacheGeoJson,
@@ -164,6 +166,28 @@ export default function MapComponent() {
             setMarkerSelected(markerList[activeMunro.id], true);
         }
     }, [activeMunro, markerList, setMarkerSelected]);
+
+    useEffect(() => {
+        Object.entries(markerList).forEach(([id, marker]) => {
+        const el = marker.getElement();
+        el.classList.remove("marker-hover");
+        removePopup(el);
+        });
+
+        if (hoveredMunro && markerList[hoveredMunro.id]) {
+        const el = markerList[hoveredMunro.id].getElement();
+        el.classList.add("marker-hover");
+        createPopup(el, hoveredMunro);
+        }
+
+        return () => {
+            Object.entries(markerList).forEach(([id, marker]) => {
+            const el = marker.getElement();
+            el.classList.remove("marker-hover");
+            removePopup(el);
+            });
+        };
+    }, [hoveredMunro, markerList, createPopup, removePopup]);
 
     useEffect(() => {
         if (!map || !activeMunro) return;

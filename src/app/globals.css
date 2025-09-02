@@ -53,7 +53,7 @@ body {
   --text-l: 0.875rem;
   --text-xl: 1rem;
   --text-xxl: 1.125rem;
-  --text-xxxl: 1.25rem;
+  --text-xxxl: 1.5rem;
   --text-4xl: 1.75rem;
   --text-5xl: 2.25rem;
   --text-6xl: 3rem;
@@ -295,4 +295,13 @@ body {
 
 .popup.popup-exit {
   animation: popup-fade-out 0.1s forwards;
+}
+
+div[data-testid="virtuoso-scroller"] {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+div[data-testid="virtuoso-scroller"]::-webkit-scrollbar {
+  display: none !important;
 }

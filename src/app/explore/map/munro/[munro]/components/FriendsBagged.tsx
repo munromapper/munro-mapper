@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { useBaggedMunroContext } from '@/contexts/BaggedMunroContext';
 import UserProfilePicture from '@/components/global/UserProfilePicture';
 import { fetchUserProfile } from '@/utils/data/clientDataFetchers';
+import ContextualMenu from '@/components/global/ContextualMenu';
 
 interface FriendsBaggedProps {
   munroId: number;
@@ -16,14 +17,17 @@ interface FriendWithProfile {
 }
 
 interface MessageParts {
-  names: string;
+  names: React.ReactNode;
   action: string;
+  hasMultipleFriends: boolean;
 }
 
 export default function FriendsBagged({ munroId, className = '' }: FriendsBaggedProps) {
   const { friends, userProfile } = useAuthContext();
   const { friendsBaggedMunros } = useBaggedMunroContext();
   const [friendsWhoHaveBagged, setFriendsWhoHaveBagged] = useState<FriendWithProfile[]>([]);
+  const [isNamesMenuOpen, setIsNamesMenuOpen] = useState(false);
+  const otherFriendsRef = useRef<HTMLSpanElement>(null);
   
   // Rest of component remains unchanged
   useEffect(() => {
@@ -77,7 +81,8 @@ export default function FriendsBagged({ munroId, className = '' }: FriendsBagged
     if (count === 0) {
       return {
         names: "None of your friends",
-        action: "have bagged this hill"
+        action: "have bagged this hill",
+        hasMultipleFriends: false
       };
     }
     
@@ -85,7 +90,8 @@ export default function FriendsBagged({ munroId, className = '' }: FriendsBagged
       const friend = friendsWhoHaveBagged[0];
       return {
         names: `${friend.firstName} ${friend.lastName}`,
-        action: "has bagged this hill"
+        action: "has bagged this hill",
+        hasMultipleFriends: false
       };
     }
     
@@ -93,56 +99,88 @@ export default function FriendsBagged({ munroId, className = '' }: FriendsBagged
     const primaryFriend = friendsWhoHaveBagged[0];
     const othersCount = count - 1;
     return {
-      names: `${primaryFriend.firstName} and ${othersCount} other ${othersCount === 1 ? 'friend' : 'friends'}`,
-      action: "have bagged this hill"
+      names: (
+        <>
+          {primaryFriend.firstName} and{' '}
+          <span 
+            ref={otherFriendsRef}
+            className="border-b border-dotted border-slate cursor-pointer"
+            onMouseEnter={() => setIsNamesMenuOpen(true)}
+            onMouseLeave={() => setIsNamesMenuOpen(false)}
+          >
+            {othersCount} other {othersCount === 1 ? 'friend' : 'friends'}
+          </span>
+        </>
+      ),
+      action: "have bagged this hill",
+      hasMultipleFriends: true
     };
   };
   
-    // Render profile photos - populate from right to left
-    const renderProfilePhotos = () => {
-        const totalFrames = 3;
-        const displayArray = Array(totalFrames).fill(null);
-        
-        const friendsToShow = friendsWhoHaveBagged.slice(0, totalFrames);
-        
-        // Place the primary friend (mentioned in the message) at the rightmost position
-        if (friendsToShow.length > 0) {
-            displayArray[totalFrames - 1] = friendsToShow[0];
-            
-            // Place remaining friends from right to left
-            for (let i = 1; i < friendsToShow.length; i++) {
-            displayArray[totalFrames - 1 - i] = friendsToShow[i];
-            }
-        }
-        
-        return (
-            <div className="flex items-center">
-                {displayArray.map((friend, index) => (
-                    <div 
-                        key={friend?.id || `empty-${index}`}
-                        className={`w-12 h-12 rounded-full bg-sage border-2 border-mist flex items-center justify-center ${index > 0 ? 'ml-[-1rem]' : ''}`}
-                        style={{ zIndex: index }} // Higher z-index for items on the right
-                    >
-                        {friend && (
-                            <div className="w-full h-full relative">
-                                <UserProfilePicture userId={friend.id} />
-                            </div>
-                        )}
-                    </div>
-                ))}
-            </div>
-        );
-    }
+  // Render profile photos - populate from right to left
+  const renderProfilePhotos = () => {
+      const totalFrames = 3;
+      const displayArray = Array(totalFrames).fill(null);
+      
+      const friendsToShow = friendsWhoHaveBagged.slice(0, totalFrames);
+      
+      // Place the primary friend (mentioned in the message) at the rightmost position
+      if (friendsToShow.length > 0) {
+          displayArray[totalFrames - 1] = friendsToShow[0];
+          
+          // Place remaining friends from right to left
+          for (let i = 1; i < friendsToShow.length; i++) {
+          displayArray[totalFrames - 1 - i] = friendsToShow[i];
+          }
+      }
+      
+      return (
+          <div className="flex items-center">
+              {displayArray.map((friend, index) => (
+                  <div 
+                      key={friend?.id || `empty-${index}`}
+                      className={`w-12 h-12 rounded-full bg-sage border-2 border-mist flex items-center justify-center ${index > 0 ? 'ml-[-1rem]' : ''}`}
+                      style={{ zIndex: index }} // Higher z-index for items on the right
+                  >
+                      {friend && (
+                          <div className="w-full h-full relative">
+                              <UserProfilePicture userId={friend.id} />
+                          </div>
+                      )}
+                  </div>
+              ))}
+          </div>
+      );
+  }
   
-  const { names, action } = getMessageParts();
+  const messageParts = getMessageParts();
   
   return (
-    <div className={`mt-8 ${className}`}>
-      <div className="flex items-center gap-2 flex-wrap">
+    <div className={className}>
+      <div className="flex items-center gap-2 flex-wrap mt-6">
         {renderProfilePhotos()}
-        <div className="ml-2 flex flex-col">
-          <p className="text-xl text-slate">{names}</p>
-          <p className="text-l text-moss">{action}</p>
+        <div className="ml-2 flex flex-col relative">
+          <p className="text-xl text-slate">{messageParts.names}</p>
+          <p className="text-l text-moss">{messageParts.action}</p>
+          
+          {messageParts.hasMultipleFriends && (
+            <div className="relative">
+              <ContextualMenu 
+                isOpen={isNamesMenuOpen} 
+                onClose={() => setIsNamesMenuOpen(false)}
+              >
+                <div>
+                  <ul className="space-y-1">
+                    {friendsWhoHaveBagged.map(friend => (
+                      <li key={friend.id} className="text-xl">
+                        {friend.firstName} {friend.lastName}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </ContextualMenu>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -58,7 +58,7 @@ export default async function MunroSidebarDetail({ params }: MunroRouteParams) {
   }
 
   return (
-    <div className="rounded-xl">
+    <div className="rounded-xl w-full">
         <MunroDetailPage munro={munro} route={route} routeMunros={routeMunros} />
     </div>
   )

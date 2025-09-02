@@ -184,6 +184,8 @@ export default function useMapMarkers({
         removeMapMarker,
         setMarkerSelected,
         updateMarkersSelection,
+        createPopup,
+        removePopup
     };
 
 }

@@ -1,7 +1,10 @@
 // src/components/ModalElement.tsx
 // ModalElement component for displaying modals in the application
 
+'use client';
+
 import React from "react";
+import { createPortal } from 'react-dom';
 import { CrossIcon } from "@/components/global/SvgComponents";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -23,11 +26,14 @@ export default function ModalElement({
     children 
 }: ModalElementProps) {
 
-    return (
+    // Render nothing on the server
+    if (typeof window === 'undefined') return null;
+
+    return createPortal(
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center text-slate font-normal"
+            className="fixed inset-0 z-[1000] flex items-center justify-center text-slate font-normal"
             aria-modal="true"
             role="dialog"
             initial={{ opacity: 0 }}
@@ -36,16 +42,16 @@ export default function ModalElement({
           >
             {/* Overlay */}
             <motion.div
-              className="absolute inset-0 bg-slate opacity-70"
+              className="absolute inset-0 bg-slate/70 z-[1000]"
               onClick={onClose}
               initial={{ opacity: 0 }}
-              animate={{ opacity: 0.7 }}
+              animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
             />
             {/* Modal content */}
             <motion.div
-              className="relative rounded-xl shadow-xl overflow-hidden z-10"
+              className="relative rounded-xl shadow-xl overflow-hidden z-[1001]"
               style={{ minWidth: 320, maxWidth: "90vw" }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -65,6 +71,7 @@ export default function ModalElement({
             </motion.div>
           </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence>,
+      document.body
     );
 }
