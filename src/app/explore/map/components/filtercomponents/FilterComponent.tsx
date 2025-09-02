@@ -10,7 +10,7 @@ import FilterFriendsGroup from './FilterFriendsGroup';
 import FilterRadioGroup from './FilterRadioGroup';
 import FilterSliderGroup from './FilterSliderGroup';
 import { motion, AnimatePresence } from "framer-motion";
-import { FilterIcon, CrossIcon } from '@/components/global/SvgComponents';
+import { FilterIcon, CrossIcon, PlusIcon, MinusIcon } from '@/components/global/SvgComponents';
 import FilterCheckboxGroup from './FilterCheckboxGroup';
 import { convertHeight, convertLength } from '@/utils/misc/unitConverters';
 
@@ -34,7 +34,7 @@ export default function FilterComponent() {
         ...defaultFilters,
         ascent: ascentDefault,
     });
-    const [filtersVisible, setFiltersVisible] = useState(true);
+    const [filtersVisible, setFiltersVisible] = useState(false);
 
     const [ascentRange, setAscentRange] = useState(ascentDefault);
     const [lengthRange, setLengthRange] = useState(lengthDefault);
@@ -78,8 +78,9 @@ export default function FilterComponent() {
     return (
         <div className="relative self-start flex items-start gap-4 flex-1 text-l pointer-events-auto">
             <div
-                className={`rounded-full text-nowrap border pt-2 pb-2 pl-5 pr-4 flex items-center gap-2 cursor-pointer transition-all duration-300 ease-in-out
+                className={`rounded-full shadow-standard text-nowrap border pt-2 pb-2 pl-5 pr-4 flex items-center gap-2 cursor-pointer transition-all duration-300 ease-in-out
                 ${anyFilterChanged ? 'bg-pebble border-slate' : 'bg-mist border-mist'}`}
+                // Only toggle filters if not resetting
                 onClick={() => setFiltersVisible(v => !v)}
             >
                 <div className="pointer-events-none flex items-center gap-2">
@@ -90,15 +91,41 @@ export default function FilterComponent() {
                         Filters
                     </span>
                 </div>
-                {anyFilterChanged && (
-                    <div
-                        className="w-5 h-5 p-1 flex items-center justify-center cursor-pointer"
-                        onClick={e => { e.stopPropagation(); handleResetAllFilters(e); }}
-                        title="Reset all filters"
-                    >
+                <div
+                    className="w-5 h-5 p-1 flex items-center justify-center cursor-pointer"
+                    onClick={e => {
+                        e.stopPropagation();
+                        if (anyFilterChanged) {
+                            handleResetAllFilters(e);
+                        } else {
+                            setFiltersVisible(v => !v);
+                        }
+                    }}
+                    title={
+                        anyFilterChanged
+                            ? "Reset all filters"
+                            : filtersVisible
+                                ? "Hide filters"
+                                : "Show filters"
+                    }
+                >
+                    {anyFilterChanged ? (
                         <CrossIcon />
-                    </div>
-                )}
+                    ) : (
+                        <div className="relative w-full h-full flex items-center justify-center">
+                            <div
+                                className="absolute left-1/2 top-1/2 w-full h-[1px] bg-slate transition-colors duration-300"
+                                style={{ transform: 'translate(-50%, -50%)' }}
+                            />
+                            <div
+                                className="absolute left-1/2 top-1/2 w-[1px] h-full bg-slate transition-transform duration-300"
+                                style={{
+                                    transform: `translate(-50%, -50%) ${filtersVisible ? 'rotate(90deg)' : 'rotate(0deg)'}`
+                                }}
+                            />
+                        </div>
+                    )}
+                </div>
             </div>
 
             <AnimatePresence>

@@ -18,7 +18,7 @@ export default function MunroDetailHeader({
     const { isSidebarExpanded, setSidebarExpanded } = useMapState();
 
     return (
-        <div className="bg-mist sticky top-0 z-1 p-6 pointer-events-auto border-b border-sage shadow-standard">
+        <div className="bg-mist sticky top-0 z-1 p-6 pointer-events-auto shadow-standard border-b border-sage">
             <div className="flex justify-between items-center gap-6 mb-6">
                 <MunroDetailBackButton />
                 <BaggedIndicator munroId={munro.id} />

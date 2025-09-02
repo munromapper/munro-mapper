@@ -9,7 +9,7 @@ export default function SidebarListPage() {
     const { isSidebarExpanded } = useMapState();
 
     return (
-        <div className="rounded-xl overflow-auto no-scrollbar h-auto max-h-full">
+        <div className="rounded-xl overflow-auto no-scrollbar h-auto max-h-full shadow-standard">
             <SidebarHeader />
             <SidebarList />
         </div>

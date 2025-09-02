@@ -51,7 +51,7 @@ export default function MunroDetailPage({
     }));
 
     return (
-        <div className="rounded-xl overflow-auto no-scrollbar h-auto max-h-full">
+        <div className="rounded-xl overflow-auto no-scrollbar h-auto max-h-full shadow-standard">
             <MunroDetailHeader 
                 munro={convertedMunro} 
             />

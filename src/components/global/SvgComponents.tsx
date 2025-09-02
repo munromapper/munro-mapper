@@ -65,6 +65,23 @@ export const CrossIcon = () => {
     )
 }
 
+export const PlusIcon = () => {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 14 14" fill="none">
+            <path d="M7 1.34344V12.6572" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M12.6572 7.00031H1.34352" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+    )
+}
+
+export const MinusIcon = () => {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 14 12" fill="none">
+            <path d="M12.6572 6.00031H1.34352" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+    )
+}
+
 export const FilterIcon = () => {
     return (
         <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 12 12" fill="none">

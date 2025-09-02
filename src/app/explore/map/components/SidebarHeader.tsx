@@ -9,7 +9,7 @@ export default function SidebarHeader() {
     const { isSidebarExpanded, setSidebarExpanded, filteredMunros } = useMapState();
 
     return (
-        <div className="bg-mist sticky top-0 z-1 p-6 pointer-events-auto border-b border-sage shadow-standard">
+        <div className="bg-mist sticky top-0 z-1 p-6 pointer-events-auto border-b shadow-standard border-sage">
             <div className="mb-3">
                 <h1 className="font-heading-font-family text-3xl">Explore the Munros</h1>
             </div>

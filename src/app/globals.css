@@ -8,6 +8,9 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+  .shadow-standard {
+    box-shadow: 0px 1px 6px 0px rgba(0, 0, 0, 0.1);
+  }
 }
 
 @font-face {
