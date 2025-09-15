@@ -168,10 +168,13 @@ export default function MapComponent() {
         // If no selection, style hidden, or selected munro filtered out -> remove everything we own
         if (!nextId || routeStyleMode === 'hidden' || !activeVisible) {
             clearAllSelected();
-            clearAllHovered();
+            
+            // Only clear hovered routes when route style is hidden
+            if (routeStyleMode === 'hidden') {
+                clearAllHovered();
+            }
             return;
         }
-
         // Build desired set for the current selection
         const desiredLinks = routeMunroLinks.filter(link => link.munroId === nextId);
         const desiredIds = new Set(desiredLinks.map(l => `${l.routeId}-selected`));
