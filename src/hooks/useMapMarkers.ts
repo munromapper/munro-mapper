@@ -1,6 +1,7 @@
 // src/hooks/useMapMarkers.ts
 // This hook provides functions to create, add, remove, and manage map markers for Munros
 
+import { useCallback } from "react";
 import type { Munro } from "@/types/data/dataTypes";
 import { mapMarker, HillIcon } from "@/components/global/SvgComponents";
 import mapboxgl from "mapbox-gl";
@@ -39,16 +40,8 @@ export default function useMapMarkers({
             marker.classList.remove('marker-enter');
         });
 
-        marker.addEventListener('mouseenter', () => {
-            marker.classList.add('marker-hover');
-            createPopup(marker, munro);
-        });
-        marker.addEventListener('mouseleave', () => {
-            marker.classList.remove('marker-hover');
-            removePopup(marker);
-        });
-
-        return new mapboxgl.Marker({ element: marker }).setLngLat([munro.longitude, munro.latitude]);
+        return new mapboxgl.Marker(marker)
+            .setLngLat([munro.longitude, munro.latitude]);
     }
 
     interface AddMapMarkerProps {
@@ -69,7 +62,7 @@ export default function useMapMarkers({
     })  {
         const marker = createMapMarker({ munro, isBagged });
         const markerDiv = marker.getElement();
-        const markerInner = markerDiv.querySelector('.map-marker-inner');
+        const markerInner = markerDiv.querySelector('.marker-inner');
         markerInner?.classList.add("marker-enter");
         marker.addTo(map);
 
@@ -122,20 +115,9 @@ export default function useMapMarkers({
         }
     }
 
-    function updateMarkersSelection(
-        markerMap: Map<number, mapboxgl.Marker>, 
-        selectedMunroId: number | null
-    ) {
-        for (const [munroId, marker] of markerMap.entries()) {
-            setMarkerSelected(marker, munroId === selectedMunroId);
-        }
-    }
-
-    function createPopup(markerEl: HTMLElement, munro: Munro) {
-
+    const createPopup = useCallback((markerEl: HTMLElement, munro: Munro) => {
         const popups = markerEl.querySelectorAll('.popup');
         popups.forEach(popup => {
-            // Only add exit class if not already exiting
             if (!popup.classList.contains('popup-exit')) {
                 popup.classList.add('popup-exit');
                 popup.addEventListener('animationend', () => {
@@ -158,16 +140,16 @@ export default function useMapMarkers({
                 </div>
             </div>
             <div class="popup-region">${munro.region || 'Scotland'}</div>
-        `
+        `;
         markerEl.appendChild(popup);
         popup.className = 'popup popup-enter';
 
         popup.addEventListener('animationend', () => {
             popup.classList.remove('popup-enter');
         });
-    }
+    }, [userAscentUnits]);
 
-    function removePopup(markerEl: HTMLElement) {
+    const removePopup = useCallback((markerEl: HTMLElement) => {
         const popups = markerEl.querySelectorAll('.popup');
         popups.forEach(popup => {
             if (!popup.classList.contains('popup-exit')) {
@@ -177,13 +159,20 @@ export default function useMapMarkers({
                 }, { once: true });
             }
         });
-    }
+    }, []);
 
     return {
         addMapMarker,
         removeMapMarker,
         setMarkerSelected,
-        updateMarkersSelection,
+        updateMarkersSelection: (
+            markerMap: Map<number, mapboxgl.Marker>, 
+            selectedMunroId: number | null
+        ) => {
+            markerMap.forEach((marker, id) => {
+                setMarkerSelected(marker, id === selectedMunroId);
+            });
+        },
         createPopup,
         removePopup
     };

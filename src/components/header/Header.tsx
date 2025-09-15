@@ -1,11 +1,15 @@
 // src/app/components/Header/Header.tsx
 // This file contains the Header component for the application
 
+'use client';
 import React from "react";
 import LogoLink from "./LogoLink";
 import HeaderNavLink from "./HeaderNavLink";
 import HeaderNavDropdown from "./HeaderNavDropdown";
 import LoginAuthButtons from "./LoginAuthButtons";
+import ModalElement from "@/components/global/Modal";
+import PremiumAdvertPopup from "./PremiumAdvertPopup";
+import { useAuthContext } from "@/contexts/AuthContext";
 
 const navLinks = {
     explore: {
@@ -52,6 +56,7 @@ interface HeaderProps {
  * @param isAppHeader - Whether the header is for the 'explore' application page (Removes logo link, changes background color and border, adjusts content layout and alignment)
  */
 export default function Header({ isAppHeader }: HeaderProps) {
+    const { isPremiumAdModalOpen, closePremiumAdModal } = useAuthContext();
 
     return(
         <header 
@@ -109,6 +114,14 @@ export default function Header({ isAppHeader }: HeaderProps) {
                     />
                 </div>
             </nav>
+            <ModalElement
+                isOpen={isPremiumAdModalOpen}
+                onClose={closePremiumAdModal}
+                closeButtonBgClass="bg-lilac/25"
+                closeButtonHoverBgClass="hover:bg-lilac/50"
+            >
+                <PremiumAdvertPopup />
+            </ModalElement>
         </header>
     )
 }

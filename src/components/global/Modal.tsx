@@ -12,6 +12,8 @@ type ModalElementProps = {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
+  closeButtonBgClass?: string;
+  closeButtonHoverBgClass?: string;
 };
 
 /**
@@ -19,11 +21,14 @@ type ModalElementProps = {
  * @param {boolean} isOpen - Controls the visibility of the modal.
  * @param {function} onClose - Function to call when the modal should be closed.
  * @param {React.ReactNode} children - Content to display inside the modal.
+ * @param {string} [closeButtonBgClass='bg-pebble'] - Tailwind class for close button background.
  */
 export default function ModalElement({ 
     isOpen, 
     onClose, 
-    children 
+    children,
+    closeButtonBgClass = 'bg-pebble',
+    closeButtonHoverBgClass = 'hover:bg-apple' 
 }: ModalElementProps) {
 
     // Render nothing on the server
@@ -59,7 +64,7 @@ export default function ModalElement({
               transition={{ duration: 0.2 }}
             >
               <button
-                className="absolute top-6 right-6 rounded-full w-8 h-8 p-[10px] bg-pebble flex items-center justify-center cursor-pointer hover:bg-apple transition"
+                className={`absolute top-6 right-6 rounded-full w-8 h-8 p-[10px] ${closeButtonBgClass} flex items-center justify-center cursor-pointer ${closeButtonHoverBgClass} transition`}
                 onClick={onClose}
                 aria-label="Close modal"
               >

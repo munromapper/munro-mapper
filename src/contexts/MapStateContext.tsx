@@ -40,8 +40,8 @@ type MapStateContextType = {
     setMap: (map: mapboxgl.Map | null) => void;
     userAscentUnits: 'm' | 'ft';
     userLengthUnits: 'km' | 'mi';
-    routeStyleMode: 'gradient' | 'standard';
-    setRouteStyleMode: React.Dispatch<React.SetStateAction<'gradient' | 'standard'>>;
+    routeStyleMode: 'gradient' | 'standard' | 'hidden';
+    setRouteStyleMode: React.Dispatch<React.SetStateAction<'gradient' | 'standard' | 'hidden'>>;
     isSidebarExpanded: boolean;
     setSidebarExpanded: (expanded: boolean) => void;
 }
@@ -59,8 +59,8 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
         ft: [0, 10000],
     };
     const defaultLengthRanges: { km: [number, number]; mi: [number, number] } = {
-        km: [0, 50],
-        mi: [0, 35],
+        km: [0, 60],
+        mi: [0, 40],
     };
     const defaultFilters = {
         routeStyle: "all",
@@ -81,11 +81,11 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
     const [map, setMap] = useState<mapboxgl.Map | null>(null);
     const [userAscentUnits, setUserAscentUnits] = useState<'m' | 'ft'>('m');
     const [userLengthUnits, setUserLengthUnits] = useState<'km' | 'mi'>('km');
-    const { userProfile } = useAuthContext();
+    const { user, userProfile, openPremiumAdModal } = useAuthContext();
     const { userBaggedMunros, friendsBaggedMunros } = useBaggedMunroContext();
     const params = useParams();
     const munroSlug = params?.munro as string | undefined;
-    const [routeStyleMode, setRouteStyleMode] = useState<'gradient' | 'standard'>('standard');
+    const [routeStyleMode, setRouteStyleMode] = useState<'gradient' | 'standard' | 'hidden'>('standard');
     const [isSidebarExpanded, setSidebarExpanded] = useState<boolean>(true);
 
     useEffect(() => {
@@ -141,7 +141,49 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
         }));
     }, [routes, userLengthUnits, userAscentUnits]);
 
+    const unitAdjustedDefaults = useMemo(() => {
+        return {
+            ...defaultFilters,
+            length: userLengthUnits === 'mi' ? defaultLengthRanges.mi : defaultLengthRanges.km,
+            ascent: userAscentUnits === 'ft' ? defaultAscentRanges.ft : defaultAscentRanges.m,
+        } as Filters;
+    }, [userLengthUnits, userAscentUnits]);
+
+    const isAnyFilterActive = useMemo(() => {
+        const f = filters;
+        const d = unitAdjustedDefaults;
+        const lengthActive = f.length[0] !== d.length[0] || f.length[1] !== d.length[1];
+        const ascentActive = f.ascent[0] !== d.ascent[0] || f.ascent[1] !== d.ascent[1];
+        const routeStyleActive = f.routeStyle !== d.routeStyle;
+        const difficultyActive = f.difficulty !== d.difficulty;
+        const friendsActive = (f.friends?.selectedPeople?.length ?? 0) > 0;
+        return lengthActive || ascentActive || routeStyleActive || difficultyActive || friendsActive;
+    }, [filters, unitAdjustedDefaults]);
+
+    const isPremium = useMemo(() => {
+        const status = userProfile?.isPremium ?? '';
+        return !!user && ['active', 'canceling'].includes(status);
+    }, [user, userProfile?.isPremium]);
+
+    useEffect(() => {
+        if (!isPremium && isAnyFilterActive) {
+            openPremiumAdModal();
+            setFilters(unitAdjustedDefaults);
+        }
+    }, [isPremium, isAnyFilterActive, openPremiumAdModal, setFilters, unitAdjustedDefaults]);
+
     const filteredMunros = useMemo(() => {
+        if (!isPremium && isAnyFilterActive) {
+            return filterMunros({
+                filters: unitAdjustedDefaults,
+                munros: munrosConverted,
+                routeData: routesConverted,
+                routeLinks: routeMunroLinks,
+                userBaggedMunros,
+                friendsBaggedMunros,
+                currentUserId: userProfile?.id || '',
+            });
+        }
         return filterMunros({
             filters,
             munros: munrosConverted,    
@@ -149,9 +191,9 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
             routeLinks: routeMunroLinks,
             userBaggedMunros,
             friendsBaggedMunros,
-            currentUserId: userProfile?.id || ''
+            currentUserId: userProfile?.id || '',
         });
-    }, [filters, munrosConverted, routesConverted, routeMunroLinks, userBaggedMunros, friendsBaggedMunros]);
+    }, [filters, munrosConverted, routesConverted, routeMunroLinks, userBaggedMunros, friendsBaggedMunros, isPremium, isAnyFilterActive, userProfile?.id, unitAdjustedDefaults]);
 
     useEffect(() => {
         if (!munroSlug) {

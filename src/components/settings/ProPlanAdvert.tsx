@@ -9,7 +9,7 @@ export default function ProPlanAdvert() {
         <TransitionLink 
             href="/pricing"
             transitionWrapper="body"
-            className="rounded-xl block p-6 bg-linear-to-r from-cloud from-25% to-lilac to-150% bg-opacity-100 border border-lilac
+            className="rounded-xl block p-6 bg-premium border border-lilac
                                                hover:border hover:border-heather
                                                transition duration-250 ease-in-out"
         >

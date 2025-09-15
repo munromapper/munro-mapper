@@ -20,7 +20,7 @@ export default function LoginAuthButtons({
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [formMode, setFormMode] = useState<'logIn' | 'signUp'>('logIn');
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-    const { user } = useAuthContext();
+    const { user, isAuthModalOpen, authFormMode, openAuthModal, closeAuthModal } = useAuthContext();
 
     if (user) {
         return (
@@ -45,25 +45,25 @@ export default function LoginAuthButtons({
             <div className="flex items-center justify-end gap-6">
                 <TertiaryButton
                     label="Log in"
-                    onClick={() => {setIsModalOpen(true); setFormMode('logIn');}}
+                    onClick={() => openAuthModal('logIn')}
                     isAlternate={isDark}
                 />
                 <PrimaryButton
                     label="Sign up"
-                    onClick={() => {setIsModalOpen(true); setFormMode('signUp');}}
+                    onClick={() => openAuthModal('signUp')}
                     isAlternate={false}
                 />
             </div>
             <ModalElement
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
+                isOpen={isAuthModalOpen}
+                onClose={closeAuthModal}
             >
                 <AuthForm
-                    mode={formMode}
+                    mode={authFormMode}
                     onSuccess={() => {
                         window.location.reload();
                     }}
-                    onSwapMode={(mode) => setFormMode(mode)}
+                    onSwapMode={(mode) => openAuthModal(mode)}
                 />
             </ModalElement>
         </>

@@ -9,6 +9,7 @@ import type { FeatureCollection } from "geojson";
 
 export default function useGpxRoutes() {
     const geoJsonCache = useRef<Map<number, FeatureCollection>>(new Map());
+    const gradientCache = useRef<Map<number, FeatureCollection>>(new Map());
     const { routeStyleMode } = useMapState();
 
     const fetchAndCacheGeoJson = useCallback(async (routeId: number, gpxFile: string) => {
@@ -26,77 +27,6 @@ export default function useGpxRoutes() {
         const geojson = toGeoJSON.gpx(xml);
         geoJsonCache.current.set(routeId, geojson);
         return geojson;
-    }, []);
-
-    const addRouteToMap = useCallback((
-        map: mapboxgl.Map,
-        geojson: FeatureCollection,
-        id: string,
-        style: { color: string; width: number; opacity: number }
-    ) => {
-        const layerId = id.toString();
-        if (map.getLayer(layerId)) map.removeLayer(layerId);
-        if (map.getSource(layerId)) map.removeSource(layerId);
-
-        // Only process and add gradient data if in gradient mode
-        const sourceData = routeStyleMode === 'gradient' 
-            ? calculateGradients(geojson)
-            : geojson;
-
-        map.addSource(layerId, {
-            type: 'geojson',
-            data: sourceData
-        });
-
-        // Different paint styles based on mode
-        if (routeStyleMode === 'gradient') {
-            map.addLayer({
-                id: layerId,
-                type: 'line',
-                source: layerId,
-                layout: {
-                    'line-join': 'round',
-                    'line-cap': 'round'
-                },
-                paint: {
-                    'line-width': style.width,
-                    'line-opacity': style.opacity,
-                    'line-color': [
-                        'interpolate',
-                        ['linear'],
-                        ['get', 'gradient'],
-                        0, '#00ff00',      // Green for flat (0% grade)
-                        10, '#ffff00',     // Yellow for moderate (10% grade)
-                        20, '#ff9900',     // Orange for steep (20% grade)
-                        30, '#ff0000'      // Red for very steep (30% grade)
-                    ]
-                }
-            });
-        } else {
-            map.addLayer({
-                id: layerId,
-                type: 'line',
-                source: layerId,
-                layout: {
-                    'line-join': 'round',
-                    'line-cap': 'round'
-                },
-                paint: {
-                    'line-width': style.width,
-                    'line-opacity': style.opacity,
-                    'line-color': style.color || '#00ff00'  // Use provided color or default green
-                }
-            });
-        }
-    }, [routeStyleMode]);
-
-    const removeRouteFromMap = useCallback((
-        map: mapboxgl.Map,
-        id: string,
-    ) => {
-        const layerId = id.toString();
-        if (map.getLayer(layerId)) map.removeLayer(layerId);
-        if (map.getSource(layerId)) map.removeSource(layerId);
     }, []);
 
     const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
@@ -230,6 +160,111 @@ export default function useGpxRoutes() {
         
         return result;
     };
+
+    const addRouteToMap = useCallback((
+        map: mapboxgl.Map,
+        geojson: FeatureCollection,
+        id: string,
+        style: { color: string; width: number; opacity: number }
+    ) => {
+        const layerId = id.toString();
+        if (routeStyleMode === 'hidden') {
+            if (map.getLayer(layerId)) {
+                map.setLayoutProperty(layerId, 'visibility', 'none');
+            }
+            return;
+        }
+
+        // Only compute gradients when needed
+        const sourceData = routeStyleMode === 'gradient' 
+            ? calculateGradients(geojson)
+            : geojson;
+
+        // Create or update source
+        const existingSource = map.getSource(layerId) as mapboxgl.GeoJSONSource | undefined;
+        if (!existingSource) {
+            map.addSource(layerId, {
+                type: 'geojson',
+                data: sourceData
+            });
+        } else {
+            existingSource.setData(sourceData as any);
+        }
+
+        // Create or update layer paint/layout in-place
+        if (!map.getLayer(layerId)) {
+            map.addLayer({
+                id: layerId,
+                type: 'line',
+                source: layerId,
+                layout: {
+                    'line-join': 'round',
+                    'line-cap': 'round',
+                    'visibility': 'visible'
+                },
+                paint: routeStyleMode === 'gradient' ? {
+                    'line-width': style.width,
+                    'line-opacity': style.opacity,
+                    'line-color': [
+                        'interpolate',
+                        ['linear'],
+                        ['get', 'gradient'],
+                        0, '#A6D7A2',
+                        5, '#BFF073',
+                        10, '#D9F45D',
+                        15, '#FDE47F',
+                        20, '#FBC252',
+                        25, '#F7A072',
+                        30, '#C94C4C'
+                    ]
+                } : {
+                    'line-width': style.width,
+                    'line-opacity': style.opacity,
+                    'line-color': style.color || '#00ff00'
+                }
+            });
+        } else {
+            map.setLayoutProperty(layerId, 'visibility', 'visible');
+            map.setPaintProperty(layerId, 'line-width', style.width);
+            map.setPaintProperty(layerId, 'line-opacity', style.opacity);
+            if (routeStyleMode === 'gradient') {
+                map.setPaintProperty(layerId, 'line-color', [
+                    'interpolate',
+                    ['linear'],
+                    ['get', 'gradient'],
+                    0, '#A6D7A2',
+                    5, '#BFF073',
+                    10, '#D9F45D',
+                    15, '#FDE47F',
+                    20, '#FBC252',
+                    25, '#F7A072',
+                    30, '#C94C4C'
+                ] as any);
+            } else {
+                map.setPaintProperty(layerId, 'line-color', style.color || '#00ff00');
+            }
+        }
+    }, [routeStyleMode, calculateGradients]);
+
+    const removeRouteFromMap = useCallback((
+        map: mapboxgl.Map,
+        id: string,
+    ) => {
+        if (map.getLayer(id)) {
+            try {
+                map.removeLayer(id);
+            } catch (e) {
+                console.warn(`Failed to remove layer ${id}`, e);
+            }
+        }
+        if (map.getSource(id)) {
+            try {
+                map.removeSource(id);
+            } catch (e) {
+                console.warn(`Failed to remove source ${id}`, e);
+            }
+        }
+    }, []);
 
     return {
         fetchAndCacheGeoJson,

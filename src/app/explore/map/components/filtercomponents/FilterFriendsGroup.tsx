@@ -10,6 +10,7 @@ import RadioInput from "@/components/global/forms/RadioInput";
 import SearchInput from "@/components/global/forms/SearchInput";
 import { fetchUserProfile } from "@/utils/data/clientDataFetchers";
 import UserProfilePicture from "@/components/global/UserProfilePicture";
+import { PrimaryButton } from "@/components/global/Buttons";
 
 interface FilterFriendsGroupProps {
     value: {
@@ -23,7 +24,7 @@ export default function FilterFriendsGroup({
     value, 
     onChange 
 }: FilterFriendsGroupProps) {
-    const { friends, user, userProfile } = useAuthContext();
+    const { friends, user, userProfile, openAuthModal } = useAuthContext();
     const [friendProfiles, setFriendProfiles] = useState<UserProfile[]>([]);
 
     const [searchedFriends, setSearchedFriends] = useState<string>('');
@@ -75,10 +76,17 @@ export default function FilterFriendsGroup({
             </div>
             <div className="px-3 mb-4">
                 <div className="flex flex-col gap-1 max-h-40 overflow-y-auto">
-                    {(!user || !userProfile || !['active', 'canceling'].includes(userProfile.isPremium)) ? (
-                        <span className="text-moss text-sm px-3">Upgrade to Munro Mapper Plus to enable bagged status filtering and friends comparison</span>
+                    {!user ? (
+                        <div className="flex flex-col items-start gap-3 px-3 py-2">
+                            <span className="text-slate text-l">Sign in to view your friends list.</span>
+                            <PrimaryButton
+                                label="Log in"
+                                onClick={() => openAuthModal('logIn')}
+                                isAlternate={false}
+                            />
+                        </div>
                     ) : filteredPeople.length === 0 && searchedFriends.trim() !== "" ? (
-                        <span className="text-moss text-sm">No friends found.</span>
+                        <span className="text-slate text-l">No friends found. Adjust your search, or add friends.</span>
                     ) : (
                         filteredPeople.map(person => (
                             <label key={person.id} className="flex items-center gap-4 rounded-full px-3 py-2 cursor-pointer hover:bg-sage/50 transition duration-250 ease-in-out">
@@ -93,7 +101,6 @@ export default function FilterFriendsGroup({
                                                 : [...selectedPeople, person.id];
                                         onChange({ selectedPeople: newSelected, baggedMode });
                                     }}
-                                    disabled={!user || !userProfile || !['active', 'canceling'].includes(userProfile.isPremium)}
                                 />
                                 <div
                                     className={`

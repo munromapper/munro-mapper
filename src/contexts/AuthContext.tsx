@@ -19,6 +19,14 @@ interface AuthContextType {
     globalMessage: string | null;
     setGlobalMessage: (msg: string | null) => void;
     children: React.ReactNode;
+    isAuthModalOpen: boolean;
+    authFormMode: 'logIn' | 'signUp';
+    openAuthModal: (mode: 'logIn' | 'signUp') => void;
+    closeAuthModal: () => void;
+    isPremiumAdModalOpen: boolean;
+    openPremiumAdModal: () => void;
+    closePremiumAdModal: () => void;
+    
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -31,6 +39,13 @@ const AuthContext = createContext<AuthContextType>({
     globalMessage: null,
     setGlobalMessage: () => {},
     children: null,
+    isAuthModalOpen: false,
+    authFormMode: 'logIn',
+    openAuthModal: (mode: 'logIn' | 'signUp') => {},
+    closeAuthModal: () => {},
+    isPremiumAdModalOpen: false,
+    openPremiumAdModal: () => {},
+    closePremiumAdModal: () => {},
 });
 
 export const AuthProvider = (
@@ -42,6 +57,27 @@ export const AuthProvider = (
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
     const [friends, setFriends] = useState<Friend[] | null>(null);
     const [globalMessage, setGlobalMessage] = useState<string | null>(null);
+    const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+    const [authFormMode, setAuthFormMode] = useState<'logIn' | 'signUp'>('logIn');
+    const [isPremiumAdModalOpen, setIsPremiumAdModalOpen] = useState(false);
+
+    // Modal control functions
+    const openAuthModal = (mode: 'logIn' | 'signUp') => {
+        setAuthFormMode(mode);
+        setIsAuthModalOpen(true);
+    };
+
+    const closeAuthModal = () => {
+        setIsAuthModalOpen(false);
+    };
+
+    const openPremiumAdModal = () => {
+        setIsPremiumAdModalOpen(true);
+    };
+
+    const closePremiumAdModal = () => {
+        setIsPremiumAdModalOpen(false);
+    };
 
     useEffect(() => {
     const checkSession = async () => {
@@ -124,7 +160,24 @@ export const AuthProvider = (
     };
 
     return (
-        <AuthContext.Provider value={{ user, userProfile, userSubscription, friends, refreshUserProfile, refreshFriends, globalMessage, setGlobalMessage, children }}>
+        <AuthContext.Provider value={{ 
+            user, 
+            userProfile, 
+            userSubscription, 
+            friends, 
+            refreshUserProfile, 
+            refreshFriends, 
+            globalMessage, 
+            setGlobalMessage, 
+            children,
+            isAuthModalOpen,
+            authFormMode,
+            openAuthModal,
+            closeAuthModal,
+            isPremiumAdModalOpen,
+            openPremiumAdModal,
+            closePremiumAdModal,
+        }}>
             {children}
         </AuthContext.Provider>
     );

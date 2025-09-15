@@ -10,13 +10,15 @@ import FilterFriendsGroup from './FilterFriendsGroup';
 import FilterRadioGroup from './FilterRadioGroup';
 import FilterSliderGroup from './FilterSliderGroup';
 import { motion, AnimatePresence } from "framer-motion";
-import { FilterIcon, CrossIcon, PlusIcon, MinusIcon } from '@/components/global/SvgComponents';
+import { CrossIcon, PremiumIcon } from '@/components/global/SvgComponents';
 import FilterCheckboxGroup from './FilterCheckboxGroup';
 import { convertHeight, convertLength } from '@/utils/misc/unitConverters';
+import { useAuthContext } from '@/contexts/AuthContext';
 
 export default function FilterComponent() {
 
     const { filters, setFilters, defaultAscentRanges, defaultLengthRanges, defaultFilters, openFilter, setOpenFilter, userLengthUnits, userAscentUnits } = useMapState();
+    const { user, userProfile, openPremiumAdModal } = useAuthContext();
 
     const ascentDefault = userAscentUnits === 'ft'
         ? defaultAscentRanges.ft
@@ -68,6 +70,18 @@ export default function FilterComponent() {
 
     const anyFilterChanged = routeStyleChanged || difficultyChanged || lengthChanged || ascentChanged || filters.friends.selectedPeople.length > 0;
 
+    useEffect(() => {
+        if (filters.length[0] !== lengthRange[0] || filters.length[1] !== lengthRange[1]) {
+            setLengthRange(filters.length as [number, number]);
+        }
+    }, [filters.length]);
+
+    useEffect(() => {
+        if (filters.ascent[0] !== ascentRange[0] || filters.ascent[1] !== ascentRange[1]) {
+            setAscentRange(filters.ascent as [number, number]);
+        }
+    }, [filters.ascent]);
+
     function handleResetAllFilters(e: React.MouseEvent) {
         e.stopPropagation();
         setFilters(defaultFilters);
@@ -75,20 +89,31 @@ export default function FilterComponent() {
         setAscentRange(ascentDefault);
     }
 
+    const handleFilterClick = () => {
+        if (filtersVisible) {
+            setFiltersVisible(false);
+            return;
+        }
+        setFiltersVisible(v => !v);
+        const isPremium = !!user && ['active', 'canceling'].includes(userProfile?.isPremium ?? '');
+        if (!isPremium) {
+            openPremiumAdModal();
+        }
+    };
+
     return (
         <div className="relative self-start flex items-start gap-4 flex-1 text-l pointer-events-auto">
             <div
                 className={`rounded-full shadow-standard text-nowrap border pt-2 pb-2 pl-5 pr-4 flex items-center gap-2 cursor-pointer transition-all duration-300 ease-in-out
                 ${anyFilterChanged ? 'bg-pebble border-slate' : 'bg-mist border-mist'}`}
-                // Only toggle filters if not resetting
-                onClick={() => setFiltersVisible(v => !v)}
+                onClick={handleFilterClick}
             >
                 <div className="pointer-events-none flex items-center gap-2">
-                    <div className="w-3 h-3">
-                        <FilterIcon />
+                    <div className="w-4 h-4">
+                        <PremiumIcon currentColor="var(--color-heather)" />
                     </div>
                     <span>
-                        Filters
+                        Filter Hills
                     </span>
                 </div>
                 <div
