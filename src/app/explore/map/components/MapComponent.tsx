@@ -1,7 +1,7 @@
 'use client';
 import React, { useRef, useEffect, useCallback } from 'react';
-import mapboxgl from 'mapbox-gl';
-import type { LineString } from 'geojson';
+import mapboxgl, { Map, MapMouseEvent, LngLatLike, PointLike, GeoJSONSource } from 'mapbox-gl';
+import type { LineString, Feature, FeatureCollection, Geometry } from 'geojson';
 
 import { useMapState } from "@/contexts/MapStateContext";
 import { useBaggedMunroContext } from '@/contexts/BaggedMunroContext';
@@ -239,20 +239,28 @@ export default function MapComponent() {
     }, [activeMunro, setHoveredMunro]);
 
     // Utility for gradient hover snapping
-    const nearestOnSegmentPx = useCallback((map: mapboxgl.Map, mouse: mapboxgl.Point, a: [number, number], b: [number, number]) => {
-        const A = map.project({ lng: a[0], lat: a[1] });
-        const B = map.project({ lng: b[0], lat: b[1] });
-        const APx = { x: mouse.x - A.x, y: mouse.y - A.y };
-        const AB = { x: B.x - A.x, y: B.y - A.y };
-        const ab2 = AB.x * AB.x + AB.y * AB.y || 1;
-        let t = (APx.x * AB.x + APx.y * AB.y) / ab2;
-        t = Math.max(0, Math.min(1, t));
-        const Q = { x: A.x + AB.x * t, y: A.y + AB.y * t };
-        const dx = Q.x - mouse.x, dy = Q.y - mouse.y;
-        const distPx = Math.hypot(dx, dy);
-        const lngLat = map.unproject([Q.x, Q.y]);
-        return { lngLat, distPx };
-    }, []);
+    const nearestOnSegmentPx = useCallback(
+        (
+            map: mapboxgl.Map,
+            mouse: mapboxgl.Point,
+            a: [number, number],
+            b: [number, number]
+        ): { lngLat: mapboxgl.LngLat; distPx: number } => {
+            const A = map.project({ lng: a[0], lat: a[1] });
+            const B = map.project({ lng: b[0], lat: b[1] });
+            const APx = { x: mouse.x - A.x, y: mouse.y - A.y };
+            const AB = { x: B.x - A.x, y: B.y - A.y };
+            const ab2 = AB.x * AB.x + AB.y * AB.y || 1;
+            let t = (APx.x * AB.x + APx.y * AB.y) / ab2;
+            t = Math.max(0, Math.min(1, t));
+            const Q = { x: A.x + AB.x * t, y: A.y + AB.y * t };
+            const dx = Q.x - mouse.x, dy = Q.y - mouse.y;
+            const distPx = Math.hypot(dx, dy);
+            const lngLat = map.unproject([Q.x, Q.y]);
+            return { lngLat, distPx };
+        },
+        []
+    );
 
     // Gradient: show a small hover point + popup over selected routes only
     useEffect(() => {
@@ -307,7 +315,7 @@ export default function MapComponent() {
             hoverPopupRef.current?.remove();
         };
 
-        const onMove = (e: mapboxgl.MapMouseEvent) => {
+        const onMove = (e: MapMouseEvent) => {
             if (!map) return;
 
             if (routeStyleMode !== 'gradient' || !activeMunro) {
@@ -315,7 +323,7 @@ export default function MapComponent() {
                 return;
             }
 
-            const selectedRouteLayerIds = routeMunroLinks
+            const selectedRouteLayerIds: string[] = routeMunroLinks
                 .filter(l => l.munroId === activeMunro.id)
                 .map(l => `${l.routeId}-selected`)
                 .filter(id => !!map.getLayer(id));
@@ -329,21 +337,25 @@ export default function MapComponent() {
             const queryRadiusPx = 14;
             const maxSnapDistPx = 20;
 
-            const bbox: [mapboxgl.PointLike, mapboxgl.PointLike] = [
+            const bbox: [PointLike, PointLike] = [
                 [px.x - queryRadiusPx, px.y - queryRadiusPx],
                 [px.x + queryRadiusPx, px.y + queryRadiusPx]
             ];
 
             const feats = map
-                .queryRenderedFeatures([bbox[0], bbox[1]], { layers: selectedRouteLayerIds as string[] })
-                .filter(f => f.geometry.type === 'LineString' && typeof (f.properties as any)?.gradient === 'number');
+                .queryRenderedFeatures([bbox[0], bbox[1]], { layers: selectedRouteLayerIds })
+                .filter(
+                    (f: Feature) =>
+                        f.geometry.type === 'LineString' &&
+                        typeof (f.properties?.gradient) === 'number'
+                );
 
             if (!feats.length) {
                 hideHover();
                 return;
             }
 
-            let best: { lngLat: mapboxgl.LngLatLike; distPx: number; gradient: number } | null = null;
+            let best: { lngLat: LngLatLike; distPx: number; gradient: number } | null = null;
 
             for (const f of feats) {
                 const coords = (f.geometry as LineString).coordinates;
@@ -351,7 +363,7 @@ export default function MapComponent() {
                     const a = coords[i - 1] as [number, number];
                     const b = coords[i] as [number, number];
                     const snap = nearestOnSegmentPx(map, px, a, b);
-                    const gradient = (f.properties as any).gradient as number;
+                    const gradient = f.properties?.gradient as number;
                     if (!best || snap.distPx < best.distPx) {
                         best = { lngLat: snap.lngLat, distPx: snap.distPx, gradient };
                     }
@@ -363,21 +375,26 @@ export default function MapComponent() {
                 return;
             }
 
-            const src = map.getSource('route-hover-point') as mapboxgl.GeoJSONSource | undefined;
+            const src = map.getSource('route-hover-point') as GeoJSONSource | undefined;
             if (!src) {
                 hideHover();
                 return;
             }
             src.setData({
                 type: 'FeatureCollection',
-                features: [{
-                    type: 'Feature',
-                    properties: {},
-                    geometry: {
-                        type: 'Point',
-                        coordinates: [(best.lngLat as any).lng, (best.lngLat as any).lat]
+                features: [
+                    {
+                        type: 'Feature',
+                        properties: {},
+                        geometry: {
+                            type: 'Point',
+                            coordinates: [
+                                (best.lngLat as mapboxgl.LngLat).lng,
+                                (best.lngLat as mapboxgl.LngLat).lat
+                            ]
+                        }
                     }
-                }]
+                ]
             });
             if (map.getLayer('route-hover-point-layer')) {
                 map.setLayoutProperty('route-hover-point-layer', 'visibility', 'visible');
@@ -386,7 +403,7 @@ export default function MapComponent() {
             map.getCanvas().style.cursor = 'pointer';
             const gradientText = `${best.gradient.toFixed(1)}%`;
             hoverPopupRef.current!
-                .setLngLat(best.lngLat as any)
+                .setLngLat(best.lngLat as mapboxgl.LngLat)
                 .setHTML(`<div class="text-xs">Gradient: ${gradientText}</div>`)
                 .addTo(map);
         };

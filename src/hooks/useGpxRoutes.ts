@@ -6,6 +6,7 @@ import { useMapState } from "@/contexts/MapStateContext";
 import { supabase } from "@/utils/auth/supabaseClient";
 import toGeoJSON from "@mapbox/togeojson";
 import type { FeatureCollection } from "geojson";
+import type { Map as MapboxMap, GeoJSONSource } from "mapbox-gl";
 
 export default function useGpxRoutes() {
     const geoJsonCache = useRef<Map<number, FeatureCollection>>(new Map());
@@ -176,19 +177,19 @@ export default function useGpxRoutes() {
         }
 
         // Only compute gradients when needed
-        const sourceData = routeStyleMode === 'gradient' 
+        const sourceData: FeatureCollection = routeStyleMode === 'gradient' 
             ? calculateGradients(geojson)
             : geojson;
 
         // Create or update source
-        const existingSource = map.getSource(layerId) as mapboxgl.GeoJSONSource | undefined;
+        const existingSource = map.getSource(layerId) as GeoJSONSource | undefined;
         if (!existingSource) {
             map.addSource(layerId, {
                 type: 'geojson',
                 data: sourceData
             });
         } else {
-            existingSource.setData(sourceData as any);
+            existingSource.setData(sourceData);
         }
 
         // Create or update layer paint/layout in-place
@@ -239,7 +240,7 @@ export default function useGpxRoutes() {
                     20, '#FBC252',
                     25, '#F7A072',
                     30, '#C94C4C'
-                ] as any);
+                ]);
             } else {
                 map.setPaintProperty(layerId, 'line-color', style.color || '#00ff00');
             }
