@@ -1,8 +1,8 @@
 'use client';
 import React, { useRef, useEffect, useCallback } from 'react';
-import mapboxgl, { Map, MapMouseEvent, LngLatLike, PointLike, GeoJSONSource } from 'mapbox-gl';
-import type { LineString, Feature, FeatureCollection, Geometry } from 'geojson';
-
+import mapboxgl, { MapMouseEvent, LngLatLike, PointLike, GeoJSONSource } from 'mapbox-gl';
+import type { LineString, Feature } from 'geojson';
+import type { Route } from '@/types/data/dataTypes';
 import { useMapState } from "@/contexts/MapStateContext";
 import { useBaggedMunroContext } from '@/contexts/BaggedMunroContext';
 import useMapMarkers from '@/hooks/useMapMarkers';
@@ -50,10 +50,9 @@ export default function MapComponent() {
 
     const mapRef = useRef<HTMLDivElement | null>(null);
 
-    // Track which layers we have created for "selected" so we can remove them reliably.
+    // Selected route layer registry
     const selectedLayerIdsRef = useRef<Set<string>>(new Set());
-
-    // Track the last hovered munro id for cleanup.
+    // Last hovered munro id
     const latestHoveredId = useRef<number | null>(null);
     const prevHoveredMarkerId = useRef<number | null>(null);
 
@@ -68,6 +67,52 @@ export default function MapComponent() {
 
     const hoverPopupRef = useRef<mapboxgl.Popup | null>(null);
 
+    // START markers (route start points)
+    // Keys: `${routeId}-selected` / `${routeId}-hovered`
+    const routeStartMarkersRef = useRef<Map<string, mapboxgl.Marker>>(new Map());
+
+    const createStartMarkerEl = (variant: 'selected' | 'hovered') => {
+        const el = document.createElement('div');
+        el.className = `route-start-marker ${variant}`;
+        // basic inline fallback if no CSS yet
+        el.style.width = '10px';
+        el.style.height = '10px';
+        el.style.borderRadius = '50%';
+        el.style.boxSizing = 'border-box';
+        el.style.background = 'var(--color-slate)';
+        el.style.border = `2px solid ${variant === 'selected' ? 'var(--color-neon)' : 'var(--color-moss)'}`;
+        el.style.boxShadow = '0 0 0 2px var(--color-mist)';
+        return el;
+    };
+
+    const addStartMarker = useCallback((route: Route, variant: 'selected' | 'hovered') => {
+        if (!map) return;
+        if (routeStyleMode === 'hidden') return;
+        const key = `${route.id}-${variant}`;
+        if (routeStartMarkersRef.current.has(key)) return;
+        const el = createStartMarkerEl(variant);
+        const marker = new mapboxgl.Marker({ element: el })
+            .setLngLat([route.startLongitude, route.startLatitude])
+            .addTo(map);
+        routeStartMarkersRef.current.set(key, marker);
+    }, [map, routeStyleMode]);
+
+    const removeStartMarker = useCallback((key: string) => {
+        const mk = routeStartMarkersRef.current.get(key);
+        if (mk) {
+            mk.remove();
+            routeStartMarkersRef.current.delete(key);
+        }
+    }, []);
+
+    const removeAllStartMarkers = useCallback((predicate?: (key: string) => boolean) => {
+        for (const key of Array.from(routeStartMarkersRef.current.keys())) {
+            if (!predicate || predicate(key)) {
+                removeStartMarker(key);
+            }
+        }
+    }, [removeStartMarker]);
+
     // Init map
     useEffect(() => {
         if (!mapRef.current) return;
@@ -80,9 +125,9 @@ export default function MapComponent() {
         else setError("Failed to initialize map");
     }, [mapRef, setMap, setError, setLoading]);
 
+    // Base style switching
     const styleChangeCounterRef = useRef(0);
     const [styleChangeCounter, setStyleChangeCounter] = React.useState(0);
-
     const TERRAIN_STYLE = 'mapbox://styles/munromapper/cmcxenw8j002x01sd1wrv9bm4';
     const SATELLITE_STYLE = 'mapbox://styles/munromapper/cmdrxf2b5009801sb0eckccpf';
     const currentBaseStyleRef = useRef<'terrain' | 'satellite'>('terrain');
@@ -99,13 +144,11 @@ export default function MapComponent() {
         });
     }, [map, mapBaseStyleMode]);
 
-    // Add markers for filtered munros
+    // Munro markers
     useEffect(() => {
         if (!map) return;
-
         Object.values(markerList).forEach(marker => removeMapMarker({ marker }));
         setMarkerList({});
-
         const newMarkers: { [id: number]: mapboxgl.Marker } = {};
         filteredMunros?.forEach(munro => {
             const isBagged = userBaggedMunros.includes(munro.id);
@@ -115,15 +158,22 @@ export default function MapComponent() {
         setMarkerList(newMarkers);
     }, [map, filteredMunros, userBaggedMunros]);
 
-    // Hovered routes (single owner + cancellation + hide non-current hovered quickly)
+    // Hovered routes + start markers
     useEffect(() => {
         if (!map) return;
 
-        // If no hovered, or hidden mode, or hovering the active munro, hide any hovered routes and exit
+        // cleanup function for a given munro id's hovered routes
+        const removeHoveredForMunro = (munroId: number) => {
+            const links = routeMunroLinks.filter(link => link.munroId === munroId);
+            links.forEach(link => {
+                removeRouteFromMap(map, `${link.routeId}-hovered`);
+                removeStartMarker(`${link.routeId}-hovered`);
+            });
+        };
+
         if (!hoveredMunro || routeStyleMode === 'hidden' || (activeMunro && hoveredMunro.id === activeMunro.id)) {
             if (latestHoveredId.current != null) {
-                const oldLinks = routeMunroLinks.filter(link => link.munroId === latestHoveredId.current!);
-                oldLinks.forEach(link => removeRouteFromMap(map, `${link.routeId}-hovered`));
+                removeHoveredForMunro(latestHoveredId.current);
                 latestHoveredId.current = null;
             }
             return;
@@ -132,10 +182,11 @@ export default function MapComponent() {
         const currentHoverId = hoveredMunro.id;
         latestHoveredId.current = currentHoverId;
 
-        // Proactively hide hovered routes from any other munro
+        // Remove any other hovered routes/markers
         routeMunroLinks.forEach(link => {
             if (link.munroId !== currentHoverId) {
                 removeRouteFromMap(map, `${link.routeId}-hovered`);
+                removeStartMarker(`${link.routeId}-hovered`);
             }
         });
 
@@ -149,6 +200,7 @@ export default function MapComponent() {
                     const geojson = await fetchAndCacheGeoJson(route.id, route.gpxFile);
                     if (!cancelled && latestHoveredId.current === currentHoverId) {
                         addRouteToMap(map, geojson, `${route.id}-hovered`, { color: "#686F68", width: 2, opacity: 0.7 });
+                        addStartMarker(route, 'hovered');
                     }
                 }
             }
@@ -156,27 +208,26 @@ export default function MapComponent() {
 
         return () => {
             cancelled = true;
-            const clinks = routeMunroLinks.filter(link => link.munroId === currentHoverId);
-            clinks.forEach(link => removeRouteFromMap(map, `${link.routeId}-hovered`));
+            removeHoveredForMunro(currentHoverId);
         };
-    }, [map, hoveredMunro, activeMunro, routeStyleMode, routeMunroLinks, routes, addRouteToMap, removeRouteFromMap, fetchAndCacheGeoJson]);
+    }, [map, hoveredMunro, activeMunro, routeStyleMode, routeMunroLinks, routes, addRouteToMap, removeRouteFromMap, fetchAndCacheGeoJson, addStartMarker, removeStartMarker]);
 
-    // Selected routes — deterministic cleanup using a registry
+    // Selected routes + start markers
     useEffect(() => {
         if (!map) return;
 
-        // Utility to clear all selected layers
         const clearAllSelected = () => {
             for (const id of Array.from(selectedLayerIdsRef.current)) {
                 removeRouteFromMap(map, id);
                 selectedLayerIdsRef.current.delete(id);
+                removeStartMarker(id);
             }
         };
 
-        // Utility to clear all hovered layers
         const clearAllHovered = () => {
             routeMunroLinks.forEach(link => {
                 removeRouteFromMap(map, `${link.routeId}-hovered`);
+                removeStartMarker(`${link.routeId}-hovered`);
             });
             latestHoveredId.current = null;
         };
@@ -186,47 +237,51 @@ export default function MapComponent() {
         const nextId = activeMunro?.id ?? null;
         const activeVisible = nextId != null && (filteredMunros?.some(m => m.id === nextId) || false);
 
-        // If no selection, style hidden, or selected munro filtered out -> remove everything we own
         if (!nextId || routeStyleMode === 'hidden' || !activeVisible) {
             clearAllSelected();
-            
-            // Only clear hovered routes when route style is hidden
             if (routeStyleMode === 'hidden') {
                 clearAllHovered();
+                removeAllStartMarkers();
             }
             return;
         }
-        // Build desired set for the current selection
+
         const desiredLinks = routeMunroLinks.filter(link => link.munroId === nextId);
         const desiredIds = new Set(desiredLinks.map(l => `${l.routeId}-selected`));
 
-        // Remove any previously-added selected layers that are no longer desired
+        // Remove deselected
         for (const id of Array.from(selectedLayerIdsRef.current)) {
             if (!desiredIds.has(id)) {
                 removeRouteFromMap(map, id);
                 selectedLayerIdsRef.current.delete(id);
+                removeStartMarker(id);
             }
         }
 
-        // Add/update selected routes for the active munro
+        // Add selected
         (async () => {
             for (const link of desiredLinks) {
                 if (cancelled) return;
                 const id = `${link.routeId}-selected`;
                 const route = routes.find(r => r.id === link.routeId);
                 if (!route || !route.gpxFile) continue;
-
                 const geojson = await fetchAndCacheGeoJson(route.id, route.gpxFile);
                 if (cancelled) return;
                 addRouteToMap(map, geojson, id, { color: "#E1FF9E", width: 4, opacity: 1 });
                 selectedLayerIdsRef.current.add(id);
+                addStartMarker(route, 'selected');
             }
         })();
 
-        return () => {
-            cancelled = true;
-        };
-    }, [map, activeMunro, routeStyleMode, filteredMunros, routeMunroLinks, routes, addRouteToMap, removeRouteFromMap, fetchAndCacheGeoJson]);
+        return () => { cancelled = true; };
+    }, [map, activeMunro, routeStyleMode, filteredMunros, routeMunroLinks, routes, addRouteToMap, removeRouteFromMap, fetchAndCacheGeoJson, addStartMarker, removeStartMarker, removeAllStartMarkers]);
+
+    // Remove all start markers if switching to hidden
+    useEffect(() => {
+        if (routeStyleMode === 'hidden') {
+            removeAllStartMarkers();
+        }
+    }, [routeStyleMode, removeAllStartMarkers]);
 
     // Marker selected CSS
     useEffect(() => {
@@ -236,7 +291,7 @@ export default function MapComponent() {
         }
     }, [activeMunro, markerList, setMarkerSelected]);
 
-    // Hover popup control (delta updates only to avoid flicker)
+    // Hover popup control
     useEffect(() => {
         if (prevHoveredMarkerId.current != null) {
             const prevMarker = markerList[prevHoveredMarkerId.current];
@@ -246,7 +301,6 @@ export default function MapComponent() {
                 removePopup(el);
             }
         }
-
         if (hoveredMunro && markerList[hoveredMunro.id]) {
             const el = markerList[hoveredMunro.id].getElement();
             el.classList.add("marker-hover");
@@ -257,7 +311,7 @@ export default function MapComponent() {
         }
     }, [hoveredMunro, markerList, createPopup, removePopup]);
 
-    // Clear hovered when selecting a munro
+    // Clear hovered when selecting
     useEffect(() => {
         if (activeMunro) setHoveredMunro(null);
     }, [activeMunro, setHoveredMunro]);
@@ -286,7 +340,7 @@ export default function MapComponent() {
         []
     );
 
-    // Gradient: show a small hover point + popup over selected routes only
+    // Gradient hover artifacts over selected routes
     useEffect(() => {
         if (!map) return;
 

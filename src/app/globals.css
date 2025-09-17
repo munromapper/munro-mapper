@@ -177,6 +177,7 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  position: relative;
   z-index: 1;
 }
 
@@ -193,11 +194,13 @@ body {
 }
 
 .marker-hover {
-  z-index: 10;
+  z-index: 20;
+  position: relative;
 }
 
 .marker-selected {
-  z-index: 20;
+  z-index: 10;
+  position: relative;
 }
 
 .marker-enter .marker-inner {
