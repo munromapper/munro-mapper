@@ -101,6 +101,8 @@ export default function FilterComponent() {
         }
     };
 
+    const isPremium = !!user && ['active', 'canceling'].includes(userProfile?.isPremium ?? '');
+
     return (
         <div className="relative self-start flex items-start gap-4 flex-1 text-l pointer-events-auto">
             <div
@@ -109,9 +111,11 @@ export default function FilterComponent() {
                 onClick={handleFilterClick}
             >
                 <div className="pointer-events-none flex items-center gap-2">
-                    <div className="w-4 h-4">
-                        <PremiumIcon currentColor="var(--color-heather)" />
-                    </div>
+                    {!isPremium && (
+                        <div className="w-4 h-4">
+                            <PremiumIcon currentColor="var(--color-heather)" />
+                        </div>
+                    )}
                     <span>
                         Filter Hills
                     </span>

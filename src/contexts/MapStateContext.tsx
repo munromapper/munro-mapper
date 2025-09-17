@@ -44,6 +44,8 @@ type MapStateContextType = {
     setRouteStyleMode: React.Dispatch<React.SetStateAction<'gradient' | 'standard' | 'hidden'>>;
     isSidebarExpanded: boolean;
     setSidebarExpanded: (expanded: boolean) => void;
+    mapBaseStyleMode: 'terrain' | 'satellite';
+    setMapBaseStyleMode: React.Dispatch<React.SetStateAction<'terrain' | 'satellite'>>;
 }
 
 const MapStateContext = createContext<MapStateContextType | undefined>(undefined);
@@ -87,6 +89,7 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
     const munroSlug = params?.munro as string | undefined;
     const [routeStyleMode, setRouteStyleMode] = useState<'gradient' | 'standard' | 'hidden'>('standard');
     const [isSidebarExpanded, setSidebarExpanded] = useState<boolean>(true);
+    const [mapBaseStyleMode, setMapBaseStyleMode] = useState<'terrain' | 'satellite'>('terrain');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -243,7 +246,9 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
                 routeStyleMode,
                 setRouteStyleMode,
                 isSidebarExpanded,
-                setSidebarExpanded
+                setSidebarExpanded,
+                mapBaseStyleMode,
+                setMapBaseStyleMode
             } as MapStateContextType
         }>
             {children}

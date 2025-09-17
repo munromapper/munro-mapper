@@ -1,29 +1,28 @@
-// src/app/explore/map/components/RouteStyleToggle.tsx
-// Component to toggle between different route styles: standard, gradient, hidden
+// src/app/explore/map/components/MapStyleToggle.tsx
+// Component to toggle between different base map styles: terrain, satellite
 
-import { use, useEffect, useRef, useState } from 'react';
+'use client';
+import { useEffect, useRef, useState } from 'react';
 import { useMapState } from '@/contexts/MapStateContext';
-import { AnimatePresence, motion } from 'framer-motion';
-import { RouteLineIcon, PremiumIconOutline } from '@/components/global/SvgComponents';
 import { useAuthContext } from '@/contexts/AuthContext';
+import { AnimatePresence, motion } from 'framer-motion';
+import { PremiumIconOutline, PremiumIcon, MapStyleIcon } from '@/components/global/SvgComponents';
 
-export default function RouteStyleToggle() {
-    const { routeStyleMode, setRouteStyleMode } = useMapState();
+export default function MapStyleToggle() {
+    const { mapBaseStyleMode, setMapBaseStyleMode } = useMapState();
+    const { user, userProfile, openPremiumAdModal } = useAuthContext();
     const [open, setOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement | null>(null);
-    const { user, userProfile, openPremiumAdModal } = useAuthContext();
 
     const isPremium = !!user && ['active', 'canceling'].includes(userProfile?.isPremium ?? '');
-    const gradientLocked = !isPremium;
+    const satelliteLocked = !isPremium;
 
     useEffect(() => {
         const onDocClick = (e: MouseEvent) => {
             if (!menuRef.current) return;
             if (!menuRef.current.contains(e.target as Node)) setOpen(false);
         };
-        const onEsc = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') setOpen(false);
-        };
+        const onEsc = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false); };
         document.addEventListener('mousedown', onDocClick);
         document.addEventListener('keydown', onEsc);
         return () => {
@@ -33,33 +32,32 @@ export default function RouteStyleToggle() {
     }, []);
 
     useEffect(() => {
-        if (gradientLocked && routeStyleMode === 'gradient') {
-            setRouteStyleMode('standard');
+        if (satelliteLocked && mapBaseStyleMode === 'satellite') {
+            setMapBaseStyleMode('terrain');
         }
-    }, [gradientLocked, routeStyleMode, setRouteStyleMode]);
+    }, [satelliteLocked, mapBaseStyleMode, setMapBaseStyleMode]);
 
-    const selectMode = (mode: 'standard' | 'gradient' | 'hidden') => {
-        if (mode === 'gradient' && gradientLocked) {
+    const selectMode = (mode: 'terrain' | 'satellite') => {
+        if (mode === 'satellite' && satelliteLocked) {
             openPremiumAdModal();
             return;
         }
-        setRouteStyleMode(mode);
+        setMapBaseStyleMode(mode);
     };
 
-    const is = (m: 'standard' | 'gradient' | 'hidden') => routeStyleMode === m;
+    const is = (m: 'terrain' | 'satellite') => mapBaseStyleMode === m;
 
     return (
-        <div className="absolute bottom-47 right-6 z-10 pointer-events-auto" ref={menuRef}>
+        <div className="absolute bottom-59 right-6 z-10 pointer-events-auto" ref={menuRef}>
             <button
                 className="relative w-10 h-10 flex items-center justify-center p-3 rounded-full shadow-standard bg-mist cursor-pointer"
-                onClick={() => setOpen((v) => !v)}
+                onClick={() => setOpen(v => !v)}
                 aria-haspopup="menu"
                 aria-expanded={open}
-                aria-label="Choose route style"
-                title="Choose route style"
+                aria-label="Choose base map style"
+                title="Choose base map style"
             >
-                {/* Premium badge (non‑premium users only) */}
-                {gradientLocked && (
+                {satelliteLocked && (
                     <span
                         aria-hidden="true"
                         className="pointer-events-none absolute -top-0.75 -left-0.75 w-5 h-5"
@@ -68,47 +66,38 @@ export default function RouteStyleToggle() {
                     </span>
                 )}
                 <div className="w-7 h-7">
-                    <RouteLineIcon />
+                    <MapStyleIcon />
                 </div>
             </button>
 
             <AnimatePresence>
                 {open && (
                     <motion.div
-                        key="route-style-menu"
+                        key="map-style-menu"
                         role="menu"
-                        aria-label="Route style options"
+                        aria-label="Map style options"
                         initial={{ opacity: 0, y: 8 }}
                         animate={{ opacity: 1, y: 0, transition: { duration: 0.18, ease: 'easeOut' } }}
                         exit={{ opacity: 0, y: 8, transition: { duration: 0.15, ease: 'easeIn' } }}
                         className="absolute bottom-0 right-full mr-9 w-64 rounded-xl bg-mist shadow-standard p-2"
                     >
                         <Option
-                            title="Standard"
-                            description="Single color route display"
-                            selected={is('standard')}
-                            onClick={() => selectMode('standard')}
+                            title="Terrain"
+                            description="Topographic hill shading"
+                            selected={is('terrain')}
+                            onClick={() => selectMode('terrain')}
                         >
-                            <PreviewStandard />
+                            <PreviewTerrain />
                         </Option>
 
                         <Option
-                            title="Gradient"
-                            description="Colored by slope gradient"
-                            selected={is('gradient')}
-                            onClick={() => selectMode('gradient')}
-                            locked={gradientLocked}
+                            title="Satellite"
+                            description="Detailed aerial imagery"
+                            selected={is('satellite')}
+                            onClick={() => selectMode('satellite')}
+                            locked={satelliteLocked}
                         >
-                            <PreviewGradient locked={gradientLocked} />
-                        </Option>
-
-                        <Option
-                            title="Hidden"
-                            description="Turn off all route lines"
-                            selected={is('hidden')}
-                            onClick={() => selectMode('hidden')}
-                        >
-                            <PreviewHidden />
+                            <PreviewSatellite />
                         </Option>
                     </motion.div>
                 )}
@@ -160,32 +149,22 @@ function Option({
     );
 }
 
-function PreviewStandard() {
+function PreviewTerrain() {
     return (
         <div
             className="w-full h-full bg-center bg-cover"
-            style={{ backgroundImage: 'url(/images/linestylestandard.jpg)' }}
-            aria-label="Standard route style preview"
+            style={{ backgroundImage: 'url(/images/mapstyleterrain.jpg)' }}
+            aria-label="Terrain style preview"
         />
     );
 }
 
-function PreviewGradient({ locked }: { locked?: boolean }) {
+function PreviewSatellite() {
     return (
         <div
             className="w-full h-full bg-center bg-cover"
-            style={{ backgroundImage: 'url(/images/linestylegradient.jpg)' }}
-            aria-label="Gradient route style preview"
-        />
-    );
-}
-
-function PreviewHidden() {
-    return (
-        <div
-            className="w-full h-full bg-center bg-cover"
-            style={{ backgroundImage: 'url(/images/linestylenone.jpg)' }}
-            aria-label="Hidden route style preview"
+            style={{ backgroundImage: 'url(/images/mapstylesatellite.jpg)' }}
+            aria-label="Satellite style preview"
         />
     );
 }

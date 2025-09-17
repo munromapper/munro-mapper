@@ -11,6 +11,7 @@ import useMapNavigation from '@/hooks/useMapNavigation';
 import initialiseMap from '@/utils/map/initialiseMap';
 import { RecenterButton } from './RecenterButton';
 import RouteStyleToggle from './RouteStyleToggle';
+import MapStyleToggle from './MapStyleToggle';
 
 export default function MapComponent() {
     const { 
@@ -28,7 +29,8 @@ export default function MapComponent() {
         setMarkerList, 
         setLoading, 
         setError,
-        routeStyleMode 
+        routeStyleMode,
+        mapBaseStyleMode 
     } = useMapState();
 
     const { userBaggedMunros } = useBaggedMunroContext();
@@ -77,6 +79,25 @@ export default function MapComponent() {
         if (m) setMap(m);
         else setError("Failed to initialize map");
     }, [mapRef, setMap, setError, setLoading]);
+
+    const styleChangeCounterRef = useRef(0);
+    const [styleChangeCounter, setStyleChangeCounter] = React.useState(0);
+
+    const TERRAIN_STYLE = 'mapbox://styles/munromapper/cmcxenw8j002x01sd1wrv9bm4';
+    const SATELLITE_STYLE = 'mapbox://styles/munromapper/cmdrxf2b5009801sb0eckccpf';
+    const currentBaseStyleRef = useRef<'terrain' | 'satellite'>('terrain');
+
+    useEffect(() => {
+        if (!map) return;
+        if (currentBaseStyleRef.current === mapBaseStyleMode) return;
+        const target = mapBaseStyleMode === 'terrain' ? TERRAIN_STYLE : SATELLITE_STYLE;
+        currentBaseStyleRef.current = mapBaseStyleMode;
+        map.setStyle(target);
+        map.once('style.load', () => {
+            styleChangeCounterRef.current += 1;
+            setStyleChangeCounter(styleChangeCounterRef.current);
+        });
+    }, [map, mapBaseStyleMode]);
 
     // Add markers for filtered munros
     useEffect(() => {
@@ -425,6 +446,7 @@ export default function MapComponent() {
     return (
         <div ref={mapRef} className="w-full h-full">
             <RouteStyleToggle />
+            <MapStyleToggle />
             {offCenter && activeMunro && (
                 <RecenterButton 
                     selectedMunro={activeMunro}
