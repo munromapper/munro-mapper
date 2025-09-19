@@ -194,12 +194,10 @@ body {
 
 .marker-hover {
   z-index: 20;
-  position: relative;
 }
 
 .marker-selected {
   z-index: 10;
-  position: relative;
 }
 
 .marker-enter .marker-inner {
