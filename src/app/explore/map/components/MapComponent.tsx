@@ -316,14 +316,14 @@ export default function MapComponent() {
         if (activeMunro) setHoveredMunro(null);
     }, [activeMunro, setHoveredMunro]);
 
-    // Utility for gradient hover snapping
+    // Utility for gradient hover snapping (return t for interpolation)
     const nearestOnSegmentPx = useCallback(
         (
             map: mapboxgl.Map,
             mouse: mapboxgl.Point,
             a: [number, number],
             b: [number, number]
-        ): { lngLat: mapboxgl.LngLat; distPx: number } => {
+        ): { lngLat: mapboxgl.LngLat; distPx: number; t: number } => {
             const A = map.project({ lng: a[0], lat: a[1] });
             const B = map.project({ lng: b[0], lat: b[1] });
             const APx = { x: mouse.x - A.x, y: mouse.y - A.y };
@@ -335,7 +335,7 @@ export default function MapComponent() {
             const dx = Q.x - mouse.x, dy = Q.y - mouse.y;
             const distPx = Math.hypot(dx, dy);
             const lngLat = map.unproject([Q.x, Q.y]);
-            return { lngLat, distPx };
+            return { lngLat, distPx, t };
         },
         []
     );
@@ -433,17 +433,26 @@ export default function MapComponent() {
                 return;
             }
 
-            let best: { lngLat: LngLatLike; distPx: number; gradient: number } | null = null;
+            let best: { lngLat: LngLatLike; distPx: number; gradient: number; elevM?: number } | null = null;
 
             for (const f of feats) {
-                const coords = (f.geometry as LineString).coordinates;
+                const coords = (f.geometry as LineString).coordinates as Array<[number, number, number?]>;
+                // Each feature is a segment ([prev, curr]), but keep robust iteration:
                 for (let i = 1; i < coords.length; i++) {
-                    const a = coords[i - 1] as [number, number];
-                    const b = coords[i] as [number, number];
-                    const snap = nearestOnSegmentPx(map, px, a, b);
+                    const a = coords[i - 1];
+                    const b = coords[i];
+                    const snap = nearestOnSegmentPx(map, px, [a[0], a[1]], [b[0], b[1]]);
                     const gradient = f.properties?.gradient as number;
+
+                    let elevM: number | undefined;
+                    if (a.length >= 3 && b.length >= 3 && Number.isFinite(a[2]!) && Number.isFinite(b[2]!)) {
+                        const zA = a[2] as number;
+                        const zB = b[2] as number;
+                        elevM = zA + (zB - zA) * snap.t;
+                    }
+
                     if (!best || snap.distPx < best.distPx) {
-                        best = { lngLat: snap.lngLat, distPx: snap.distPx, gradient };
+                        best = { lngLat: snap.lngLat, distPx: snap.distPx, gradient, elevM };
                     }
                 }
             }
@@ -480,9 +489,19 @@ export default function MapComponent() {
 
             map.getCanvas().style.cursor = 'pointer';
             const gradientText = `${best.gradient.toFixed(1)}%`;
+
+            let elevLine = '';
+            if (typeof best.elevM === 'number' && Number.isFinite(best.elevM)) {
+                const meters = best.elevM;
+                const isFeet = userAscentUnits === 'ft';
+                const value = isFeet ? meters * 3.280839895 : meters;
+                const unit = isFeet ? 'ft' : 'm';
+                elevLine = `<div>Elevation: ${Math.round(value).toLocaleString()} ${unit}</div>`;
+            }
+
             hoverPopupRef.current!
                 .setLngLat(best.lngLat as mapboxgl.LngLat)
-                .setHTML(`<div class="text-xs">Gradient: ${gradientText}</div>`)
+                .setHTML(`<div class="text-xs leading-tight"><div>Gradient: ${gradientText}</div>${elevLine}</div>`)
                 .addTo(map);
         };
 
@@ -495,7 +514,7 @@ export default function MapComponent() {
             map.getCanvas().removeEventListener('mouseleave', onCanvasLeave);
             hoverPopupRef.current?.remove();
         };
-    }, [map, routeStyleMode, nearestOnSegmentPx, activeMunro, routeMunroLinks]);
+    }, [map, routeStyleMode, nearestOnSegmentPx, activeMunro, routeMunroLinks, userAscentUnits]);
 
     return (
         <div ref={mapRef} className="w-full h-full">

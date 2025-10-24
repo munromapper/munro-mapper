@@ -27,7 +27,7 @@ export function RecenterButton({
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-mist text-slate px-4 py-2 rounded-full flex items-center gap-3 text-l hover:bg-pebble hover:text-slate transition z-20 cursor-pointer"
+                    className="absolute bottom-9 font-body-font-family left-1/2 -translate-x-1/2 bg-mist text-slate px-4 py-2 rounded-full flex items-center gap-3 text-l hover:bg-pebble hover:text-slate transition z-20 cursor-pointer"
                     onClick={onRecenter}
                 >
                     <div className="w-4 h-4 flex items-center justify-center">
