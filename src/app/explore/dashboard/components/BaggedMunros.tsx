@@ -3,7 +3,7 @@
 
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useBaggedMunroContext } from '@/contexts/BaggedMunroContext';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { RoundedTick } from '@/components/global/SvgComponents';
@@ -23,7 +23,7 @@ function getProgressMessage(pct: number) {
 function Donut({
   value,
   total,
-  size = 136,
+  size = 150,
   strokeWidth = 14,
   className = '',
   centerNumber,
@@ -108,11 +108,21 @@ export default function BaggedMunros() {
   const { user } = useAuthContext();
   const { userBaggedMunros, loading, error } = useBaggedMunroContext();
 
-  const bagged = userBaggedMunros.length;
-  const unbagged = Math.max(TOTAL_MUNROS - bagged, 0);
-  const baggedPct = bagged === 0 ? 0 : Math.max(1, Math.round((bagged / TOTAL_MUNROS) * 100));
-  const unbaggedPct = 100 - baggedPct;
-  const progressMessage = getProgressMessage(baggedPct);
+  // Memoise all derived values so they persist across tab switches
+  const {
+    bagged,
+    unbagged,
+    baggedPct,
+    unbaggedPct,
+    progressMessage,
+  } = useMemo(() => {
+    const bagged = userBaggedMunros.length;
+    const unbagged = Math.max(TOTAL_MUNROS - bagged, 0);
+    const baggedPct = bagged === 0 ? 0 : Math.max(1, Math.round((bagged / TOTAL_MUNROS) * 100));
+    const unbaggedPct = 100 - baggedPct;
+    const progressMessage = getProgressMessage(baggedPct);
+    return { bagged, unbagged, baggedPct, unbaggedPct, progressMessage };
+  }, [userBaggedMunros]);
 
   return (
     <section className="rounded-xl p-9 border border-sage">

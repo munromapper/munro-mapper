@@ -25,11 +25,13 @@ export const BaggedMunroProvider = ({ children }: { children: React.ReactNode })
     const [userBaggedMunros, setUserBaggedMunros] = useState<number[]>([]);
     const [friendsBaggedMunros, setFriendsBaggedMunros] = useState<{ [friendUserId: string]: number[] }>({});
     const [loading, setLoading] = useState(false);
+    const [hasLoaded, setHasLoaded] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [lastToggledMunroId, setLastToggledMunroId] = useState<number | null>(null);
 
-    const fetchBaggedMunros = useCallback(async () => {
+    const fetchBaggedMunros = useCallback(async (forceRefresh = false) => {
         if (!user) return;
+        if (hasLoaded && !forceRefresh) return;
         setLoading(true);
         setError(null);
 
@@ -65,6 +67,7 @@ export const BaggedMunroProvider = ({ children }: { children: React.ReactNode })
                 }
             }
             setFriendsBaggedMunros(friendsMap);
+            setHasLoaded(true);
         } catch (err) {
             if (err instanceof Error) {
                 setError(err.message);
@@ -74,7 +77,7 @@ export const BaggedMunroProvider = ({ children }: { children: React.ReactNode })
         } finally {
             setLoading(false);
         }
-    }, [user, friends]);
+    }, [user, friends, hasLoaded]);
 
     useEffect(() => {
         fetchBaggedMunros();
@@ -104,7 +107,7 @@ export const BaggedMunroProvider = ({ children }: { children: React.ReactNode })
         <BaggedMunroContext.Provider value={{
             userBaggedMunros,
             friendsBaggedMunros,
-            refreshBaggedMunros: fetchBaggedMunros,
+            refreshBaggedMunros: () => fetchBaggedMunros(true),
             loading,
             error,
             toggleBagged,

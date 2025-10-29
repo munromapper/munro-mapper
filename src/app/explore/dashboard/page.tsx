@@ -5,6 +5,7 @@
 import React, { useEffect } from 'react'
 import BaggedMunros from './components/BaggedMunros'
 import DifficultyBreakdown from './components/DifficultyBreakdown'
+import RegionalBreakdown from './components/RegionalBreakdown';
 import { BaggedMunroProvider } from '@/contexts/BaggedMunroContext'
 import { useAuthContext } from '@/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
@@ -28,6 +29,7 @@ export default function DashboardLayout() {
                     <div className="space-y-6">
                         <BaggedMunros />
                         <DifficultyBreakdown />
+                        <RegionalBreakdown />
                         {/* ...other left column cards (Difficulty, Regional, etc.) */}
                     </div>
 

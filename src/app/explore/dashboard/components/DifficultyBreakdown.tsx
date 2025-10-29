@@ -2,7 +2,7 @@
 // This file contains the difficulty breakdown component for the dashboard page
 
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useBaggedMunroContext } from '@/contexts/BaggedMunroContext';
 import { fetchRouteMunroLinks, fetchRouteData } from '@/utils/data/clientDataFetchers';
 import { EasyIcon } from '@/components/global/SvgComponents';
@@ -67,7 +67,36 @@ export default function DifficultyBreakdown() {
     getBreakdown();
   }, [userBaggedMunros]);
 
-  const total = Object.values(breakdown).reduce((a, b) => a + b, 0);
+  // Memoise total and breakdown lists so they persist across tab switches
+  const total = useMemo(() => Object.values(breakdown).reduce((a, b) => a + b, 0), [breakdown]);
+  const breakdownBar = useMemo(() => (
+    Object.entries(breakdown)
+      .filter(([_, count]) => count > 0)
+      .map(([diff, count], idx, arr) => {
+        const pct = total ? Math.round((count / total) * 100) : 0;
+        return (
+          <div
+            key={diff}
+            className={`${DIFFICULTY_COLORS[diff as Difficulty]} h-full`}
+            style={{ width: `${pct}%`, marginRight: idx < arr.length - 1 ? '0.25rem' : 0 }}
+            title={`${pct}% ${diff}`}
+          />
+        );
+      })
+  ), [breakdown, total]);
+
+  const breakdownList = useMemo(() => (
+    Object.entries(breakdown).map(([diff, count]) => {
+      const pct = total ? Math.round((count / total) * 100) : 0;
+      return count > 0 ? (
+        <li key={diff} className="flex items-center">
+          <span className={`inline-block mr-3 h-3 w-3 rounded-full ${DIFFICULTY_COLORS[diff as Difficulty]}`} />
+          <span className="text-slate mr-1">{pct}%</span>
+          <span className="text-moss">{capitalize(diff)}</span>
+        </li>
+      ) : null;
+    })
+  ), [breakdown, total]);
 
   return (
     <section className="rounded-xl p-9 border border-sage">
@@ -88,31 +117,10 @@ export default function DifficultyBreakdown() {
         total > 0 && (
           <>
             <div className="h-20 w-full overflow-hidden rounded-md flex">
-              {Object.entries(breakdown)
-                .filter(([_, count]) => count > 0)
-                .map(([diff, count], idx, arr) => {
-                  const pct = total ? Math.round((count / total) * 100) : 0;
-                  return (
-                    <div
-                      key={diff}
-                      className={`${DIFFICULTY_COLORS[diff as Difficulty]} h-full`}
-                      style={{ width: `${pct}%`, marginRight: idx < arr.length - 1 ? '0.25rem' : 0 }}
-                      title={`${pct}% ${diff}`}
-                    />
-                  );
-                })}
+              {breakdownBar}
             </div>
             <ul className="mt-6 inline-grid grid-cols-2 gap-y-2 gap-x-2">
-              {Object.entries(breakdown).map(([diff, count]) => {
-                const pct = total ? Math.round((count / total) * 100) : 0;
-                return count > 0 ? (
-                  <li key={diff} className="flex items-center">
-                    <span className={`inline-block mr-3 h-3 w-3 rounded-full ${DIFFICULTY_COLORS[diff as Difficulty]}`} />
-                    <span className="text-slate mr-1">{pct}%</span>
-                    <span className="text-moss">{capitalize(diff)}</span>
-                  </li>
-                ) : null;
-              })}
+              {breakdownList}
             </ul>
           </>
         )
