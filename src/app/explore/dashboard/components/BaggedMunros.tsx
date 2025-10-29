@@ -14,7 +14,7 @@ const TOTAL_MUNROS = 282;
 function getProgressMessage(pct: number) {
   if (pct <= 0) return "Get out there and climb some hills!";
   if (pct >= 100) return "Time for some corbetts?";
-  if (pct < 25) return "Nice start — keep going!";
+  if (pct < 25) return "Great start — keep going!";
   if (pct < 50) return "Great progress - over a quarter done!";
   if (pct < 75) return "Over halfway — great work!";
   return "So close — the finish is in sight!";
@@ -110,20 +110,9 @@ export default function BaggedMunros() {
 
   const bagged = userBaggedMunros.length;
   const unbagged = Math.max(TOTAL_MUNROS - bagged, 0);
-  const baggedPct = Math.round((bagged / TOTAL_MUNROS) * 100);
+  const baggedPct = bagged === 0 ? 0 : Math.max(1, Math.round((bagged / TOTAL_MUNROS) * 100));
   const unbaggedPct = 100 - baggedPct;
-   const progressMessage = getProgressMessage(baggedPct);
-
-  if (!user) {
-    return (
-      <section className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-        <header className="mb-4">
-          <h2 className="text-lg font-semibold text-slate-800">Munros Bagged</h2>
-        </header>
-        <p className="text-slate-600">Sign in to track your Munros.</p>
-      </section>
-    );
-  }
+  const progressMessage = getProgressMessage(baggedPct);
 
   return (
     <section className="rounded-xl p-9 border border-sage">

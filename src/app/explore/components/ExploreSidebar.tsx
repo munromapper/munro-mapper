@@ -24,12 +24,14 @@ export default function ExploreSidebar() {
                 <div>
                     <SidebarGreeting />
                     <div className="flex flex-col gap-1 mt-9">
-                        <IconLink 
+                        {user && (
+                            <IconLink 
                             href="/explore/dashboard"
                             icon={<DashboardIcon />}
                             label="Dashboard"
                             className="border-slate hover:bg-mist/10"
-                        />
+                            />
+                        )}
                         <IconLink 
                             href="/explore/map"
                             icon={<MapIcon />}

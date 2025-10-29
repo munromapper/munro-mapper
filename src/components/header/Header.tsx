@@ -16,6 +16,10 @@ const navLinks = {
         href: "/explore",
         label: "Explore",
         children: {
+            dashboard: {
+                href: "/explore/dashboard",
+                label: "Dashboard",
+            },
             mapview: {
                 href: "/explore/map",
                 label: "Map View",
@@ -24,10 +28,6 @@ const navLinks = {
                 href: "/explore/list",
                 label: "List View",
             },
-            dashboard: {
-                href: "/explore/dashboard",
-                label: "Dashboard",
-            }
         }
     },
     pricing: {
@@ -57,6 +57,7 @@ interface HeaderProps {
  */
 export default function Header({ isAppHeader }: HeaderProps) {
     const { isPremiumAdModalOpen, closePremiumAdModal } = useAuthContext();
+    const { user } = useAuthContext();
 
     return(
         <header 
@@ -85,16 +86,18 @@ export default function Header({ isAppHeader }: HeaderProps) {
                         <li key={key} className="inline-block mr-4">
                             {link.children ? (
                                 <HeaderNavDropdown label={link.label} href={link.href} isDark={isAppHeader}>
-                                {Object.entries(link.children).map(([childKey, child]) => (
-                                    <HeaderNavLink
-                                        key={childKey}
-                                        href={child.href}
-                                        label={child.label}
-                                        isDark={true}
-                                        isDropdown={false}
-                                        isDropdownActive={false}
-                                    />
-                                ))}
+                                {Object.entries(link.children)
+                                    .filter(([childKey]) => childKey !== "dashboard" || user) // Only show 'dashboard' if user exists
+                                    .map(([childKey, child]) => (
+                                        <HeaderNavLink
+                                            key={childKey}
+                                            href={child.href}
+                                            label={child.label}
+                                            isDark={true}
+                                            isDropdown={false}
+                                            isDropdownActive={false}
+                                        />
+                                    ))}
                                 </HeaderNavDropdown>
                             ) : (
                                 <HeaderNavLink

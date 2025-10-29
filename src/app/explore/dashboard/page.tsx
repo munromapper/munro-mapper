@@ -1,11 +1,24 @@
 // src/app/explore/dashboard/page.tsx
 // This is the dashboard page for exploring munro bagging statistics
 
-import React from 'react'
+'use client';
+import React, { useEffect } from 'react'
 import BaggedMunros from './components/BaggedMunros'
+import DifficultyBreakdown from './components/DifficultyBreakdown'
 import { BaggedMunroProvider } from '@/contexts/BaggedMunroContext'
+import { useAuthContext } from '@/contexts/AuthContext'
+import { useRouter } from 'next/navigation'
 
 export default function DashboardLayout() {
+    const { user } = useAuthContext();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!user) {
+            router.replace('/explore/map');
+        }
+    }, [user, router]);
+
     return (
         <BaggedMunroProvider>
             <div className="bg-mist h-full p-16 text-slate">
@@ -14,6 +27,7 @@ export default function DashboardLayout() {
                     {/* Left column */}
                     <div className="space-y-6">
                         <BaggedMunros />
+                        <DifficultyBreakdown />
                         {/* ...other left column cards (Difficulty, Regional, etc.) */}
                     </div>
 

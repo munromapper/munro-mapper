@@ -50,7 +50,7 @@ export default function HeaderNavDropdown({
                         transition={{ duration: 0.25, ease: "easeInOut" }}
                         className="absolute left-0 z-20"
                     >
-                        <ul className="py-4 pl-6 pr-20 mt-2 bg-mist font-normal rounded-lg space-y-2 shadow-standard">
+                        <ul className="py-4 pl-6 pr-20 mt-2 bg-mist font-normal text-nowrap rounded-lg space-y-2 shadow-standard">
                             {React.Children.map(children, (child, idx) => (
                                 <li key={idx}>
                                     {child}
