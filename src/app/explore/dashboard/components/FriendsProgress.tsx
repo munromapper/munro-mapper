@@ -1,6 +1,7 @@
-'use client';
-
 // src/app/explore/dashboard/components/FriendsProgress.tsx
+// This file contains the friends' progress component for the dashboard page
+
+'use client';
 import React, { useMemo, useState, useEffect } from 'react';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { useBaggedMunroContext } from '@/contexts/BaggedMunroContext';
