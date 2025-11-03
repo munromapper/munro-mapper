@@ -93,7 +93,7 @@ export default function BaggedMunrosList() {
       ) : error ? (
         <p className="text-sm text-red-600">Failed to load: {error}</p>
       ) : sortedMunros.length === 0 ? (
-        <p className="text-slate">Bag some munros to view your rankings.</p>
+        <p className="text-slate">Bag some munros to view your list of bagged Munros.</p>
       ) : (
         <div className="flex-1 overflow-y-auto min-h-0 no-scrollbar w-full">
           {/* Table header */}

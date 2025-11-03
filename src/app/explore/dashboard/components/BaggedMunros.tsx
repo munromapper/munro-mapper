@@ -125,7 +125,7 @@ export default function BaggedMunros() {
   }, [userBaggedMunros]);
 
   return (
-    <section className="rounded-xl p-9 border border-sage">
+    <section className="rounded-xl p-9 border flex-1 border-sage">
       <div className="mb-6 flex items-center justify-between">
         <h2 className="text-xxxl text-slate">Munros Bagged</h2>
         <span className="h-9 w-9 p-2.5 rounded-md bg-pebble text-slate">
