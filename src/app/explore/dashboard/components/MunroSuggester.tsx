@@ -174,6 +174,7 @@ export default function MunroSuggester() {
                 type="number"
                 min={ascentUnit === 'feet' ? 300 : 100}
                 max={ascentUnit === 'feet' ? 10000 : 3000}
+                step={ascentUnit === 'feet' ? 50 : 25}
                 value={ascent}
                 onChange={e => setAscent(Number(e.target.value))}
                 onBlur={() => setEditingAscent(false)}
