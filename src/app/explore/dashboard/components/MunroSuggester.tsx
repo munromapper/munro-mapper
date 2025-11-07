@@ -9,6 +9,7 @@ import { useAuthContext } from '@/contexts/AuthContext';
 import { HillSunIcon, RefreshIcon } from '@/components/global/SvgComponents';
 import BaggedIndicator from '@/components/global/BaggedIndicator';
 import { convertHeight, getHeightUnitLabel, convertLength, getLengthUnitLabel } from '@/utils/misc/unitConverters';
+import type { Munro, Route, RouteMunroLink } from '@/types/data/dataTypes';
 
 const REGIONS = [
   'any',
@@ -62,26 +63,29 @@ export default function MunroSuggester() {
     setError(null);
 
     try {
-      const [munros, routes, links] = await Promise.all([
+      const [munrosRaw, routesRaw, linksRaw] = await Promise.all([
         fetchMunroData(),
         fetchRouteData(),
         fetchRouteMunroLinks(),
       ]);
-      if (!munros || !routes || !links) throw new Error('Failed to load data');
+      const munros: Munro[] = munrosRaw ?? [];
+      const routes: Route[] = routesRaw ?? [];
+      const links: RouteMunroLink[] = linksRaw ?? [];
+      if (munros.length === 0 || routes.length === 0 || links.length === 0) throw new Error('Failed to load data');
 
       // Filter Munros by region and bagged status
-      let filteredMunros = munros.filter(m => {
+      const filteredMunros = munros.filter(m => {
         if (region !== 'any' && m.region !== region) return false;
         if (excludeBagged && userBaggedMunros.includes(m.id)) return false;
         return true;
       });
 
       // For each Munro, find the shortest route that matches the filters (convert route data to user units)
-      const candidates = filteredMunros.map(munro => {
+      const candidates = filteredMunros.map((munro: Munro) => {
         // Find all route IDs for this Munro
-        const routeIds = links.filter(l => l.munroId === munro.id).map(l => l.routeId);
+        const routeIds = links.filter((l: RouteMunroLink) => l.munroId === munro.id).map(l => l.routeId);
         // Find all routes for this Munro that match the filters
-        const matchingRoutes = routes.filter(r => {
+        const matchingRoutes = routes.filter((r: Route) => {
           if (!routeIds.includes(r.id)) return false;
           // Convert route length/ascent to user units for comparison
           const routeLength = Number(convertLength(r.length, lengthUnit));
@@ -100,7 +104,7 @@ export default function MunroSuggester() {
               route: bestRoute,
             }
           : null;
-      }).filter(Boolean) as { munro: any; route: any }[];
+      }).filter(Boolean) as { munro: Munro; route: Route }[];
 
       if (candidates.length === 0) {
         setError('No Munros found matching your filters.');
