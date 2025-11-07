@@ -120,8 +120,12 @@ export default function MunroSuggester() {
         description: chosen.munro.description || 'No description available.',
         url: `/explore/map/munro/${chosen.munro.slug}`,
       });
-    } catch (e: any) {
-      setError(e.message || 'Something went wrong.');
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        setError(e.message);
+      } else {
+        setError('Something went wrong.');
+      }
     }
     setLoading(false);
   };
