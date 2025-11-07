@@ -57,6 +57,11 @@ export type Munro = {
     osExplorerUrl: string;
     osLandranger: string;
     osLandrangerUrl: string;
+    imageURL: string;
+    imageCredit: string;
+    commonsURL: string;
+    licenseURL: string;
+    licenseType: string;
 }
 
 export type Route = {

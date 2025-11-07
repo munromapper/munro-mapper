@@ -12,6 +12,7 @@ import Link from "next/link";
 import { DownloadIcon, TooltipIcon } from "@/components/global/SvgComponents";
 import { getGpxFileUrl } from "@/utils/data/clientDataFetchers";
 import EstimatedTimeButton from "./EstimatedTimeButton";
+import ImageCreditButton from "./ImageCreditButton";
 
 interface MunroDetailPageContentProps {
     munro: Munro;
@@ -93,6 +94,15 @@ export default function MunroDetailPageContent({
         >
             <div className="overflow-hidden h-full">
                 <div className="px-6 py-8">
+                    <div className="mb-9">
+                        <div className="w-full h-60 mb-4 bg-pebble rounded-xl">
+                            <img src={munro.imageURL} alt={munro.name} className="object-cover w-full h-full rounded-xl" />
+                        </div>
+                        <div className="flex items-center text-moss">
+                            <p className="text-sm italic">{munro.imageCredit}, <a href={munro.licenseURL} target="_blank" rel="noopener noreferrer">{munro.licenseType}</a></p>
+                            <ImageCreditButton />
+                        </div>
+                    </div>
                     <ul className="flex gap-8">
                         <li className="mb-2 space-y-1">
                             <h2 className="text-moss text-l">Height</h2>
@@ -114,6 +124,9 @@ export default function MunroDetailPageContent({
                             maxChars={175}
                             className="text-xl"
                         />
+                    </div>
+                    <div className="mt-6">
+                        <FriendsBagged munroId={munro.id} />
                     </div>
                     <div className="space-y-4 mt-6">
                         <h2 className="text-moss text-l">Recommended Maps</h2>
@@ -147,9 +160,6 @@ export default function MunroDetailPageContent({
                                 </li>
                             )}
                         </ul>
-                    </div>
-                    <div className="mt-3">
-                        <FriendsBagged munroId={munro.id} />
                     </div>
                 </div>
                 <div className="h-[1px] bg-sage"></div>

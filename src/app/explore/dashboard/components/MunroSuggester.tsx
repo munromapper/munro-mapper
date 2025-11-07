@@ -156,12 +156,12 @@ export default function MunroSuggester() {
                 value={length}
                 onChange={e => setLength(Number(e.target.value))}
                 onBlur={() => setEditingLength(false)}
-                className="w-12.5 border-b border-sage bg-transparent text-sage focus:outline-none"
+                className="w-12.5 border-b border-moss bg-transparent text-moss focus:outline-none"
                 autoFocus
               />
             ) : (
               <span
-                className="text-sage underline decoration-dotted underline-offset-4 cursor-pointer"
+                className="text-moss underline decoration-dotted underline-offset-4 cursor-pointer"
                 onClick={() => setEditingLength(true)}
                 tabIndex={0}
               >
@@ -177,12 +177,12 @@ export default function MunroSuggester() {
                 value={ascent}
                 onChange={e => setAscent(Number(e.target.value))}
                 onBlur={() => setEditingAscent(false)}
-                className="w-14 border-b border-sage bg-transparent text-sage focus:outline-none"
+                className="w-14 border-b border-moss bg-transparent text-moss focus:outline-none"
                 autoFocus
               />
             ) : (
               <span
-                className="text-sage underline decoration-dotted underline-offset-4 cursor-pointer"
+                className="text-moss underline decoration-dotted underline-offset-4 cursor-pointer"
                 onClick={() => setEditingAscent(true)}
                 tabIndex={0}
               >
@@ -196,14 +196,14 @@ export default function MunroSuggester() {
                 value={region}
                 onChange={e => { setRegion(e.target.value); setEditingRegion(false); }}
                 onBlur={() => setEditingRegion(false)}
-                className="w-14 border-b border-sage bg-transparent text-sage focus:outline-none"
+                className="w-14 border-b border-moss bg-transparent text-moss focus:outline-none"
                 autoFocus
               >
                 {REGIONS.map(r => <option key={r} value={r}>{r}</option>)}
               </select>
             ) : (
               <span
-                className="text-sage underline decoration-dotted underline-offset-4 cursor-pointer"
+                className="text-moss underline decoration-dotted underline-offset-4 cursor-pointer"
                 onClick={() => setEditingRegion(true)}
                 tabIndex={0}
               >
@@ -212,7 +212,7 @@ export default function MunroSuggester() {
             )}
             {' '}area, and{' '}
             <span
-              className="text-sage underline decoration-dotted underline-offset-4 cursor-pointer"
+              className="text-moss underline decoration-dotted underline-offset-4 cursor-pointer"
               onClick={() => setExcludeBagged(v => !v)}
               tabIndex={0}
             >

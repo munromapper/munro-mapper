@@ -38,6 +38,11 @@ export async function fetchMunroData(): Promise<Munro[] | null> {
         osExplorerUrl: munro.os_explorer_link,
         osLandranger: munro.os_landranger,
         osLandrangerUrl: munro.os_landranger_link,
+        imageURL: munro.image_url,
+        imageCredit: munro.image_credit,
+        commonsURL: munro.commons_url,
+        licenseURL: munro.license_url,
+        licenseType: munro.license_type,
     })) as Munro[];
 }
 

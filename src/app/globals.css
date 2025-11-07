@@ -32,6 +32,13 @@
 }
 
 @font-face {
+  font-family: 'Arizona Flare';
+  src: url('/fonts/ArizonaFlare-Variable.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
   font-family: 'Mona Sans';
   src: url('/fonts/MonaSans-Variable.ttf') format('truetype');
   font-weight: 400;
@@ -67,7 +74,7 @@ body {
   --color-sand: #FFEEC8;
   --color-bronze: #9C6800;
   --font-body-font-family: 'Mona Sans', sans-serif;
-  --font-heading-font-family: 'Erode', serif;
+  --font-heading-font-family: 'Arizona Flare', serif;
   --text-xs: 0.625rem;
   --text-s: 0.6875rem;
   --text-m: 0.75rem;
@@ -99,7 +106,7 @@ body {
   --color-sand: #FFEEC8;
   --color-bronze: #9C6800;
   --font-body-font-family: 'Mona Sans', sans-serif;
-  --font-heading-font-family: 'Erode', serif;
+  --font-heading-font-family: 'Arizona Flare', serif;
   --text-xs: 0.625rem;
   --text-s: 0.6875rem;
   --text-m: 0.75rem;
