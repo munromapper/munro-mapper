@@ -21,7 +21,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
     return (
         <html lang="en">
           <AuthProvider>
-            <body className="h-full relative font-body-font-family font-light letter-spacing-0.025em text-mist bg-slate transition duration-250 ease-in-out">
+            <body className="h-full relative !font-body-font-family font-light letter-spacing-0.025em text-mist bg-slate transition duration-250 ease-in-out">
               {children}
             </body>
             <GlobalClientElements />

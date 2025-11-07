@@ -8,12 +8,14 @@ import DifficultyBreakdown from './components/DifficultyBreakdown'
 import RegionalBreakdown from './components/RegionalBreakdown';
 import BaggedMunrosList from './components/BaggedMunrosList';
 import FriendsProgress from './components/FriendsProgress';
+import MunroSuggester from './components/MunroSuggester';
+import PremiumAdvertSmall from './components/PremiumAdvertSmall';
 import { BaggedMunroProvider } from '@/contexts/BaggedMunroContext'
 import { useAuthContext } from '@/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
 
 export default function DashboardLayout() {
-    const { user } = useAuthContext();
+    const { user, userProfile } = useAuthContext();
     const router = useRouter();
 
     useEffect(() => {
@@ -22,9 +24,11 @@ export default function DashboardLayout() {
         }
     }, [user, router]);
 
+    const isPremium = userProfile?.isPremium === 'active' || userProfile?.isPremium === 'canceling';
+
     return (
         <BaggedMunroProvider>
-            <div className="bg-mist h-full flex flex-col p-16 text-slate">
+            <div className="bg-mist h-full flex flex-col p-16 overflow-auto text-slate">
                 <h1 className="font-heading-font-family text-5xl">Dashboard</h1>
                 <div className="pt-12 h-full grid grid-cols-3 grid-rows-6 gap-6">
                     <div className="space-y-6 row-span-6 col-span-1 flex flex-col">
@@ -35,7 +39,8 @@ export default function DashboardLayout() {
                     <div className="col-span-2 row-span-3">
                         <BaggedMunrosList />
                     </div>
-                    <div className="row-span-3">
+                    <div className="row-span-3 col-span-2 grid grid-cols-2 gap-6">
+                        {isPremium ? <MunroSuggester /> : <PremiumAdvertSmall />}
                         <FriendsProgress />
                     </div>
                 </div>
