@@ -5,6 +5,7 @@
 import React from "react";
 import LogoLink from "./LogoLink";
 import HeaderNavLink from "./HeaderNavLink";
+import HeaderSearchBar from "./HeaderSearchBar";
 import HeaderNavDropdown from "./HeaderNavDropdown";
 import LoginAuthButtons from "./LoginAuthButtons";
 import ModalElement from "@/components/global/Modal";
@@ -80,6 +81,7 @@ export default function Header({ isAppHeader }: HeaderProps) {
                     isDark={true}
                 />
             )}
+            <HeaderSearchBar />
             <nav className="flex items-center gap-16">
                 <ul className="flex items-center gap-6">
                     {Object.entries(navLinks).map(([key, link]) => (
