@@ -58,18 +58,18 @@ export default function TextInput({
                 <button
                     type="button"
                     onClick={() => setShowPassword((v) => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 bg-transparent border-none cursor-pointer"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 bg-transparent border-none text-moss hover:text-slate cursor-pointer transition duration-250 ease-in-out"
                     tabIndex={-1}
                     aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                     {showPassword ? (
                         // Eye with slash (hide)
-                        <div className="w-5 h-5">
+                        <div className="w-4 h-4">
                             <PasswordVisibleIcon />
                         </div>
                     ) : (
                         // Eye (show)
-                        <div className="w-5 h-5">
+                        <div className="w-4 h-4">
                             <PasswordHiddenIcon />
                         </div>
                     )}

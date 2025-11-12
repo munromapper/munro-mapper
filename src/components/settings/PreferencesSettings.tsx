@@ -32,11 +32,11 @@ export default function PreferencesSettings() {
 
     return (
         <div>
-             <div className="pb-9 max-w-[75%]">
+             <div className="pb-6 max-w-[75%]">
                 <h2 className="font-heading-font-family text-4xl mb-1">Preferences</h2>
                 <p className="text-moss text-l">Update your preferences settings here.</p>
             </div>
-            <div className="h-[1px] border-b border-dashed border-sage"></div>
+            <div className="h-[1px] border-b border-sage"></div>
             <form
                 onSubmit={async e => {
                     await handleUpdatePreferences({
@@ -51,7 +51,7 @@ export default function PreferencesSettings() {
                     refreshUserProfile();
                 }}
             >
-                <div className="py-9 flex justify-between gap-y-6 gap-x-18  flex-wrap">
+                <div className="pt-9 pb-6 flex justify-between gap-y-6 gap-x-18  flex-wrap">
                     <label className="space-y-1 w-45">
                         <h3 className="text-xl">Elevation Units</h3>
                         <p className="text-m text-moss">Display hill heights and route ascent values in metres or feet.</p>
@@ -79,8 +79,8 @@ export default function PreferencesSettings() {
                         />
                     </div>
                 </div>
-                <div className="h-[1px] border-b border-dashed border-sage"></div>
-                <div className="py-9 flex justify-between gap-y-6 gap-x-18  flex-wrap">
+                <div className="h-[1px] border-b border-sage"></div>
+                <div className="py-6 flex justify-between gap-y-6 gap-x-18  flex-wrap">
                     <label className="space-y-1 w-45">
                         <h3 className="text-xl">Distance Units</h3>
                         <p className="text-m text-moss">Display distances for route lengths in kilometres or miles.</p>
@@ -108,8 +108,8 @@ export default function PreferencesSettings() {
                         />
                     </div>
                 </div>
-                <div className="h-[1px] border-b border-dashed border-sage"></div>
-                <div className="flex justify-between gap-y-6 gap-x-18 flex-wrap pt-9">
+                <div className="h-[1px] border-b border-sage"></div>
+                <div className="flex justify-between gap-y-6 gap-x-18 flex-wrap pt-12">
                     <SecondaryButton 
                         label="Cancel"
                         onClick={() => {

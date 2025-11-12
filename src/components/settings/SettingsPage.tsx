@@ -15,7 +15,7 @@ export default function SettingsPage() {
     const [activeTab, setActiveTab] = useState('profile');
 
   return (
-    <div className="flex h-195 corners-xl overflow-hidden">
+    <div className="flex h-175 corners-xl overflow-hidden">
         <SettingsPageMenu 
             activeTab={activeTab} 
             setActiveTab={setActiveTab} 

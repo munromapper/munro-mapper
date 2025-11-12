@@ -10,7 +10,7 @@ export default function SidebarGreeting() {
     return (
         <div className="px-4 space-y-3">
             <h2 className="text-4xl font-heading-font-family">Hello, {userProfile?.firstName || 'friend'}!</h2>
-            <p className="text-l">Enim mollit occaecat id proident esse in ullamco?</p>
+            <p className="text-l">Ready for your next hill? Let&apos;s figure out where to go.</p>
         </div>
     )
 }

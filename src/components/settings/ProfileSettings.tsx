@@ -42,11 +42,11 @@ export default function ProfileSettings() {
 
     return (
         <div className="max-w-139">
-            <div className="pb-9 max-w-[75%]">
+            <div className="pb-6 max-w-[75%]">
                 <h2 className="font-heading-font-family text-4xl mb-1">Profile</h2>
                 <p className="text-moss text-l">Update your profile and personal details here.</p>
             </div>
-             <div className="h-[1px] border-b border-dashed border-sage"></div>
+             <div className="h-[1px] border-b border-sage"></div>
              <form
                 onSubmit={async e => {
                     await handleUpdateUserSettings({
@@ -67,14 +67,13 @@ export default function ProfileSettings() {
                     await refreshUserProfile();
                 }}
              >
-                <div className="py-9 flex items-center justify-between gap-y-6 gap-x-18 flex-wrap">
+                <div className="pb-6 pt-9 flex items-start justify-between gap-y-6 gap-x-18 flex-wrap">
                     <label className="space-y-1 w-35">
                         <h3 className="text-xl">Profile photo</h3>
-                        <p className="text-m text-moss">Lorem ipsum dolor sit.</p>
                     </label>
                     <div className="flex items-center gap-6 w-80">
                         <div
-                            className="rounded-full w-16 h-16 bg-cover bg-center bg-sage"
+                            className="rounded-full w-12 h-12 bg-cover bg-center bg-sage"
                             style={{ backgroundImage: photoPreview ? `url(${photoPreview})` : undefined }}
                         />
                         <div>
@@ -82,7 +81,7 @@ export default function ProfileSettings() {
                                 <button 
                                     type="button" 
                                     onClick={() => fileInputRef.current?.click()} 
-                                    className="text-l underline decoration-dotted underline-offset-4 cursor-pointer mr-4"
+                                    className="text-l underline underline-offset-4 decoration-moss cursor-pointer mr-4"
                                 >
                                         Upload new image
                                 </button>
@@ -115,12 +114,12 @@ export default function ProfileSettings() {
                                     Delete image
                                 </button>
                             </div>
-                            <div className="text-xs text-moss">File must be smaller than 5MB.</div>
+                            <div className="text-s text-moss">File must be smaller than 5MB.</div>
                         </div>
                     </div>
                 </div>
-                <div className="h-[1px] border-b border-dashed border-sage"></div>
-                <div className="py-9 flex justify-between gap-y-6 gap-x-18  flex-wrap">
+                <div className="h-[1px] border-b border-sage"></div>
+                <div className="py-6 flex justify-between gap-y-6 gap-x-18  flex-wrap">
                     <label className="w-35">
                         <h3 className="text-xl">First name</h3>
                     </label>
@@ -134,8 +133,8 @@ export default function ProfileSettings() {
                         />
                     </div>
                 </div>
-                <div className="h-[1px] border-b border-dashed border-sage"></div>
-                <div className="py-9 flex justify-between gap-y-6 gap-x-18  flex-wrap">
+                <div className="h-[1px] border-b border-sage"></div>
+                <div className="py-6 flex justify-between gap-y-6 gap-x-18  flex-wrap">
                     <label className="w-35">
                         <h3 className="text-xl">Last name</h3>
                     </label>
@@ -149,11 +148,11 @@ export default function ProfileSettings() {
                         />
                     </div>
                 </div>
-                <div className="h-[1px] border-b border-dashed border-sage"></div>
-                <div className="py-9 flex justify-between gap-y-6 gap-x-18 flex-wrap">
+                <div className="h-[1px] border-b border-sage"></div>
+                <div className="py-6 flex justify-between gap-y-6 gap-x-18 flex-wrap">
                     <label className="space-y-1 w-35">
                         <h3 className="text-xl">Email address</h3>
-                        <p className="text-moss text-m">Lorem ipsum dolor sit.</p>
+                        <p className="text-moss text-m">Only used for login and email notifications.</p>
                     </label>
                     <div className="w-80 flex flex-col gap-4">
                         <TextInput
@@ -173,8 +172,8 @@ export default function ProfileSettings() {
                         </div>
                     </div>
                 </div>
-                <div className="h-[1px] border-b border-dashed border-sage"></div>
-                <div className="flex justify-between gap-y-6 gap-x-18 flex-wrap pt-9">
+                <div className="h-[1px] border-b border-sage"></div>
+                <div className="flex justify-between gap-y-6 gap-x-18 flex-wrap pt-12">
                     <SecondaryButton 
                         label="Cancel"
                         onClick={() => {

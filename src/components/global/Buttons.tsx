@@ -148,7 +148,7 @@ export function TertiaryButton({
             onClick={onClick}
             disabled={disabled}
             className={`
-                cursor-pointer decoration-dashed underline underline-offset-4
+                cursor-pointer underline underline-offset-4 decoration-moss
                 ${isAlternate 
                     ? 'text-slate font-normal hover:opacity-70' 
                     : 'text-mist font-light hover:opacity-70'

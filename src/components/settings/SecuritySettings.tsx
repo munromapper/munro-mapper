@@ -24,11 +24,11 @@ export default function SecuritySettings() {
 
     return (
         <div className="max-w-139">
-            <div className="pb-9 max-w-[75%]">
+            <div className="pb-6 max-w-[75%]">
                 <h2 className="font-heading-font-family text-4xl mb-1">Security</h2>
                 <p className="text-moss text-l">Update your password here.</p>
             </div>
-             <div className="h-[1px] border-b border-dashed border-sage"></div>
+             <div className="h-[1px] border-b border-sage"></div>
              <form
                 onSubmit={async e => {
                     await handleUpdatePassword({
@@ -41,7 +41,7 @@ export default function SecuritySettings() {
                     });
                 }}
              >
-                <div className="py-9">
+                <div className="pt-9 pb-6">
                     <div className="flex justify-between gap-y-6 gap-x-18 flex-wrap">
                         <label className="w-35">
                             <h3 className="text-xl">New password</h3>
@@ -57,8 +57,8 @@ export default function SecuritySettings() {
                         </div>
                     </div>
                 </div>
-                <div className="h-[1px] border-b border-dashed border-sage"></div>
-                <div className="py-9">
+                <div className="h-[1px] border-b border-sage"></div>
+                <div className="py-6">
                     <div className="flex justify-between gap-y-6 gap-x-18 flex-wrap">
                         <label className="w-35">
                             <h3 className="text-xl">Re-enter<br/>new password</h3>
@@ -74,8 +74,8 @@ export default function SecuritySettings() {
                         </div>
                     </div>
                 </div>
-                <div className="h-[1px] border-b border-dashed border-sage"></div>
-                <div className="flex justify-between gap-y-6 gap-x-18 flex-wrap pt-9">
+                <div className="h-[1px] border-b border-sage"></div>
+                <div className="flex justify-between gap-y-6 gap-x-18 flex-wrap pt-12">
                     <SecondaryButton 
                         label="Cancel"
                         onClick={() => {

@@ -83,9 +83,9 @@ export default function Header({ isAppHeader }: HeaderProps) {
             )}
             <HeaderSearchBar />
             <nav className="flex items-center gap-16">
-                <ul className="flex items-center gap-6">
+                <ul className="flex items-center gap-5">
                     {Object.entries(navLinks).map(([key, link]) => (
-                        <li key={key} className="inline-block mr-4">
+                        <li key={key} className="inline-block">
                             {link.children ? (
                                 <HeaderNavDropdown label={link.label} href={link.href} isDark={isAppHeader}>
                                 {Object.entries(link.children)

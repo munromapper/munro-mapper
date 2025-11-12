@@ -32,17 +32,17 @@ export default function SubscriptionSettings() {
 
     return (
         <div>
-            <div className="pb-9 max-w-[75%]">
+            <div className="pb-6 max-w-[75%]">
                 <h2 className="font-heading-font-family text-4xl mb-1">Subscription</h2>
                 <p className="text-moss text-l">View and manage your subscription settings here.</p>
             </div>
-            <div className="h-[1px] border-b border-dashed border-sage"></div>
-            <div className="my-6">
+            <div className="h-[1px] border-b border-sage"></div>
+            <div className="my-3">
                 <div className="py-6 flex items-end justify-between gap-y-6 gap-x-18 flex-wrap">
                     <h3 className="text-xl w-45">Account created</h3>
                     <p className="text-l text-moss w-70 text-right">{formatDate(user?.created_at)}</p>
                 </div>
-                <div className="h-[1px] border-b border-dashed border-sage"></div>
+                <div className="h-[1px] border-b border-sage"></div>
                 {userSubscription?.[0] && (
                     <>
                     <div className="py-6 flex items-end justify-between gap-y-6 gap-x-18 flex-wrap">
@@ -66,7 +66,7 @@ export default function SubscriptionSettings() {
                         }
                     </p>
                 </div>
-                <div className="h-[1px] border-b border-dashed border-sage"></div>
+                <div className="h-[1px] border-b border-sage"></div>
                 {userSubscription?.[0] && (
                     <>
                         <div className="py-6 flex items-end justify-between gap-y-6 gap-x-18 flex-wrap">

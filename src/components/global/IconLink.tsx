@@ -27,7 +27,7 @@ export default function IconLink({
             onClick={onClick}
             href={href || '#'}
         >
-            <span className="w-3 h-3 flex items-center justify-center">
+            <span className="w-3.5 h-3.5 flex items-center justify-center">
                 {icon}
             </span>
             <span className="text-l">
