@@ -17,14 +17,14 @@ interface HeaderNavDropdownProps {
     label: string;
     href: string;
     isDark: boolean;
-    children: DropdownItem[];
+    items: DropdownItem[];
 }
 
 export default function HeaderNavDropdown({ 
     label, 
     href,
     isDark, 
-    children 
+    items 
 }: HeaderNavDropdownProps) {
     const [isOpen, setIsOpen] = useState(false);
 
@@ -57,7 +57,7 @@ export default function HeaderNavDropdown({
                         className="absolute left-0 z-20"
                     >
                         <ul className="p-2 mt-2 bg-mist font-normal text-nowrap rounded-lg space-y-1 shadow-standard min-w-45">
-                            {children.map((item, idx) => (
+                            {items.map((item, idx) => (
                                 <li key={idx}>
                                     <Link
                                         href={item.href}

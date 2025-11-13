@@ -95,7 +95,7 @@ export default function Header({ isAppHeader }: HeaderProps) {
                                     label={link.label}
                                     href={link.href}
                                     isDark={isAppHeader}
-                                    children={
+                                    items={
                                         // Only show 'Nearby trails' if user exists, otherwise filter it out
                                         link.children.filter(item => item.href !== "/explore/dashboard" || user)
                                     }
