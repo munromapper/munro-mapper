@@ -39,6 +39,7 @@ export default function BaggedIndicator({
         checked={bagged}
         onChange={() => isLoggedIn && toggleBagged(munroId, !bagged)}
         disabled={!isLoggedIn}
+        className="bagged-checkbox"
       />
     </div>
   );

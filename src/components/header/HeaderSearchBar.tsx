@@ -3,6 +3,8 @@ import { useRouter } from "next/navigation";
 import { fetchMunroData } from "@/utils/data/clientDataFetchers";
 import { Munro } from "@/types/data/dataTypes";
 import { SearchIcon } from "../global/SvgComponents";
+import { useAuthContext } from "@/contexts/AuthContext";
+import { convertHeight, getHeightUnitLabel } from "@/utils/misc/unitConverters";
 
 export default function HeaderSearchBar() {
   const [query, setQuery] = useState("");
@@ -12,9 +14,9 @@ export default function HeaderSearchBar() {
   const [showDropdown, setShowDropdown] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  const { userProfile } = useAuthContext();
 
   useEffect(() => {
-    // Fetch munros on mount
     fetchMunroData().then(data => {
       if (data) setMunros(data);
     });
@@ -57,41 +59,55 @@ export default function HeaderSearchBar() {
     router.push(`/explore/map/munro/${encodeURIComponent(munro.slug)}`);
   };
 
+  const heightUnit: "metres" | "feet" =
+    userProfile?.preferences?.elevationUnit === "feet" ? "feet" : "metres";
+
   return (
     <div className="flex-1 relative mx-15">
         <div className="absolute w-4 h-4 top-0 bottom-0 my-auto left-6 text-moss">
         <SearchIcon />
         </div>
         <input
-        ref={inputRef}
-        type="text"
-        className="bg-pebble rounded-full w-full px-13 py-3 text-xl text-slate border border-mist 
-                    placeholder:text-slate/50 
-                    focus:bg-mist focus:border-slate focus:outline-none
-                    transition duration-250 ease-in-out"
-        placeholder="Search Munros"
-        value={query}
-        onChange={e => setQuery(e.target.value)}
-        onKeyDown={handleKeyDown}
-        onFocus={() => setShowDropdown(suggestions.length > 0)}
-        onBlur={() => setTimeout(() => setShowDropdown(false), 100)}
-        aria-label="Search for munros"
-        autoComplete="off"
+          ref={inputRef}
+          type="text"
+          className="bg-pebble rounded-full w-full px-13 py-3 text-xl text-slate border border-mist
+                      hover:border-sage
+                      placeholder:text-slate/50 
+                      focus:bg-mist focus:border-slate focus:outline-none
+                      transition duration-250 ease-in-out"
+          placeholder="Search Munros"
+          value={query}
+          onChange={e => setQuery(e.target.value)}
+          onKeyDown={handleKeyDown}
+          onFocus={() => setShowDropdown(suggestions.length > 0)}
+          onBlur={() => setTimeout(() => setShowDropdown(false), 100)}
+          aria-label="Search for munros"
+          autoComplete="off"
         />
         {showDropdown && (
-        <ul className="absolute left-0 top-full mt-2 w-full bg-mist text-slate rounded-xl z-50 max-h-60 overflow-y-auto border border-sage">
+        <ul className="absolute left-0 top-full p-2 mt-2 w-full no-scrollbar bg-mist text-slate rounded-xl z-50 max-h-60 overflow-y-auto shadow-standard">
             {suggestions.map((munro, idx) => (
             <li
                 key={munro.id}
-                className={`px-4 py-2 cursor-pointer ${activeIndex === idx ? "bg-mist" : ""}`}
+                className={`px-4 py-2 cursor-pointer rounded-xl hover:bg-pebble transition duration-250 ease-in-out ${activeIndex === idx ? "bg-mist" : ""}`}
                 onMouseDown={() => handleSelect(munro)}
                 onMouseEnter={() => setActiveIndex(idx)}
             >
-                {munro.name}
+                <div>{munro.name}</div>
+                <div className="text-l text-moss flex items-center gap-1">
+                    <span>#{munro.id}</span>
+                    <span className="mx-1">•</span>
+                    <span>
+                      {convertHeight(munro.height, heightUnit)}
+                      {getHeightUnitLabel(heightUnit)}
+                    </span>
+                    <span className="mx-1">•</span>
+                    <span>{munro.region}</span>
+                </div>
             </li>
             ))}
             {suggestions.length === 0 && (
-            <li className="px-4 py-2 text-sage">No results found</li>
+            <li className="px-4 py-2 text-moss">No results found</li>
             )}
         </ul>
         )}

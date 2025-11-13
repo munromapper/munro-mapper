@@ -15,7 +15,8 @@ export default function MunroSearchBar() {
       value={search}
       onChange={e => setSearch(e.target.value)}
       placeholder="Search Munros..."
-      className="bg-pebble rounded-full w-full px-13 py-3 text-xl text-slate border border-mist 
+      className="bg-pebble rounded-full w-full px-13 py-3 text-xl text-slate border border-mist
+                  hover:border-sage 
                  placeholder:text-slate/50 
                  focus:bg-mist focus:border-slate focus:outline-none
                    transition duration-250 ease-in-out"

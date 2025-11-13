@@ -23,17 +23,22 @@ export default function CheckboxInput({
     className
 }: CheckboxInputProps) {
     return (
-        <label className={`flex items-center text-moss justify-center py-1 px-3 text-l cursor-pointer gap-3 ${className}`}>
+        <label className={`flex items-center justify-center py-1 px-3 text-l cursor-pointer gap-3
+            ${className === "bagged-checkbox" ? "text-slate" : "text-moss"}
+            ${className ? className : ""}`}>
             <input
                 type="checkbox"
                 checked={checked}
                 onChange={onChange}
                 className="hidden peer"
                 disabled={disabled}
-                value={value} // Optional value prop for checkbox
+                value={value}
             />
-            <span className="w-3.75 h-3.75 flex items-center justify-center border border-dashed border-sage text-transparent rounded-full transition-all duration-250 ease-in-out
-                          peer-checked:bg-sage peer-checked:border-sage peer-checked:text-slate">
+            <span className={`w-3.75 h-3.75 flex items-center justify-center border border-dashed border-sage text-transparent rounded-full transition-all duration-250 ease-in-out
+                ${className === "bagged-checkbox"
+                    ? "peer-checked:bg-slate peer-checked:border-slate peer-checked:text-apple"
+                    : "peer-checked:bg-sage peer-checked:border-sage peer-checked:text-slate"
+                }`}>
                 <span className="p-0.5 transition-all duration-250 ease-in-out flex items-center justify-center">
                     <TickIcon />
                 </span>

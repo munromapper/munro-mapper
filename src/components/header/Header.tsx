@@ -11,25 +11,29 @@ import LoginAuthButtons from "./LoginAuthButtons";
 import ModalElement from "@/components/global/Modal";
 import PremiumAdvertPopup from "./PremiumAdvertPopup";
 import { useAuthContext } from "@/contexts/AuthContext";
+import { MapIcon, ListIcon, DashboardIcon } from "../global/SvgComponents";
 
 const navLinks = {
     explore: {
         href: "/explore",
         label: "Explore",
-        children: {
-            dashboard: {
+        children: [
+            {
                 href: "/explore/dashboard",
                 label: "Dashboard",
+                icon: <DashboardIcon />
             },
-            mapview: {
+            {
                 href: "/explore/map",
                 label: "Map View",
+                icon: <MapIcon />
             },
-            listview: {
+            {
                 href: "/explore/list",
                 label: "List View",
+                icon: <ListIcon />
             },
-        }
+        ]
     },
     pricing: {
         href: "/pricing",
@@ -86,21 +90,16 @@ export default function Header({ isAppHeader }: HeaderProps) {
                 <ul className="flex items-center gap-5">
                     {Object.entries(navLinks).map(([key, link]) => (
                         <li key={key} className="inline-block">
-                            {link.children ? (
-                                <HeaderNavDropdown label={link.label} href={link.href} isDark={isAppHeader}>
-                                {Object.entries(link.children)
-                                    .filter(([childKey]) => childKey !== "dashboard" || user) // Only show 'dashboard' if user exists
-                                    .map(([childKey, child]) => (
-                                        <HeaderNavLink
-                                            key={childKey}
-                                            href={child.href}
-                                            label={child.label}
-                                            isDark={true}
-                                            isDropdown={false}
-                                            isDropdownActive={false}
-                                        />
-                                    ))}
-                                </HeaderNavDropdown>
+                            {Array.isArray(link.children) ? (
+                                <HeaderNavDropdown
+                                    label={link.label}
+                                    href={link.href}
+                                    isDark={isAppHeader}
+                                    children={
+                                        // Only show 'Nearby trails' if user exists, otherwise filter it out
+                                        link.children.filter(item => item.href !== "/explore/dashboard" || user)
+                                    }
+                                />
                             ) : (
                                 <HeaderNavLink
                                     href={link.href}

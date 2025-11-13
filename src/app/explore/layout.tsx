@@ -12,9 +12,9 @@ export default function ExploreLayout({ children }: ExploreLayoutProps) {
   return (
     <>
         <Header isAppHeader={true} />
-        <main className="h-[calc(100vh-5.5rem)] flex items-stretch">
+        <main className="h-[calc(100vh-6.1rem)] flex items-stretch">
             <ExploreSidebar />
-            <div id="explore-page-content" className="flex-1 transition duration-250 ease-in-out">
+            <div id="explore-page-content" className="flex-1 transition overflow-auto duration-250 ease-in-out">
               {children}
             </div>
         </main>

@@ -3,23 +3,23 @@
 
 'use client';
 import React, { useState } from "react";
-import HeaderNavLink from "./HeaderNavLink";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import { ThinDownChevron } from "../global/SvgComponents";
+
+interface DropdownItem {
+    href: string;
+    label: string;
+    icon?: React.ReactNode;
+}
 
 interface HeaderNavDropdownProps {
     label: string;
     href: string;
     isDark: boolean;
-    children: React.ReactNode;
+    children: DropdownItem[];
 }
 
-/**
- * HeaderNavDropdown component for displaying a dropdown menu in the header navigation.
- * @param label - The label for the dropdown title link.
- * @param href - The URL the dropdown title link points to.
- * @param isDark - Whether the dropdown title link should use dark styling.
- * @param children - The dropdown menu items to display when the dropdown is open.
- */
 export default function HeaderNavDropdown({ 
     label, 
     href,
@@ -34,13 +34,19 @@ export default function HeaderNavDropdown({
             onMouseEnter={() => setIsOpen(true)}
             onMouseLeave={() => setIsOpen(false)}
         >
-            <HeaderNavLink
+            <Link
                 href={href}
-                label={label}
-                isDark={isDark}
-                isDropdown={true}
-                isDropdownActive={isOpen}
-            />
+                className={`
+                    text-l ${isDark ? "text-slate" : "text-mist"}
+                    font-normal flex items-center gap-2 hover:opacity-70
+                    transition duration-250 ease-in-out
+                `}
+            >
+                {label}
+                <span className={`w-2 h-2 ${isOpen ? "rotate-180" : ""} transition duration-250 ease-in-out`}>
+                    <ThinDownChevron />
+                </span>
+            </Link>
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
@@ -50,10 +56,18 @@ export default function HeaderNavDropdown({
                         transition={{ duration: 0.25, ease: "easeInOut" }}
                         className="absolute left-0 z-20"
                     >
-                        <ul className="py-4 pl-6 pr-20 mt-2 bg-mist font-normal text-nowrap rounded-lg space-y-2 shadow-standard">
-                            {React.Children.map(children, (child, idx) => (
+                        <ul className="p-2 mt-2 bg-mist font-normal text-nowrap rounded-lg space-y-1 shadow-standard min-w-45">
+                            {children.map((item, idx) => (
                                 <li key={idx}>
-                                    {child}
+                                    <Link
+                                        href={item.href}
+                                        className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-pebble transition duration-200 ease-in-out w-full"
+                                    >
+                                        <span className="flex items-center text-slate justify-center h-3.5 w-3.5">
+                                            {item.icon}
+                                        </span>
+                                        <span className="text-slate text-l">{item.label}</span>
+                                    </Link>
                                 </li>
                             ))}
                         </ul>
