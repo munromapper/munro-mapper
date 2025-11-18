@@ -9,10 +9,12 @@ import { useAuthContext } from '@/contexts/AuthContext';
 
 type BaggedIndicatorProps = {
   munroId: number;
+  size?: "default" | "large";
 };
 
 export default function BaggedIndicator({
-  munroId
+  munroId,
+  size = "default"
 }: BaggedIndicatorProps) {
   const { isBagged, toggleBagged, loading } = useBaggedMunroContext();
   const { user, openAuthModal } = useAuthContext();
@@ -40,6 +42,7 @@ export default function BaggedIndicator({
         onChange={() => isLoggedIn && toggleBagged(munroId, !bagged)}
         disabled={!isLoggedIn}
         className="bagged-checkbox"
+        size={size}
       />
     </div>
   );

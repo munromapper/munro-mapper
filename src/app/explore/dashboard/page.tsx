@@ -30,18 +30,24 @@ export default function DashboardLayout() {
         <BaggedMunroProvider>
             <div className="bg-mist h-auto min-h-full flex flex-col p-16 text-slate">
                 <h1 className="font-heading-font-family text-5xl">Dashboard</h1>
-                <div className="pt-12 h-auto grid grid-cols-3 grid-rows-6 gap-6">
-                    <div className="space-y-6 row-span-6 col-span-1 flex flex-col">
+                <div className="pt-12 flex flex-row gap-6 max-w-400">
+                    <div className="flex flex-col gap-6 w-1/3">
                         <BaggedMunros />
                         <DifficultyBreakdown />
                         <RegionalBreakdown />
                     </div>
-                    <div className="col-span-2 row-span-3 max-h-130">
-                        <BaggedMunrosList />
-                    </div>
-                    <div className="row-span-3 col-span-2 grid grid-cols-2 gap-6">
-                        {isPremium ? <MunroSuggester /> : <PremiumAdvertSmall />}
-                        <FriendsProgress />
+                    <div className="flex flex-col gap-6 w-2/3">
+                        <div className="h-120">
+                            <BaggedMunrosList />
+                        </div>
+                        <div className="flex flex-1 gap-6">
+                            <div className="flex-1">
+                                {isPremium ? <MunroSuggester /> : <PremiumAdvertSmall />}
+                            </div>
+                            <div className="flex-1">
+                                <FriendsProgress />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

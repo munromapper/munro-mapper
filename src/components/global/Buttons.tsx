@@ -148,7 +148,7 @@ export function TertiaryButton({
             onClick={onClick}
             disabled={disabled}
             className={`
-                cursor-pointer underline underline-offset-4 decoration-moss
+                cursor-pointer underline text-xl decoration-1 underline-offset-4 decoration-moss
                 ${isAlternate 
                     ? 'text-slate font-normal hover:opacity-70' 
                     : 'text-mist font-light hover:opacity-70'
@@ -183,7 +183,7 @@ export function InlineLink({
     return (
         <span
             onClick={onClick}
-            className="cursor-pointer underline decoration-dotted underline-offset-4
+            className="cursor-pointer underline decoration-dotted decoration-1 underline-offset-4
                        hover:opacity-70
                        transition duration-250 ease-in-out"
         >

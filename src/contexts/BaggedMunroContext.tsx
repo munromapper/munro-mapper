@@ -25,13 +25,16 @@ export const BaggedMunroProvider = ({ children }: { children: React.ReactNode })
     const [userBaggedMunros, setUserBaggedMunros] = useState<number[]>([]);
     const [friendsBaggedMunros, setFriendsBaggedMunros] = useState<{ [friendUserId: string]: number[] }>({});
     const [loading, setLoading] = useState(false);
-    const [hasLoaded, setHasLoaded] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [lastToggledMunroId, setLastToggledMunroId] = useState<number | null>(null);
 
-    const fetchBaggedMunros = useCallback(async (forceRefresh = false) => {
-        if (!user) return;
-        if (hasLoaded && !forceRefresh) return;
+    // Always fetch bagged munros when user or friends change
+    const fetchBaggedMunros = useCallback(async () => {
+        if (!user) {
+            setUserBaggedMunros([]);
+            setFriendsBaggedMunros({});
+            return;
+        }
         setLoading(true);
         setError(null);
 
@@ -67,7 +70,6 @@ export const BaggedMunroProvider = ({ children }: { children: React.ReactNode })
                 }
             }
             setFriendsBaggedMunros(friendsMap);
-            setHasLoaded(true);
         } catch (err) {
             if (err instanceof Error) {
                 setError(err.message);
@@ -77,37 +79,37 @@ export const BaggedMunroProvider = ({ children }: { children: React.ReactNode })
         } finally {
             setLoading(false);
         }
-    }, [user, friends, hasLoaded]);
+    }, [user, friends]);
 
     useEffect(() => {
         fetchBaggedMunros();
-    }, [fetchBaggedMunros]);
+    }, [user, friends, fetchBaggedMunros]);
 
     const toggleBagged = useCallback(
-    async (munroId: number, shouldBag: boolean) => {
-      if (!user) return;
-      setLastToggledMunroId(munroId);
-      setError(null);
-      setUserBaggedMunros(prev =>
-        shouldBag ? [...prev, munroId] : prev.filter(id => id !== munroId)
-      );
-      if (shouldBag) {
-        const { error } = await bagMunro(user.id, munroId);
-        if (error) setError(error.message);
-      } else {
-        const { error } = await unbagMunro(user.id, munroId);
-        if (error) setError(error.message);
-      }
-      fetchBaggedMunros();
-    },
-    [user, fetchBaggedMunros]
-  );
+        async (munroId: number, shouldBag: boolean) => {
+            if (!user) return;
+            setLastToggledMunroId(munroId);
+            setError(null);
+            setUserBaggedMunros(prev =>
+                shouldBag ? [...prev, munroId] : prev.filter(id => id !== munroId)
+            );
+            if (shouldBag) {
+                const { error } = await bagMunro(user.id, munroId);
+                if (error) setError(error.message);
+            } else {
+                const { error } = await unbagMunro(user.id, munroId);
+                if (error) setError(error.message);
+            }
+            fetchBaggedMunros();
+        },
+        [user, fetchBaggedMunros]
+    );
 
     return (
         <BaggedMunroContext.Provider value={{
             userBaggedMunros,
             friendsBaggedMunros,
-            refreshBaggedMunros: () => fetchBaggedMunros(true),
+            refreshBaggedMunros: fetchBaggedMunros,
             loading,
             error,
             toggleBagged,

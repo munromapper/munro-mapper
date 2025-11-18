@@ -106,11 +106,6 @@ export default function DifficultyBreakdown() {
             <EasyIcon />
         </span>
       </div>
-      <p className="mb-4 text-slate">
-        {total === 0
-          ? "Bag some munros to view your difficulty breakdown."
-          : `Of the ${total} Munro(s) that you've climbed, the difficulty breakdown is as follows:`}
-      </p>
       {loading ? (
         <div className="h-8 w-full animate-pulse rounded bg-slate-100" />
       ) : (

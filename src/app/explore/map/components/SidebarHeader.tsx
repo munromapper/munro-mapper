@@ -9,9 +9,9 @@ export default function SidebarHeader() {
     const { isSidebarExpanded, setSidebarExpanded, filteredMunros } = useMapState();
 
     return (
-        <div className="bg-mist sticky top-0 z-1 p-6 pointer-events-auto border-b shadow-standard border-sage">
+        <div className="bg-mist sticky top-0 z-1 py-6 px-9 pointer-events-auto border-b shadow-standard border-sage">
             <div className="mb-3">
-                <h1 className="font-heading-font-family text-3xl">Explore the Munros</h1>
+                <h1 className="font-heading-font-family text-4xl">The Munro Map</h1>
             </div>
             <div className="flex justify-between items-center gap-6">
                 <span className="text-l text-moss">{filteredMunros.length} results found</span>

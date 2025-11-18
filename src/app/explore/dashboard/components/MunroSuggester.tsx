@@ -133,7 +133,7 @@ export default function MunroSuggester() {
   const handleRefine = () => setSuggestedMunro(null);
 
   return (
-    <section className="rounded-xl p-9 border border-sage bg-mist flex flex-col">
+    <section className="rounded-xl p-9 border border-sage bg-mist h-full flex flex-col">
       <div className="mb-6 flex items-center justify-between">
         <h2 className="text-xxxl text-slate">Munro Suggester</h2>
         <span className="h-9 w-9 p-2.5 rounded-md bg-pebble text-slate flex items-center justify-center">
@@ -146,7 +146,7 @@ export default function MunroSuggester() {
           <div className="bg-pebble text-moss rounded-md p-4 mb-3">
             <span className="text-slate">Not sure what to do?</span> Set your limits below, then let us pick a hill.
           </div>
-          <p className="text-slate text-xxl/8 mt-auto">
+          <p className="text-slate text-xxl/8 mt-12">
             Find me a hill up to{' '}
             {editingLength ? (
               <input

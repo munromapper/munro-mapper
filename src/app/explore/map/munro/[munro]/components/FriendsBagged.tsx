@@ -119,45 +119,51 @@ export default function FriendsBagged({ munroId, className = '' }: FriendsBagged
   
   // Render profile photos - populate from right to left
   const renderProfilePhotos = () => {
-      const totalFrames = 3;
-      const displayArray = Array(totalFrames).fill(null);
-      
-      const friendsToShow = friendsWhoHaveBagged.slice(0, totalFrames);
-      
-      // Place the primary friend (mentioned in the message) at the rightmost position
-      if (friendsToShow.length > 0) {
-          displayArray[totalFrames - 1] = friendsToShow[0];
-          
-          // Place remaining friends from right to left
-          for (let i = 1; i < friendsToShow.length; i++) {
-          displayArray[totalFrames - 1 - i] = friendsToShow[i];
-          }
-      }
-      
+    const friendsToShowRaw = friendsWhoHaveBagged.slice(0, 3);
+
+    // If no friends, show a single circle with default profile picture
+    if (friendsToShowRaw.length === 0) {
       return (
-          <div className="flex items-center">
-              {displayArray.map((friend, index) => (
-                  <div 
-                      key={friend?.id || `empty-${index}`}
-                      className={`w-12 h-12 rounded-full bg-sage border-2 border-mist flex items-center justify-center ${index > 0 ? 'ml-[-1rem]' : ''}`}
-                      style={{ zIndex: index }} // Higher z-index for items on the right
-                  >
-                      {friend && (
-                          <div className="w-full h-full relative">
-                              <UserProfilePicture userId={friend.id} />
-                          </div>
-                      )}
-                  </div>
-              ))}
+        <div className="flex items-center">
+          <div className="w-12 h-12 rounded-full bg-sage border-2 border-mist flex items-center justify-center">
+            <img
+              src="/images/default-profile-picture.png"
+              alt="Default profile"
+              className="w-10 h-10 rounded-full object-cover"
+            />
           </div>
+        </div>
       );
+    }
+
+    // Move the primary friend (first in array) to the end
+    const friendsToShow =
+      friendsToShowRaw.length > 1
+        ? [...friendsToShowRaw.slice(1), friendsToShowRaw[0]]
+        : friendsToShowRaw;
+
+    return (
+      <div className="flex items-center">
+        {friendsToShow.map((friend, index) => (
+          <div
+            key={friend.id}
+            className={`w-12 h-12 rounded-full bg-sage border-2 border-mist flex items-center justify-center${index > 0 ? ' ml-[-1rem]' : ''}`}
+            style={{ zIndex: index === friendsToShow.length - 1 ? 10 : index + 1 }} // Highest z-index for last item
+          >
+            <div className="w-full h-full relative">
+              <UserProfilePicture userId={friend.id} />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
   }
   
   const messageParts = getMessageParts();
   
   return (
     <div className={className}>
-      <div className="flex items-center gap-2 flex-wrap mt-6">
+      <div className="flex items-center gap-2 flex-wrap mt-9">
         {renderProfilePhotos()}
         <div className="ml-2 flex flex-col relative">
           <p className="text-xl text-slate">{messageParts.names}</p>

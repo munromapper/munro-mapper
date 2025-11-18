@@ -143,8 +143,8 @@ export default function BaggedMunros() {
           </div>
         </div>
       ) : (
-        <div className="flex items-center gap-6">
-          <div className="shrink-0">
+        <div className="flex items-center gap-6 flex-wrap">
+          <div className="shrink-0 flex-1">
             <Donut
               value={bagged}
               total={TOTAL_MUNROS}
@@ -152,20 +152,20 @@ export default function BaggedMunros() {
               centerLabel="Munros"
             />
           </div>
-          <div className="space-y-2">
-            <p className="text-slate">
-              You’ve bagged <span className="font-medium">{bagged}</span> out of{' '}
-              <span className="font-medium">{TOTAL_MUNROS}</span> Munros. {progressMessage}
+          <div className="flex-1 space-y-2 text-xl">
+            <p className="text-moss">
+              You’ve bagged <span className="text-slate">{bagged}</span> out of{' '}
+              <span className="text-slate">{TOTAL_MUNROS}</span> Munros. {progressMessage}
             </p>
 
             <ul className="mt-3 flex flex-col gap-1">
               <li className="flex items-center gap-2">
                 <span className="inline-block shrink-0 h-3 w-3 rounded-full bg-apple" />
-                <span className="text-slate-700">{baggedPct}% bagged</span>
+                <span className="text-slate">{baggedPct}%</span><span className="text-moss"> bagged</span>
               </li>
               <li className="flex items-center gap-2">
                 <span className="inline-block shrink-0 h-3 w-3 rounded-full bg-sage/25" />
-                <span className="text-slate-700">{unbaggedPct}% not bagged</span>
+                <span className="text-slate">{unbaggedPct}%</span><span className="text-moss"> not bagged</span>
               </li>
             </ul>
             {error ? (

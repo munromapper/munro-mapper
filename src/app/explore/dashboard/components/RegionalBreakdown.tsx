@@ -165,7 +165,7 @@ export default function RegionalBreakdown() {
       ) : total === 0 ? (
         <p className="text-slate">Bag some munros to view your regional breakdown.</p>
       ) : (
-        <div className="flex items-center gap-8">
+        <div className="flex items-center gap-8 flex-wrap">
           <DoughnutChart data={regionPercents} />
           <ul className="inline-grid grid-cols-1 gap-y-2">
             {regionPercents.map((r) => (

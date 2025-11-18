@@ -101,10 +101,10 @@ export default function SidebarList() {
             return (
               <div 
                   key={munro.id} 
-                  className={`border-b border-sage px-6 py-6 flex flex-col ${isBagged(munro.id) ? 'bg-mint' : 'bg-mist'}`}
+                  className={`border-b border-sage p-9 flex flex-col ${isBagged(munro.id) ? 'bg-mint' : 'bg-mist'}`}
                   >
-                <div className="flex flex-col items-start gap-4">
-                  <div className="w-full relative h-60 mb-4 bg-pebble rounded-xl">
+                <div className="flex flex-col items-start gap-9">
+                  <div className="w-full relative h-60 bg-pebble rounded-xl">
                     <img src={munro.imageURL} alt={munro.name} className="object-cover w-full h-full rounded-xl" />
                     <div className="absolute top-6 left-6">
                       <BaggedIndicator munroId={munro.id} />
@@ -117,7 +117,7 @@ export default function SidebarList() {
                       <span className="text-xxxl font-heading-font-family">{munro.name}</span>
                   </Link>
                 </div>
-                <ul className="mt-6 flex gap-8">
+                <ul className="mt-5 flex gap-8">
                   <li className="mb-2 flex flex-col-reverse gap-1">
                     <h2 className="text-moss text-l">Distance</h2>
                     <p className="text-xl">{route?.length}{userLengthUnits}</p>
