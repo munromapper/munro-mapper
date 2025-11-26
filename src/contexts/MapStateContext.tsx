@@ -92,7 +92,7 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
     const [routeStyleMode, setRouteStyleMode] = useState<'gradient' | 'standard' | 'hidden'>('standard');
     const [isSidebarExpanded, setSidebarExpanded] = useState<boolean>(true);
     const [mapBaseStyleMode, setMapBaseStyleMode] = useState<'terrain' | 'satellite'>('terrain');
-    const [map3DMode, setMap3DMode] = useState<boolean>(false);
+    const [map3DMode, setMap3DMode] = useState<boolean>(true);
 
     useEffect(() => {
         const fetchData = async () => {

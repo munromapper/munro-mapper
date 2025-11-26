@@ -8,6 +8,7 @@ export default function Map3DToggle() {
     const { map3DMode, setMap3DMode, map } = useMapState();
     const [open, setOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement | null>(null);
+    const terrainRef = useRef<any | null>(null);
 
     useEffect(() => {
         const onDocClick = (e: MouseEvent) => {
@@ -23,42 +24,56 @@ export default function Map3DToggle() {
         };
     }, []);
 
-    // Toggle 3D/2D on the map
     useEffect(() => {
-        if (!map) return;
-        if (map3DMode) {
-            // Enable 3D: add terrain and sky layers if not present
-            if (!map.getSource('mapbox-dem')) {
-                map.addSource('mapbox-dem', {
-                    type: 'raster-dem',
-                    url: 'mapbox://mapbox.terrain-rgb',
-                    tileSize: 512,
-                    maxzoom: 14
-                });
-            }
-            map.setTerrain({ source: 'mapbox-dem', exaggeration: 1.2 });
-            if (!map.getLayer('sky')) {
-                map.addLayer({
-                    id: 'sky',
-                    type: 'sky',
-                    paint: {
-                        'sky-type': 'atmosphere',
-                        'sky-atmosphere-sun': [0.0, 0.0],
-                        'sky-atmosphere-sun-intensity': 15
-                    }
-                });
-            }
-        } else {
-            // Disable 3D: remove terrain and sky
-            map.setTerrain(null);
-            if (map.getLayer('sky')) {
-                map.removeLayer('sky');
-            }
-            if (map.getSource('mapbox-dem')) {
-                map.removeSource('mapbox-dem');
-            }
-        }
-    }, [map, map3DMode]);
+  if (!map) return;
+
+  // Capture once; refresh only when style has terrain and we don't already have it
+  const captureTerrainIfNeeded = () => {
+    const style = map.getStyle() as any;
+    if (style?.terrain) {
+      terrainRef.current = { ...style.terrain }; // store full config
+    }
+  };
+
+  const apply3DState = () => {
+    if (map3DMode) {
+      if (terrainRef.current) {
+        map.setTerrain(terrainRef.current);
+      } else {
+        // Optional fallback: comment out if you ONLY want pitch
+        // map.setTerrain({ source: 'mapbox-dem' });
+        // (Requires the source to exist; leaving it disabled keeps logic simple.)
+      }
+      map.easeTo({ pitch: 60, duration: 300 });
+    } else {
+      // Disable terrain but DO NOT clear the cached terrainRef
+      map.setTerrain(null);
+      map.easeTo({ pitch: 0, duration: 300 });
+    }
+  };
+
+  const onStyleLoad = () => {
+    // If the new style has terrain, refresh the cache
+    const style = map.getStyle() as any;
+    if (style?.terrain) {
+      terrainRef.current = { ...style.terrain };
+    }
+    apply3DState();
+  };
+
+  if (map.isStyleLoaded()) {
+    // Only capture if we haven't yet
+    if (!terrainRef.current) captureTerrainIfNeeded();
+    apply3DState();
+  } else {
+    map.once('style.load', onStyleLoad);
+  }
+
+  map.on('style.load', onStyleLoad);
+  return () => {
+    map.off('style.load', onStyleLoad);
+  };
+}, [map, map3DMode]);
 
     return (
         <div className="absolute bottom-71 right-6 z-10 pointer-events-auto" ref={menuRef}>
