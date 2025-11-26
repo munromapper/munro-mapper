@@ -12,6 +12,7 @@ import initialiseMap from '@/utils/map/initialiseMap';
 import { RecenterButton } from './RecenterButton';
 import RouteStyleToggle from './RouteStyleToggle';
 import MapStyleToggle from './MapStyleToggle';
+import Map3DToggle from './Map3DToggle';
 
 export default function MapComponent() {
     const { 
@@ -518,6 +519,7 @@ export default function MapComponent() {
 
     return (
         <div ref={mapRef} className="w-full h-full">
+            <Map3DToggle />
             <RouteStyleToggle />
             <MapStyleToggle />
             {offCenter && activeMunro && (
