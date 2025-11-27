@@ -26,6 +26,39 @@ export default function HeaderSearchBar() {
     return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   }
 
+  function escapeRegex(s: string) {
+    return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  function highlightParts(original: string, query: string) {
+    if (!query) return [{ text: original, highlight: false }];
+
+    const normOriginal = normalizeStr(original);
+    const normQuery = normalizeStr(query);
+    const idx = normOriginal.indexOf(normQuery);
+    if (idx < 0) return [{ text: original, highlight: false }];
+
+    // Map normalized indices back to original indices
+    const mapNormToOrig: number[] = [];
+    for (let oi = 0, ni = 0; oi < original.length; oi++) {
+      const normChar = normalizeStr(original[oi]);
+      // normChar can be multiple code points; count how many were produced
+      for (let k = 0; k < normChar.length; k++) {
+        mapNormToOrig[ni++] = oi;
+      }
+    }
+
+    const startOrig = mapNormToOrig[idx] ?? 0;
+    const endNorm = idx + normQuery.length - 1;
+    const endOrig = (mapNormToOrig[endNorm] ?? original.length - 1) + 1;
+
+    return [
+      { text: original.slice(0, startOrig), highlight: false },
+      { text: original.slice(startOrig, endOrig), highlight: true },
+      { text: original.slice(endOrig), highlight: false },
+    ];
+  }
+
   useEffect(() => {
     if (query.length === 0) {
         setSuggestions([]);
@@ -64,13 +97,14 @@ export default function HeaderSearchBar() {
 
   return (
     <div className="flex-1 relative mx-15">
-        <div className="absolute w-4 h-4 top-0 bottom-0 my-auto left-6 text-moss">
-        <SearchIcon />
+        <div className="absolute z-60 w-3.5 h-3.5 top-0 bottom-0 my-auto left-6 text-moss">
+          <SearchIcon />
         </div>
+        <div className="absolute z-40 bg-mist w-full h-10 -top-10"></div>
         <input
           ref={inputRef}
           type="text"
-          className="bg-pebble rounded-full w-full px-13 py-3 text-xl text-slate border border-mist
+          className="bg-pebble relative z-50 rounded-full w-full px-13 py-3 text-xl text-slate border border-mist
                       hover:border-sage
                       placeholder:text-slate/50 
                       focus:bg-mist focus:border-slate focus:outline-none
@@ -85,25 +119,31 @@ export default function HeaderSearchBar() {
           autoComplete="off"
         />
         {showDropdown && (
-        <ul className="absolute left-0 top-full p-2 mt-2 w-full no-scrollbar bg-mist text-slate rounded-xl z-50 max-h-60 overflow-y-auto shadow-standard">
+        <ul className="absolute left-[-1%] -top-10 pt-[6.5rem] p-4 w-[102%] no-scrollbar bg-mist text-slate rounded-xl z-30 max-h-80 overflow-y-auto shadow-standard">
             {suggestions.map((munro, idx) => (
             <li
-                key={munro.id}
-                className={`px-4 py-2 cursor-pointer rounded-xl hover:bg-pebble transition duration-250 ease-in-out ${activeIndex === idx ? "bg-mist" : ""}`}
-                onMouseDown={() => handleSelect(munro)}
-                onMouseEnter={() => setActiveIndex(idx)}
+              key={munro.id}
+              className={`px-4 py-3 cursor-pointer rounded-xl hover:bg-pebble transition duration-250 ease-in-out ${
+                activeIndex === idx ? "bg-pebble" : ""
+              }`}
+              onMouseDown={() => handleSelect(munro)}
+              onMouseEnter={() => setActiveIndex(idx)}
             >
-                <div>{munro.name}</div>
-                <div className="text-l text-moss flex items-center gap-1">
-                    <span>#{munro.id}</span>
-                    <span className="mx-1">•</span>
-                    <span>
-                      {convertHeight(munro.height, heightUnit)}
-                      {getHeightUnitLabel(heightUnit)}
+              <div className="flex items-center gap-3">
+                <span className="w-3.5 h-3.5 text-moss">
+                  <SearchIcon />
+                </span>
+                <span className="text-xl">
+                  {highlightParts(munro.name, query).map((part, i) => (
+                    <span
+                      key={i}
+                      className={part.highlight ? "text-moss" : "text-slate"}
+                    >
+                      {part.text}
                     </span>
-                    <span className="mx-1">•</span>
-                    <span>{munro.region}</span>
-                </div>
+                  ))}
+                </span>
+              </div>
             </li>
             ))}
             {suggestions.length === 0 && (

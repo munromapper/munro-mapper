@@ -489,7 +489,7 @@ export default function MapComponent() {
             }
 
             map.getCanvas().style.cursor = 'pointer';
-            const gradientText = `${best.gradient.toFixed(1)}%`;
+            const gradientText = `${Math.round(best.gradient)}%`;
 
             let elevLine = '';
             if (typeof best.elevM === 'number' && Number.isFinite(best.elevM)) {
@@ -502,7 +502,7 @@ export default function MapComponent() {
 
             hoverPopupRef.current!
                 .setLngLat(best.lngLat as mapboxgl.LngLat)
-                .setHTML(`<div class="text-xs leading-tight"><div>Gradient: ${gradientText}</div>${elevLine}</div>`)
+                .setHTML(`<div class="rgp-wrap"><span class="rgp-badge">${gradientText}</span><span class="rgp-label">Gradient</span></div>`)
                 .addTo(map);
         };
 
