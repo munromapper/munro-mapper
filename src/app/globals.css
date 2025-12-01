@@ -120,6 +120,7 @@ body {
   --text-5xl: 2.5rem;
   --text-6xl: 3rem;
   --shadow-standard: 0px 1px 6px 0px rgba(0, 0, 0, 0.1);
+  --breakpoint-md: 1000px;
 }
 
 .page-transition {

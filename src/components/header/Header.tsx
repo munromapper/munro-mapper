@@ -2,7 +2,7 @@
 // This file contains the Header component for the application
 
 'use client';
-import React from "react";
+import React, { useState } from "react";
 import LogoLink from "./LogoLink";
 import HeaderNavLink from "./HeaderNavLink";
 import HeaderSearchBar from "./HeaderSearchBar";
@@ -12,6 +12,7 @@ import ModalElement from "@/components/global/Modal";
 import PremiumAdvertPopup from "./PremiumAdvertPopup";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { MapIcon, ListIcon, DashboardIcon } from "../global/SvgComponents";
+import MobileMenu from "./MobileMenu";
 
 const navLinks = {
     explore: {
@@ -63,10 +64,11 @@ interface HeaderProps {
 export default function Header({ isAppHeader }: HeaderProps) {
     const { isPremiumAdModalOpen, closePremiumAdModal } = useAuthContext();
     const { user } = useAuthContext();
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     return(
         <header 
-            className="w-full py-6 px-15 flex items-center justify-between z-30 min-h-22"
+            className="w-full py-6 px-15 max-md:px-6 max-md:py-5 flex items-center justify-between z-30"
             style = {{
                 backgroundColor: isAppHeader ? "var(--color-mist)" : "transparent",
                 borderBottom: isAppHeader ? "1px solid var(--color-sage)" : "none",
@@ -86,8 +88,8 @@ export default function Header({ isAppHeader }: HeaderProps) {
                 />
             )}
             <HeaderSearchBar />
-            <nav className="flex items-center gap-16">
-                <ul className="flex items-center gap-5">
+            <nav className="max-md:hidden flex no-wrap items-center gap-16">
+                <ul className="flex items-center no-wrap gap-5">
                     {Object.entries(navLinks).map(([key, link]) => (
                         <li key={key} className="inline-block">
                             {Array.isArray(link.children) ? (
@@ -117,6 +119,31 @@ export default function Header({ isAppHeader }: HeaderProps) {
                     />
                 </div>
             </nav>
+            <button
+                className={`max-md:flex hidden relative z-70 w-10 h-10 p-2 flex-col justify-center gap-1 cursor-pointer group`}
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                aria-label="Toggle mobile menu"
+            >
+                <div
+                    className={`w-full h-0.5 rounded-full bg-slate transition-all duration-300
+                        ${isMobileMenuOpen ? 'rotate-45 translate-y-1' : ''}
+                    `}
+                ></div>
+                <div
+                    className={`w-full h-0.5 rounded-full bg-slate transition-all duration-300
+                        ${isMobileMenuOpen ? 'opacity-0' : ''}
+                    `}
+                ></div>
+                <div
+                    className={`w-full h-0.5 rounded-full bg-slate transition-all duration-300
+                        ${isMobileMenuOpen ? '-rotate-45 -translate-y-2' : ''}
+                    `}
+                ></div>
+            </button>
+            <MobileMenu 
+                isMobileMenuOpen={isMobileMenuOpen}
+                setIsMobileMenuOpen={setIsMobileMenuOpen}
+            />
             <ModalElement
                 isOpen={isPremiumAdModalOpen}
                 onClose={closePremiumAdModal}

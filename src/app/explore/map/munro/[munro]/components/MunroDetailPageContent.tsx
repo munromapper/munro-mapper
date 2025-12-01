@@ -9,10 +9,11 @@ import FriendsBagged from './FriendsBagged';
 import RouteDifficultyIndicator from "./RouteDifficultyIndicator";
 import RouteStyleIndicator from "./RouteStyleIndicator";
 import Link from "next/link";
-import { DownloadIcon, TooltipIcon } from "@/components/global/SvgComponents";
+import { DownloadIcon, TooltipIcon, NewTabIcon } from "@/components/global/SvgComponents";
 import { getGpxFileUrl } from "@/utils/data/clientDataFetchers";
 import EstimatedTimeButton from "./EstimatedTimeButton";
 import ImageCreditButton from "./ImageCreditButton";
+import ShareButton from "./ShareButton";
 
 interface MunroDetailPageContentProps {
     munro: Munro;
@@ -220,22 +221,27 @@ export default function MunroDetailPageContent({
                 </div>
                 <div className="h-[1px] bg-sage"></div>
                 <div className="py-8 px-6 flex flex-col gap-4">
-                    <button 
-                        onClick={handleDownloadGpx}
-                        className="py-2 px-4 bg-apple rounded-full cursor-pointer flex items-center justify-center gap-2"
-                    >
-                        Download GPX file
-                        <span className="inline-flex w-4 h-4">
-                            <DownloadIcon/>
-                        </span>
-                    </button>
+                    <ShareButton munroName={munro.name} />
                     <a
-                        className="py-2 px-4 bg-mist border border-apple rounded-full cursor-pointer flex items-center justify-center gap-2"
+                        className="py-2 px-4 bg-mist border border-sage rounded-full cursor-pointer flex items-center justify-center gap-3"
                         href={route?.garminLink}
                         target="_blank"
+                        rel="noopener noreferrer"
                     >
-                        Open in Garmin Connect
+                        <span>View on Garmin Connect</span>
+                        <span className="inline-flex w-4 h-4">
+                        <NewTabIcon />
+                        </span>
                     </a>
+                    <button 
+                        onClick={handleDownloadGpx}
+                        className="py-2 px-4 bg-apple rounded-full cursor-pointer flex items-center justify-center gap-3"
+                    >
+                        <span>Download GPX file</span>
+                        <span className="inline-flex w-4 h-4">
+                        <DownloadIcon/>
+                        </span>
+                    </button>
                 </div>
             </div>
         </motion.div>

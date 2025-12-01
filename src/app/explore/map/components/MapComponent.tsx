@@ -13,6 +13,7 @@ import { RecenterButton } from './RecenterButton';
 import RouteStyleToggle from './RouteStyleToggle';
 import MapStyleToggle from './MapStyleToggle';
 import Map3DToggle from './Map3DToggle';
+import MapControls from './MapControls';
 
 export default function MapComponent() {
     const { 
@@ -519,6 +520,7 @@ export default function MapComponent() {
 
     return (
         <div ref={mapRef} className="w-full h-full">
+            <MapControls />
             <Map3DToggle />
             <RouteStyleToggle />
             <MapStyleToggle />

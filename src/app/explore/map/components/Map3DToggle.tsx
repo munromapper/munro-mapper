@@ -165,7 +165,7 @@ function PreviewTerrain() {
   return (
     <div
       className="w-full h-full bg-center bg-cover"
-      style={{ backgroundImage: 'url(/images/mapstyleterrain.jpg)' }}
+      style={{ backgroundImage: 'url(/images/mapstylestwod.jpg)' }}
       aria-label="2D preview"
     />
   );
@@ -175,7 +175,7 @@ function PreviewSatellite() {
   return (
     <div
       className="w-full h-full bg-center bg-cover"
-      style={{ backgroundImage: 'url(/images/mapstylesatellite.jpg)' }}
+      style={{ backgroundImage: 'url(/images/mapstylesthreed.jpg)' }}
       aria-label="3D preview"
     />
   );

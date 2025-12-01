@@ -3,7 +3,7 @@
 
 import React from "react";
 import TransitionLink from "../global/TransitionLink";
-import { LogoLight, LogoDark} from '@/components/global/SvgComponents'
+import { LogoLight, LogoDark, LogoSmall} from '@/components/global/SvgComponents'
 
 interface LogoLinkProps {
     href: string;
@@ -23,14 +23,15 @@ export default function LogoLink({
         <TransitionLink
             transitionWrapper="body" 
             href={href} 
-            className="w-50"
         >
-            {isDark && (
-                <LogoDark />
-            )}
-            {!isDark && (
-                <LogoLight />
-            )}
+            {/* Show LogoSmall below md */}
+            <span className="hidden max-md:block h-10 w-10">
+                <LogoSmall />
+            </span>
+            {/* Show LogoDark/LogoLight at md and above */}
+            <span className="hidden md:flex items-center justify-center w-40">
+                {isDark ? <LogoDark /> : <LogoLight />}
+            </span>
         </TransitionLink>
     );
 }

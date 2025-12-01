@@ -96,7 +96,7 @@ export default function HeaderSearchBar() {
     userProfile?.preferences?.elevationUnit === "feet" ? "feet" : "metres";
 
   return (
-    <div className="flex-1 relative px-4 mx-15">
+    <div className="flex-1 relative px-4 mx-15 max-md:mx-6">
         <div className="absolute z-60 w-3.5 h-3.5 top-0 bottom-0 my-auto left-8 text-moss">
           <SearchIcon />
         </div>
@@ -118,12 +118,12 @@ export default function HeaderSearchBar() {
           autoComplete="off"
         />
         {showDropdown && (
-        <ul className="absolute left-0 -top-9 pt-0 p-4 w-full no-scrollbar bg-mist text-slate rounded-xl z-30 max-h-80 overflow-y-auto shadow-standard">
-            <div className="sticky z-20 bg-mist w-full h-12.5 mb-12 left-0 top-0"></div>
+        <ul className="absolute left-0 -top-4 pt-0 p-4 w-full no-scrollbar bg-mist text-slate rounded-xl z-30 max-h-80 overflow-y-auto shadow-standard">
+            <div className="sticky z-20 bg-mist w-full h-12.5 mb-8 left-0 top-0"></div>
             {suggestions.map((munro, idx) => (
             <li
               key={munro.id}
-              className={` relative z-10 px-4 py-3 cursor-pointer rounded-xl hover:bg-pebble transition duration-250 ease-in-out ${
+              className={` relative z-10 px-4 py-3 cursor-pointer rounded-lg hover:bg-pebble transition duration-250 ease-in-out ${
                 activeIndex === idx ? "bg-pebble" : ""
               }`}
               onMouseDown={() => handleSelect(munro)}

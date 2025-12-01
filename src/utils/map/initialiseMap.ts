@@ -38,14 +38,6 @@ export default function initialiseMap({
             antialias: true,
         })
 
-        const mapControls = new mapboxgl.NavigationControl({
-            showCompass: true,
-            showZoom: true,
-            visualizePitch: true
-        });
-
-        map.addControl(mapControls, 'bottom-right');
-
         map.on('error', (e) => {
             setError("An error occurred loading the map. Please try again later.");
             setLoading(false);
