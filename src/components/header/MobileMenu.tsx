@@ -5,6 +5,7 @@
 import React from "react";
 import LoginAuthButtons from "./LoginAuthButtons";
 import { useAuthContext } from "@/contexts/AuthContext";
+import Link from "next/link";
 import { LogoDark } from "../global/SvgComponents";
 
 interface MobileMenuProps {
@@ -21,9 +22,9 @@ export default function MobileMenu({
                         ${isMobileMenuOpen ? 'opacity-100 left-0 pointer-events-auto' : 'opacity-0 -left-[50vw] pointer-events-none'}
         `}>
             <div className="w-60">
-                <a href="/" className="cursor-pointer">
+                <Link href="/" className="cursor-pointer">
                     <LogoDark />
-                </a>
+                </Link>
             </div>  
         </div>
     )
