@@ -68,7 +68,7 @@ export default function Header({ isAppHeader }: HeaderProps) {
 
     return(
         <header 
-            className="w-full py-6 px-15 max-md:px-6 max-md:py-5 flex items-center justify-between z-30"
+            className="w-full py-6 px-15 max-md:px-4 max-md:py-3 flex items-center justify-between z-30"
             style = {{
                 backgroundColor: isAppHeader ? "var(--color-mist)" : "transparent",
                 borderBottom: isAppHeader ? "1px solid var(--color-sage)" : "none",

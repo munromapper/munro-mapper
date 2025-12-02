@@ -10,7 +10,7 @@ import { motion } from 'framer-motion';
 export default function MapPage() {
 
   return (
-    <div className="rounded-xl w-full">
+    <div className="rounded-xl w-full max-md:hidden">
       <SidebarListPage />
     </div>
   );

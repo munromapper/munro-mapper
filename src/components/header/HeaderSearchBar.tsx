@@ -96,7 +96,7 @@ export default function HeaderSearchBar() {
     userProfile?.preferences?.elevationUnit === "feet" ? "feet" : "metres";
 
   return (
-    <div className="flex-1 relative px-4 mx-15 max-md:mx-6">
+    <div className="flex-1 relative px-4 mx-15 max-md:mx-4">
         <div className="absolute z-60 w-3.5 h-3.5 top-0 bottom-0 my-auto left-8 text-moss">
           <SearchIcon />
         </div>
