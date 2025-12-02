@@ -49,7 +49,7 @@ export default function RouteStyleToggle() {
     const is = (m: 'standard' | 'gradient' | 'hidden') => routeStyleMode === m;
 
     return (
-        <div className="absolute bottom-47 right-6 z-10 pointer-events-auto" ref={menuRef}>
+        <div className="relative z-10 pointer-events-auto" ref={menuRef}>
             <button
                 className="relative w-10 h-10 flex items-center justify-center p-3 rounded-full shadow-standard bg-mist cursor-pointer"
                 onClick={() => setOpen((v) => !v)}

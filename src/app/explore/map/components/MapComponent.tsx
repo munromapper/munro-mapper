@@ -521,9 +521,6 @@ export default function MapComponent() {
     return (
         <div ref={mapRef} className="w-full h-full">
             <MapControls />
-            <Map3DToggle />
-            <RouteStyleToggle />
-            <MapStyleToggle />
             {offCenter && activeMunro && (
                 <RecenterButton 
                     selectedMunro={activeMunro}
