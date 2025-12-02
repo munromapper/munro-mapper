@@ -20,7 +20,7 @@ export default function MobileMenuBar() {
 
     return (
         <nav
-            className="w-full bg-mist z-50 flex justify-center md:hidden"
+            className="w-full bg-mist z-50 flex justify-center border-t border-sage md:hidden"
             aria-label="Mobile navigation bar"
         >
             <ul className="flex justify-center gap-2 w-full max-w-md mx-auto py-2">

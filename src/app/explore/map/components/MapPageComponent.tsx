@@ -35,7 +35,7 @@ export default function MapPageComponent({
                     </motion.div>
                 )}
             </AnimatePresence>
-            <div className="absolute z-10 p-9 top-0 left-0 w-full h-full flex gap-9 pointer-events-none">
+            <div className="absolute z-10 p-9 top-0 left-0 w-full h-full flex gap-9 pointer-events-none max-md:p-4">
                 <SidebarWrapperComponent>
                     {children}
                 </SidebarWrapperComponent>

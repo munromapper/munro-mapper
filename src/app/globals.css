@@ -185,6 +185,12 @@ html {
   border: none !important;
 }
 
+@media (max-width:1000px) {
+  .mapboxgl-ctrl-bottom-left .mapboxgl-ctrl {
+    margin-bottom: 0.25rem !important;
+  }
+}
+
 .mapboxgl-ctrl-attrib {
   padding: 0.25rem !important;
   background: var(--color-mist) !important;
@@ -193,6 +199,41 @@ html {
   border-radius: 0.25rem 0rem 0rem 0rem !important;
   font-family: var(--font-body-font-family) !important;
   box-shadow: var(--shadow-standard) !important;
+}
+
+@media (max-width: 1000px) {
+  .mapboxgl-ctrl-attrib.mapboxgl-compact, .mapboxgl-ctrl.mapboxgl-ctrl-attrib {
+    display: block !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    min-height: auto !important;
+    margin-bottom: 0.5rem !important;
+  }
+}
+
+@media (max-width: 1000px) {
+  .mapboxgl-ctrl-attrib a {
+    color: var(--color-mist) !important;
+    text-shadow: 0px 0px 3px #000000 !important;
+    opacity: 0.7 !important;
+  }
+}
+
+@media (max-width: 1000px) {
+  .mapboxgl-ctrl-attrib.mapboxgl-compact .mapboxgl-ctrl-attrib-inner {
+    display: block !important;
+  }
+}
+
+@media (max-width: 1000px) {
+  .mapboxgl-ctrl-bottom-right {
+    left: 4.5rem !important;
+    right: auto !important;
+  }
+}
+
+.mapboxgl-ctrl-attrib-button {
+  display: none !important;
 }
 
 .mapbox-improve-map {
