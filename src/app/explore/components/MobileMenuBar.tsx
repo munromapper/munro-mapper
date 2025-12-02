@@ -8,7 +8,7 @@ import { usePathname } from "next/navigation";
 import { DashboardIcon, FriendsIcon, MapIcon, ListIcon, SettingsIcon } from "@/components/global/SvgComponents";
 
 export default function MobileMenuBar() {
-    const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
+    const pathname = usePathname();
 
     const menu = [
         { href: "/explore/dashboard", label: "Stats", icon: <DashboardIcon /> },
@@ -20,7 +20,7 @@ export default function MobileMenuBar() {
 
     return (
         <nav
-            className="fixed bottom-0 left-0 w-full bg-mist z-50 flex justify-center md:hidden"
+            className="w-full bg-mist z-50 flex justify-center md:hidden"
             aria-label="Mobile navigation bar"
         >
             <ul className="flex justify-center gap-2 w-full max-w-md mx-auto py-2">
