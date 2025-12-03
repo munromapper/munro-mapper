@@ -13,7 +13,7 @@ export default function ExploreLayout({ children }: ExploreLayoutProps) {
   return (
     <>
         <Header isAppHeader={true} />
-        <main className="h-[calc(100vh-6.1rem)] flex items-stretch max-md:flex-col-reverse max-md:h-[calc(100dvh-4.6rem)] max-md:mt-[4.6rem]">
+        <main className="h-[calc(100vh-6.1rem)] flex items-stretch max-md:flex-col-reverse max-md:h-[calc(100dvh-4.614rem)] max-md:mt-[4.614rem]">
             <div className="hidden md:block">
               <ExploreSidebar />
             </div>
