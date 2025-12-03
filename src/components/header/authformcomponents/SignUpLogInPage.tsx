@@ -87,7 +87,7 @@ export default function SignUpLogInPage({
                 setStep,
                 onSuccess
             })} 
-            className="flex flex-col items-stretch gap-9 max-w-115 p-14 bg-mist"
+            className="flex flex-col items-stretch gap-9 max-w-115 max-md:max-w-full p-14 bg-mist"
         >
             <div className="text-center">
                 <h2 className="font-heading-font-family text-4xl mb-3">{mode === "signUp" ? "Sign Up" : "Log In"}</h2>

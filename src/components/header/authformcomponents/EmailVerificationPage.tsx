@@ -32,7 +32,7 @@ export default function EmailVerificationPage({
     onSuccess
 }: EmailVerificationPageProps) {
     return (
-        <div className="flex flex-col gap-9 items-center justify-center max-w-100 p-14 bg-mist">
+        <div className="flex flex-col gap-9 items-center justify-center max-w-115 max-md:max-w-full p-14 bg-mist">
             <div className="flex flex-col items-center gap-4 text-center">
                 <p className="text-4xl font-heading-font-family">
                     Check your email

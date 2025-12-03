@@ -45,7 +45,7 @@ export default function OtpVerifyPage({
   }
 
   return (
-    <div className="bg-mist flex flex-col items-stretch gap-9 max-w-115 p-14">
+    <div className="bg-mist flex flex-col items-stretch gap-9 max-w-115 max-md:max-w-full p-14">
             <div className="text-center">
                 <p className="font-heading-font-family text-4xl mb-4">Check your email</p>
                 <p className="text-moss text-xl mb-4">We&apos;ve sent a single use OTP code to your email if you have an account.</p>

@@ -38,7 +38,7 @@ export default function ModalElement({
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="fixed inset-0 z-[1000] flex items-center justify-center text-slate font-normal"
+            className="fixed inset-0 z-[1000] flex items-end md:items-center justify-center text-slate font-normal"
             aria-modal="true"
             role="dialog"
             initial={{ opacity: 0 }}
@@ -56,23 +56,29 @@ export default function ModalElement({
             />
             {/* Modal content */}
             <motion.div
-              className="relative rounded-xl shadow-xl overflow-hidden z-[1001]"
-              style={{ minWidth: 320, maxWidth: "90vw" }}
+              className="relative z-[1001] w-full md:w-auto rounded-t-xl md:rounded-xl shadow-xl overflow-hidden max-h-[80vh]"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
               transition={{ duration: 0.2 }}
+              // Remove mobile caps; only cap on desktop
             >
-              <button
-                className={`absolute top-6 right-6 rounded-full w-8 h-8 p-[10px] ${closeButtonBgClass} flex items-center justify-center cursor-pointer ${closeButtonHoverBgClass} transition`}
-                onClick={onClose}
-                aria-label="Close modal"
-              >
-                <div className="flex items-center justify-center">
-                  <CrossIcon />
+              {/* Desktop-only sizing caps */}
+              <div className="md:min-w-[320px] md:max-w-[90vw]">
+                <button
+                  className={`absolute top-6 right-6 rounded-full w-8 h-8 p-[10px] ${closeButtonBgClass} flex items-center justify-center cursor-pointer ${closeButtonHoverBgClass} transition`}
+                  onClick={onClose}
+                  aria-label="Close modal"
+                >
+                  <div className="flex items-center justify-center">
+                    <CrossIcon />
+                  </div>
+                </button>
+                {/* Scrollable content area */}
+                <div className="max-h-[80vh] overflow-y-auto">
+                  {children}
                 </div>
-              </button>
-              {children}
+              </div>
             </motion.div>
           </motion.div>
         )}

@@ -39,7 +39,7 @@ export default function OtpRequestPage({
   }
 
   return (
-    <div className="bg-mist flex flex-col items-stretch gap-9 max-w-115 p-14">
+    <div className="bg-mist flex flex-col items-stretch gap-9 max-w-115 max-md:max-w-full p-14">
         <div className="text-center">
             <p className="font-heading-font-family text-4xl mb-4">Enter your email</p>
             <p className="text-moss text-xl mb-4">We&apos;ll send you a single use log in code.</p>
