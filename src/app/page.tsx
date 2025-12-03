@@ -10,7 +10,7 @@ export default function HomePage() {
       <>
         <Header isAppHeader={false} />
         <main className="h-full">
-          <section className="h-screen flex items-center justify-center relative">
+          <section className="h-[150vh] flex items-center justify-center relative">
             <div className="absolute inset-0 bg-cover bg-center z-0">
               <div className="absolute inset-0 bg-slate/60" />
               <div className="h-full w-full bg-cover bg-center" style={{ backgroundImage: "url('/images/home-hero-image.webp')" }} />

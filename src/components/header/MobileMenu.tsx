@@ -40,24 +40,26 @@ export default function MobileMenu({
                         </span>
                     </div>
                     <ul className="mt-6 flex flex-col gap-2">
+                        {user && (
+                            <li>
+                                <Link href="/explore/dashboard" onClick={() => setIsMobileMenuOpen(false)}>Dashboard View</Link>
+                            </li>
+                        )}
                         <li>
-                            <Link href="/explore/dashboard">Dashboard View</Link>
+                            <Link href="/explore/map" onClick={() => setIsMobileMenuOpen(false)}>Map View</Link>
                         </li>
                         <li>
-                            <Link href="/explore/map">Map View</Link>
-                        </li>
-                        <li>
-                            <Link href="/explore/list">List View</Link>
+                            <Link href="/explore/list" onClick={() => setIsMobileMenuOpen(false)}>List View</Link>
                         </li>
                     </ul>
                 </div>
-                <Link href="/pricing" className="cursor-pointer py-6 border-b border-sage">
+                <Link href="/pricing" onClick={() => setIsMobileMenuOpen(false)} className="cursor-pointer py-6 border-b border-sage">
                     Pricing
                 </Link>
-                <Link href="/About" className="cursor-pointer py-6 border-b border-sage">
+                <Link href="/About" onClick={() => setIsMobileMenuOpen(false)} className="cursor-pointer py-6 border-b border-sage">
                     About
                 </Link>
-                <Link href="/Contact" className="cursor-pointer py-6 border-b border-sage">
+                <Link href="/Contact" onClick={() => setIsMobileMenuOpen(false)} className="cursor-pointer py-6 border-b border-sage">
                     Contact
                 </Link>
                 {user && (
