@@ -23,7 +23,7 @@ export default function LoginAuthButtons({
     const { user, isAuthModalOpen, authFormMode, openAuthModal, closeAuthModal } = useAuthContext();
 
     // Use a media query to detect mobile
-    const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
+    const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width: 1000px)').matches;
 
     if (isMobile) {
         // On mobile, only show login/signup if no user, never show account menu
