@@ -112,7 +112,7 @@ export default function FilterComponent() {
     const isPremium = !!user && ['active', 'canceling'].includes(userProfile?.isPremium ?? '');
 
     return (
-        <div className="relative self-start flex items-start gap-4 flex-1 text-l pointer-events-auto max-md:ml-4 max-md:pr-4 max-md:overflow-auto no-scrollbar">
+        <div className="relative self-start flex items-start gap-4 flex-1 text-l pointer-events-auto max-md:overflow-auto max-md:pr-4 no-scrollbar">
             <div
                 className={`rounded-full shadow-standard text-nowrap border pt-2 pb-2 pl-5 pr-4 flex items-center gap-2 cursor-pointer transition-all duration-300 ease-in-out max-md:hidden
                 ${anyFilterChanged ? 'bg-pebble border-slate' : 'bg-mist border-mist'}`}
@@ -173,7 +173,7 @@ export default function FilterComponent() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.3, ease: "easeInOut" }}
-                        className="w-full flex flex-wrap gap-4 max-md:flex-nowrap"
+                        className="w-full flex flex-wrap gap-4 max-md:flex-nowrap max-md:px-4"
                     >
                         {/* ...all your FilterGroup components... */}
                         <FilterGroup
@@ -293,6 +293,7 @@ export default function FilterComponent() {
                                 unit={userAscentUnits === 'ft' ? 'ft' : 'm'}
                             />
                         </FilterGroup>
+                        <div className="hidden max-md:block flex-shrink-0" style={{ width: '1px' }} />
                     </motion.div>
                 )}
             </AnimatePresence>
