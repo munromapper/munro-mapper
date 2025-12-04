@@ -112,7 +112,7 @@ export default function FilterComponent() {
     const isPremium = !!user && ['active', 'canceling'].includes(userProfile?.isPremium ?? '');
 
     return (
-        <div className="relative self-start flex items-start gap-4 flex-1 text-l pointer-events-auto max-md:ml-4 max-md:overflow-auto no-scrollbar">
+        <div className="relative self-start flex items-start gap-4 flex-1 text-l pointer-events-auto max-md:ml-4 max-md:pr-4 max-md:overflow-auto no-scrollbar">
             <div
                 className={`rounded-full shadow-standard text-nowrap border pt-2 pb-2 pl-5 pr-4 flex items-center gap-2 cursor-pointer transition-all duration-300 ease-in-out max-md:hidden
                 ${anyFilterChanged ? 'bg-pebble border-slate' : 'bg-mist border-mist'}`}

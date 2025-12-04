@@ -7,7 +7,7 @@ import type { FilterHeaderProps } from '@/types/data/dataTypes';
 export default function FilterHeader({ label, currentValue, isActive, isOpen, onClick, onReset }: FilterHeaderProps) {
   return (
     <div
-      className={`rounded-full shadow-standard border pt-2 pb-2 pl-5 pr-4 flex items-center gap-2 cursor-pointer transition-all duration-300 ease-in-out max-md:flex-1
+      className={`rounded-full shadow-standard border pt-2 pb-2 pl-5 pr-4 flex items-center gap-2 cursor-pointer transition-all duration-300 ease-in-out 
       ${isActive ? 'bg-pebble border-slate' : 'bg-mist border-mist'}`}
       onClick={onClick}
     >
