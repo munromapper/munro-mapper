@@ -57,9 +57,13 @@ export default function MapControls() {
           <MapStyleToggle />
           <RouteStyleToggle />
           <ZoomControls />
-          <CompassButton />
         </div>
       </motion.div>
+
+      {/* CompassButton always visible on mobile, below the plus button */}
+      <div className="md:hidden pointer-events-auto">
+        <CompassButton />
+      </div>
     </div>
   );
 }

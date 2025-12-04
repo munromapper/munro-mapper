@@ -217,7 +217,7 @@ function Option({
                 ${selected ? 'bg-pebble' : 'hover:bg-pebble'}`}
     >
       <div
-        className="relative w-16 h-16 rounded-md overflow-hidden flex items-center justify-center transition-colors"
+        className="relative w-14 h-14 rounded-md overflow-hidden flex items-center justify-center transition-colors"
       >
         {preview}
       </div>

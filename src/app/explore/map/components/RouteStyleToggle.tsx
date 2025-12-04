@@ -169,7 +169,7 @@ function Option({
                 ${selected ? 'bg-pebble' : 'hover:bg-pebble'}`}
         >
             <div
-                className="relative w-16 h-16 rounded-md overflow-hidden flex items-center justify-center transition-colors"
+                className="relative w-14 h-14 rounded-md overflow-hidden flex items-center justify-center transition-colors"
             >
                 {children}
                 {locked && (
@@ -181,8 +181,8 @@ function Option({
                 )}
             </div>
             <div className="flex-1">
-                <div className="text-xxl font-body-font-family text-slate mb-1">{title}</div>
-                <div className="text-xl font-body-font-family text-moss">{description}</div>
+                <div className="text-xl font-body-font-family text-slate mb-1">{title}</div>
+                <div className="text-l font-body-font-family text-moss">{description}</div>
             </div>
         </button>
     );
