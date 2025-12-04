@@ -173,7 +173,7 @@ export default function FilterComponent() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.3, ease: "easeInOut" }}
-                        className="w-full flex flex-wrap gap-4 max-md:flex-nowrap max-md:px-4"
+                        className="w-full flex flex-wrap gap-4 max-md:gap-2 max-md:flex-nowrap max-md:px-4"
                     >
                         {/* ...all your FilterGroup components... */}
                         <FilterGroup
