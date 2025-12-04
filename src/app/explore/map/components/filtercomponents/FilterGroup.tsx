@@ -7,7 +7,7 @@ import type { FilterGroupProps } from '@/types/data/dataTypes';
 
 export default function FilterGroup({ label, currentValue, isOpen, isActive, onToggle, onReset, children }: FilterGroupProps) {
   return (
-    <div className="flex flex-col items-start gap-4 relative">
+    <div className="flex flex-col items-start gap-4 relative max-md:shrink-0">
       <FilterHeader label={label} currentValue={currentValue} isActive={isActive} isOpen={isOpen} onClick={onToggle} onReset={onReset} />
       <FilterFieldWrapper isOpen={isOpen}>
         {children}

@@ -19,7 +19,7 @@ export default function MapPageComponent({
     const { loading, openFilter, setOpenFilter } = useMapState();
 
     return (
-        <div className="relative w-full h-full">
+        <div className="relative w-full h-full overflow-hidden">
             <AnimatePresence>
                 {loading && (
                     <motion.div
