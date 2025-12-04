@@ -1,12 +1,10 @@
-// src/app/explore/map/components/MapStyleToggle.tsx
-// Component to toggle between different base map styles: terrain, satellite
-
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { useMapState } from '@/contexts/MapStateContext';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { AnimatePresence, motion } from 'framer-motion';
-import { PremiumIconOutline, PremiumIcon, MapStyleIcon } from '@/components/global/SvgComponents';
+import { PremiumIconOutline, MapStyleIcon } from '@/components/global/SvgComponents';
+import { createPortal } from 'react-dom';
 
 export default function MapStyleToggle() {
     const { mapBaseStyleMode, setMapBaseStyleMode } = useMapState();
@@ -43,9 +41,72 @@ export default function MapStyleToggle() {
             return;
         }
         setMapBaseStyleMode(mode);
+        setOpen(false);
     };
 
     const is = (m: 'terrain' | 'satellite') => mapBaseStyleMode === m;
+
+    const menuContent = (
+        <>
+            <Option
+                title="Terrain"
+                description="Topographic hill shading"
+                selected={is('terrain')}
+                onClick={() => selectMode('terrain')}
+            >
+                <PreviewTerrain />
+            </Option>
+            <Option
+                title="Satellite"
+                description="Detailed aerial imagery"
+                selected={is('satellite')}
+                onClick={() => selectMode('satellite')}
+                locked={satelliteLocked}
+            >
+                <PreviewSatellite />
+            </Option>
+        </>
+    );
+
+    const menu =
+        typeof window !== 'undefined' && window.innerWidth <= 768
+            ? createPortal(
+                <AnimatePresence>
+                    {open && (
+                        <motion.div
+                            key="map-style-menu-mobile"
+                            role="menu"
+                            aria-label="Map style options"
+                            initial={{ opacity: 0, y: 16 }}
+                            animate={{ opacity: 1, y: 0, transition: { duration: 0.18, ease: 'easeOut' } }}
+                            exit={{ opacity: 0, y: 16, transition: { duration: 0.15, ease: 'easeIn' } }}
+                            className="fixed bottom-26 left-1/2 space-y-2 -translate-x-1/2 w-64 rounded-xl bg-mist shadow-standard p-2 z-[100]"
+                            style={{ pointerEvents: 'auto' }}
+                        >
+                            {menuContent}
+                        </motion.div>
+                    )}
+                </AnimatePresence>,
+                document.body
+            )
+            : (
+                <AnimatePresence>
+                    {open && (
+                        <motion.div
+                            key="map-style-menu-desktop"
+                            role="menu"
+                            aria-label="Map style options"
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0, transition: { duration: 0.18, ease: 'easeOut' } }}
+                            exit={{ opacity: 0, y: 8, transition: { duration: 0.15, ease: 'easeIn' } }}
+                            className="absolute bottom-0 right-full space-y-2 mr-9 w-64 rounded-xl bg-mist shadow-standard p-2 z-[100]"
+                            style={{ pointerEvents: 'auto' }}
+                        >
+                            {menuContent}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            );
 
     return (
         <div className="relative z-10 pointer-events-auto" ref={menuRef}>
@@ -69,39 +130,7 @@ export default function MapStyleToggle() {
                     <MapStyleIcon />
                 </div>
             </button>
-
-            <AnimatePresence>
-                {open && (
-                    <motion.div
-                        key="map-style-menu"
-                        role="menu"
-                        aria-label="Map style options"
-                        initial={{ opacity: 0, y: 8 }}
-                        animate={{ opacity: 1, y: 0, transition: { duration: 0.18, ease: 'easeOut' } }}
-                        exit={{ opacity: 0, y: 8, transition: { duration: 0.15, ease: 'easeIn' } }}
-                        className="absolute bottom-0 right-full mr-9 w-64 rounded-xl bg-mist shadow-standard p-2"
-                    >
-                        <Option
-                            title="Terrain"
-                            description="Topographic hill shading"
-                            selected={is('terrain')}
-                            onClick={() => selectMode('terrain')}
-                        >
-                            <PreviewTerrain />
-                        </Option>
-
-                        <Option
-                            title="Satellite"
-                            description="Detailed aerial imagery"
-                            selected={is('satellite')}
-                            onClick={() => selectMode('satellite')}
-                            locked={satelliteLocked}
-                        >
-                            <PreviewSatellite />
-                        </Option>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            {menu}
         </div>
     );
 }
@@ -126,11 +155,11 @@ function Option({
             role="menuitemradio"
             aria-checked={selected}
             onClick={onClick}
-            className="w-full cursor-pointer flex items-center gap-4 p-2 rounded-lg text-left hover:bg-pebble focus:outline-none transition duration-250 ease-in-out"
+            className={`w-full cursor-pointer flex items-center gap-4 p-2 rounded-lg text-left focus:outline-none transition duration-250 ease-in-out
+                ${selected ? 'bg-pebble' : 'hover:bg-pebble'}`}
         >
             <div
-                className={`relative w-12 h-12 rounded-md overflow-hidden flex items-center justify-center border-2 transition-colors
-                    ${selected ? 'border-slate' : 'border-transparent'}`}
+                className="relative w-12 h-12 rounded-md overflow-hidden flex items-center justify-center transition-colors"
             >
                 {children}
                 {locked && (

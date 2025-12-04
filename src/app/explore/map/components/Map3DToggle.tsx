@@ -2,7 +2,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useMapState } from '@/contexts/MapStateContext';
 import { AnimatePresence, motion } from 'framer-motion';
-import { MapStyleIcon, ThreeDIcon } from '@/components/global/SvgComponents';
+import { ThreeDIcon } from '@/components/global/SvgComponents';
+import { createPortal } from 'react-dom';
 
 type MapboxTerrainSpec = {
   source: string;
@@ -79,6 +80,102 @@ export default function Map3DToggle() {
     setOpen(false);
   };
 
+  // Helper to render menu in portal for mobile
+  const renderMenu = (
+    <motion.div
+      key="map-3d-menu"
+      role="menu"
+      aria-label="Map dimension options"
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0, transition: { duration: 0.18, ease: 'easeOut' } }}
+      exit={{ opacity: 0, y: 8, transition: { duration: 0.15, ease: 'easeIn' } }}
+      className="w-64 rounded-xl bg-mist flex shadow-standard p-2 z-[100]"
+      style={{ pointerEvents: 'auto' }}
+    >
+      <Option
+        title="2D"
+        description="Classic top-down map"
+        selected={!map3DMode}
+        onClick={() => selectMode('2d')}
+        preview={<PreviewTerrain />}
+      />
+      <Option
+        title="3D"
+        description="Tilt and rotate the map"
+        selected={map3DMode}
+        onClick={() => selectMode('3d')}
+        preview={<PreviewSatellite />}
+      />
+    </motion.div>
+  );
+
+  // Use portal for mobile, normal for desktop
+  const menu =
+    typeof window !== 'undefined' && window.innerWidth <= 768
+      ? createPortal(
+          <AnimatePresence>
+            {open &&
+              <motion.div
+                key="map-3d-menu-mobile"
+                role="menu"
+                aria-label="Map dimension options"
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0, transition: { duration: 0.18, ease: 'easeOut' } }}
+                exit={{ opacity: 0, y: 16, transition: { duration: 0.15, ease: 'easeIn' } }}
+                className="fixed bottom-26 left-1/2 -translate-x-1/2 space-y-2 w-64 rounded-xl bg-mist shadow-standard p-2 z-[100]"
+                style={{ pointerEvents: 'auto' }}
+              >
+                <Option
+                  title="2D"
+                  description="Classic top-down map"
+                  selected={!map3DMode}
+                  onClick={() => selectMode('2d')}
+                  preview={<PreviewTerrain />}
+                />
+                <Option
+                  title="3D"
+                  description="Tilt and rotate the map"
+                  selected={map3DMode}
+                  onClick={() => selectMode('3d')}
+                  preview={<PreviewSatellite />}
+                />
+              </motion.div>
+            }
+          </AnimatePresence>,
+          document.body
+        )
+      : (
+        <AnimatePresence>
+          {open &&
+            <motion.div
+              key="map-3d-menu-desktop"
+              role="menu"
+              aria-label="Map dimension options"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0, transition: { duration: 0.18, ease: 'easeOut' } }}
+              exit={{ opacity: 0, y: 8, transition: { duration: 0.15, ease: 'easeIn' } }}
+              className="absolute bottom-0 right-full space-y-2 mr-9 w-64 rounded-xl bg-mist shadow-standard p-2 z-[100]"
+              style={{ pointerEvents: 'auto' }}
+            >
+              <Option
+                title="2D"
+                description="Classic top-down map"
+                selected={!map3DMode}
+                onClick={() => selectMode('2d')}
+                preview={<PreviewTerrain />}
+              />
+              <Option
+                title="3D"
+                description="Tilt and rotate the map"
+                selected={map3DMode}
+                onClick={() => selectMode('3d')}
+                preview={<PreviewSatellite />}
+              />
+            </motion.div>
+          }
+        </AnimatePresence>
+      );
+
   return (
     <div className="relative z-10 pointer-events-auto" ref={menuRef}>
       <button
@@ -93,35 +190,7 @@ export default function Map3DToggle() {
           <ThreeDIcon />
         </div>
       </button>
-
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            key="map-3d-menu"
-            role="menu"
-            aria-label="Map dimension options"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0, transition: { duration: 0.18, ease: 'easeOut' } }}
-            exit={{ opacity: 0, y: 8, transition: { duration: 0.15, ease: 'easeIn' } }}
-            className="absolute bottom-0 right-full mr-9 w-64 rounded-xl bg-mist shadow-standard p-2"
-          >
-            <Option
-              title="2D"
-              description="Classic top-down map"
-              selected={!map3DMode}
-              onClick={() => selectMode('2d')}
-              preview={<PreviewTerrain />}
-            />
-            <Option
-              title="3D"
-              description="Tilt and rotate the map"
-              selected={map3DMode}
-              onClick={() => selectMode('3d')}
-              preview={<PreviewSatellite />}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {menu}
     </div>
   );
 }
@@ -144,12 +213,11 @@ function Option({
       role="menuitemradio"
       aria-checked={selected}
       onClick={onClick}
-      className="w-full cursor-pointer flex items-center gap-4 p-2 rounded-lg text-left hover:bg-pebble focus:outline-none transition duration-250 ease-in-out"
+      className={`w-full cursor-pointer flex items-center gap-4 p-2 rounded-lg text-left focus:outline-none transition duration-250 ease-in-out
+                ${selected ? 'bg-pebble' : 'hover:bg-pebble'}`}
     >
       <div
-        className={`relative w-12 h-12 rounded-md overflow-hidden flex items-center justify-center border-2 transition-colors ${
-          selected ? 'border-slate' : 'border-transparent'
-        }`}
+        className="relative w-12 h-12 rounded-md overflow-hidden flex items-center justify-center transition-colors"
       >
         {preview}
       </div>

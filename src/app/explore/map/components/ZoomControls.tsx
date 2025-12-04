@@ -20,7 +20,7 @@ export default function ZoomControls() {
   return (
     <>
       <button
-        className="mapboxgl-ctrl-zoom-in cursor-pointer max-md:hidden"
+        className=" pointer-events-auto mapboxgl-ctrl-zoom-in cursor-pointer max-md:hidden"
         aria-label="Zoom in"
         onClick={handleZoomIn}
         type="button"
@@ -28,7 +28,7 @@ export default function ZoomControls() {
         <PlusIcon />
       </button>
       <button
-        className="mapboxgl-ctrl-zoom-out cursor-pointer max-md:hidden"
+        className=" pointer-events-auto mapboxgl-ctrl-zoom-out cursor-pointer max-md:hidden"
         aria-label="Zoom out"
         onClick={handleZoomOut}
         type="button"

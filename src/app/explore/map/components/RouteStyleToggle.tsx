@@ -1,11 +1,10 @@
-// src/app/explore/map/components/RouteStyleToggle.tsx
-// Component to toggle between different route styles: standard, gradient, hidden
-
-import { use, useEffect, useRef, useState } from 'react';
+'use client';
+import { useEffect, useRef, useState } from 'react';
 import { useMapState } from '@/contexts/MapStateContext';
 import { AnimatePresence, motion } from 'framer-motion';
 import { RouteLineIcon, PremiumIconOutline } from '@/components/global/SvgComponents';
 import { useAuthContext } from '@/contexts/AuthContext';
+import { createPortal } from 'react-dom';
 
 export default function RouteStyleToggle() {
     const { routeStyleMode, setRouteStyleMode } = useMapState();
@@ -44,9 +43,80 @@ export default function RouteStyleToggle() {
             return;
         }
         setRouteStyleMode(mode);
+        setOpen(false);
     };
 
     const is = (m: 'standard' | 'gradient' | 'hidden') => routeStyleMode === m;
+
+    const menuContent = (
+        <>
+            <Option
+                title="Standard"
+                description="Single color route display"
+                selected={is('standard')}
+                onClick={() => selectMode('standard')}
+            >
+                <PreviewStandard />
+            </Option>
+            <Option
+                title="Gradient"
+                description="Colored by slope gradient"
+                selected={is('gradient')}
+                onClick={() => selectMode('gradient')}
+                locked={gradientLocked}
+            >
+                <PreviewGradient locked={gradientLocked} />
+            </Option>
+            <Option
+                title="Hidden"
+                description="Turn off all route lines"
+                selected={is('hidden')}
+                onClick={() => selectMode('hidden')}
+            >
+                <PreviewHidden />
+            </Option>
+        </>
+    );
+
+    const menu =
+        typeof window !== 'undefined' && window.innerWidth <= 768
+            ? createPortal(
+                <AnimatePresence>
+                    {open && (
+                        <motion.div
+                            key="route-style-menu-mobile"
+                            role="menu"
+                            aria-label="Route style options"
+                            initial={{ opacity: 0, y: 16 }}
+                            animate={{ opacity: 1, y: 0, transition: { duration: 0.18, ease: 'easeOut' } }}
+                            exit={{ opacity: 0, y: 16, transition: { duration: 0.15, ease: 'easeIn' } }}
+                            className="fixed bottom-26 left-1/2 space-y-2 -translate-x-1/2 w-64 rounded-xl bg-mist shadow-standard p-2 z-[100]"
+                            style={{ pointerEvents: 'auto' }}
+                        >
+                            {menuContent}
+                        </motion.div>
+                    )}
+                </AnimatePresence>,
+                document.body
+            )
+            : (
+                <AnimatePresence>
+                    {open && (
+                        <motion.div
+                            key="route-style-menu-desktop"
+                            role="menu"
+                            aria-label="Route style options"
+                            initial={{ opacity: 0, y: -8 }}
+                            animate={{ opacity: 1, y: 0, transition: { duration: 0.18, ease: 'easeOut' } }}
+                            exit={{ opacity: 0, y: -8, transition: { duration: 0.15, ease: 'easeIn' } }}
+                            className="absolute bottom-0 right-full space-y-2 mr-9 w-64 rounded-xl bg-mist shadow-standard p-2 z-[100]"
+                            style={{ pointerEvents: 'auto' }}
+                        >
+                            {menuContent}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            );
 
     return (
         <div className="relative z-10 pointer-events-auto" ref={menuRef}>
@@ -58,7 +128,6 @@ export default function RouteStyleToggle() {
                 aria-label="Choose route style"
                 title="Choose route style"
             >
-                {/* Premium badge (non‑premium users only) */}
                 {gradientLocked && (
                     <span
                         aria-hidden="true"
@@ -71,48 +140,7 @@ export default function RouteStyleToggle() {
                     <RouteLineIcon />
                 </div>
             </button>
-
-            <AnimatePresence>
-                {open && (
-                    <motion.div
-                        key="route-style-menu"
-                        role="menu"
-                        aria-label="Route style options"
-                        initial={{ opacity: 0, y: 8 }}
-                        animate={{ opacity: 1, y: 0, transition: { duration: 0.18, ease: 'easeOut' } }}
-                        exit={{ opacity: 0, y: 8, transition: { duration: 0.15, ease: 'easeIn' } }}
-                        className="absolute bottom-0 right-full mr-9 w-64 rounded-xl bg-mist shadow-standard p-2"
-                    >
-                        <Option
-                            title="Standard"
-                            description="Single color route display"
-                            selected={is('standard')}
-                            onClick={() => selectMode('standard')}
-                        >
-                            <PreviewStandard />
-                        </Option>
-
-                        <Option
-                            title="Gradient"
-                            description="Colored by slope gradient"
-                            selected={is('gradient')}
-                            onClick={() => selectMode('gradient')}
-                            locked={gradientLocked}
-                        >
-                            <PreviewGradient locked={gradientLocked} />
-                        </Option>
-
-                        <Option
-                            title="Hidden"
-                            description="Turn off all route lines"
-                            selected={is('hidden')}
-                            onClick={() => selectMode('hidden')}
-                        >
-                            <PreviewHidden />
-                        </Option>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            {menu}
         </div>
     );
 }
@@ -137,11 +165,11 @@ function Option({
             role="menuitemradio"
             aria-checked={selected}
             onClick={onClick}
-            className="w-full cursor-pointer flex items-center gap-4 p-2 rounded-lg text-left hover:bg-pebble focus:outline-none transition duration-250 ease-in-out"
+            className={`w-full cursor-pointer flex items-center gap-4 p-2 rounded-lg text-left focus:outline-none transition duration-250 ease-in-out
+                ${selected ? 'bg-pebble' : 'hover:bg-pebble'}`}
         >
             <div
-                className={`relative w-12 h-12 rounded-md overflow-hidden flex items-center justify-center border-2 transition-colors
-                    ${selected ? 'border-slate' : 'border-transparent'}`}
+                className="relative w-12 h-12 rounded-md overflow-hidden flex items-center justify-center transition-colors"
             >
                 {children}
                 {locked && (

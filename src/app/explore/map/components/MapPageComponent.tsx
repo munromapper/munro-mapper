@@ -4,6 +4,7 @@
 'use client';
 import { useMapState } from "@/contexts/MapStateContext";
 import MapComponent from "./MapComponent";
+import MapControls from "./MapControls";
 import { motion, AnimatePresence } from 'framer-motion';
 import SidebarWrapperComponent from "./SidebarWrapperComponent";
 import FilterComponent from "./filtercomponents/FilterComponent";
@@ -35,18 +36,27 @@ export default function MapPageComponent({
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            {/* Overlay layer ABOVE the map (not inside transformed map container) */}
             <div className="absolute z-10 p-9 top-0 left-0 w-full h-full flex gap-9 pointer-events-none max-md:p-0 max-md:py-4">
                 <SidebarWrapperComponent>
                     {children}
                 </SidebarWrapperComponent>
                 <FilterComponent />
+
+                <div className="absolute bottom-9 right-9 pointer-events-none max-md:top-16 max-md:right-4">
+                    <MapControls />
+                </div>
             </div>
-            <div className="w-full h-full relative z-0"
-                 onClick={() => {
+
+            {/* Map underlay */}
+            <div
+                className="w-full h-full relative z-0"
+                onClick={() => {
                     if (openFilter) {
                         setOpenFilter(null);
                     }
-             }}
+                }}
             >
                 <MapComponent />
             </div>

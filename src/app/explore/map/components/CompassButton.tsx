@@ -15,7 +15,7 @@ export default function CompassButton() {
 
   return (
     <button
-      className="mapboxgl-ctrl-compass cursor-pointer"
+      className="mapboxgl-ctrl-compass pointer-events-auto cursor-pointer"
       aria-label="Reset north"
       onClick={handleResetNorth}
       type="button"
