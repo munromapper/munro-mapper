@@ -44,7 +44,7 @@ export default function MapPageComponent({
                 </SidebarWrapperComponent>
                 <FilterComponent />
 
-                <div className="absolute bottom-9 right-9 pointer-events-none max-md:top-16 max-md:right-4">
+                <div className="absolute bottom-9 right-9 pointer-events-none max-md:top-18 max-md:right-4">
                     <MapControls />
                 </div>
             </div>
