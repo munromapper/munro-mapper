@@ -111,7 +111,7 @@ export default function Map3DToggle() {
 
   // Use portal for mobile, normal for desktop
   const menu =
-    typeof window !== 'undefined' && window.innerWidth <= 768
+    typeof window !== 'undefined' && window.innerWidth <= 1000
       ? createPortal(
           <AnimatePresence>
             {open &&
@@ -122,7 +122,7 @@ export default function Map3DToggle() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0, transition: { duration: 0.18, ease: 'easeOut' } }}
                 exit={{ opacity: 0, y: 16, transition: { duration: 0.15, ease: 'easeIn' } }}
-                className="fixed bottom-26 left-1/2 -translate-x-1/2 space-y-2 w-64 rounded-xl bg-mist shadow-standard p-2 z-[100]"
+                className="fixed bottom-26 left-1/2 -translate-x-1/2 w-[calc(100vw-2rem)] max-w-md space-y-2 rounded-xl bg-mist shadow-standard p-2 z-[100]"
                 style={{ pointerEvents: 'auto' }}
               >
                 <Option
@@ -217,13 +217,13 @@ function Option({
                 ${selected ? 'bg-pebble' : 'hover:bg-pebble'}`}
     >
       <div
-        className="relative w-12 h-12 rounded-md overflow-hidden flex items-center justify-center transition-colors"
+        className="relative w-16 h-16 rounded-md overflow-hidden flex items-center justify-center transition-colors"
       >
         {preview}
       </div>
       <div className="flex-1">
-        <div className="text-l font-body-font-family text-slate mb-1">{title}</div>
-        <div className="text-m font-body-font-family text-moss">{description}</div>
+        <div className="text-xxl font-body-font-family text-slate mb-1">{title}</div>
+        <div className="text-xl font-body-font-family text-moss">{description}</div>
       </div>
     </button>
   );
