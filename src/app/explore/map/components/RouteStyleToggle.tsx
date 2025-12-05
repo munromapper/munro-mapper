@@ -169,20 +169,20 @@ function Option({
                 ${selected ? 'bg-pebble' : 'hover:bg-pebble'}`}
         >
             <div
-                className="relative w-14 h-14 rounded-md overflow-hidden flex items-center justify-center transition-colors"
+                className="relative w-12 h-12 max-md:w-14 max-md:h-14 rounded-md overflow-hidden flex items-center justify-center transition-colors"
             >
                 {children}
                 {locked && (
                     <div className="absolute inset-0 bg-slate/45 flex flex-col items-center justify-center gap-1">
-                        <div className="w-5 h-5">
+                        <div className="w-5 h-5 max-md:w-7 max-md:h-7">
                             <PremiumIconOutline currentColor="var(--color-heather)" />
                         </div>
                     </div>
                 )}
             </div>
             <div className="flex-1">
-                <div className="text-xl font-body-font-family text-slate mb-1">{title}</div>
-                <div className="text-l font-body-font-family text-moss">{description}</div>
+                <div className="text-l max-md:text-xxl font-body-font-family text-slate mb-1">{title}</div>
+                <div className="text-m max-md:text-xl font-body-font-family text-moss">{description}</div>
             </div>
         </button>
     );

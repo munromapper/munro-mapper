@@ -2,7 +2,7 @@
 // Main filter panel for the map. Manages filter state and renders filter groups.
 
 'use client'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useMapState } from '@/contexts/MapStateContext';
 import { handleRadioFilterChange, handleSliderFilterChange, resetFilter, isFilterChanged, handleFilterToggle } from '@/utils/map/filterUtils';
 import FilterGroup from './FilterGroup';
@@ -20,6 +20,7 @@ export default function FilterComponent() {
     const { filters, setFilters, defaultAscentRanges, defaultLengthRanges, defaultFilters, openFilter, setOpenFilter, userLengthUnits, userAscentUnits } = useMapState();
     const { user, userProfile, openPremiumAdModal } = useAuthContext();
     const [isMaxMd, setIsMaxMd] = useState(false);
+    const rootRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         const checkBreakpoint = () => setIsMaxMd(window.innerWidth <= 1000);
@@ -27,6 +28,36 @@ export default function FilterComponent() {
         window.addEventListener('resize', checkBreakpoint);
         return () => window.removeEventListener('resize', checkBreakpoint);
     }, []);
+
+    // Close any open filter when clicking/tapping anywhere on the site or pressing ESC
+    useEffect(() => {
+        const onDocPointer = (e: MouseEvent | TouchEvent) => {
+            if (!openFilter) return;
+            const target = e.target as Node | null;
+            if (!target) return;
+
+            // Inside the filter component?
+            if (rootRef.current && rootRef.current.contains(target)) return;
+
+            // Inside the mobile portal?
+            const portalRoot = document.getElementById('filter-portal-root');
+            if (portalRoot && portalRoot.contains(target)) return;
+
+            setOpenFilter(null);
+        };
+        const onEsc = (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && openFilter) setOpenFilter(null);
+        };
+
+        document.addEventListener('mousedown', onDocPointer);
+        document.addEventListener('touchstart', onDocPointer, { passive: true });
+        document.addEventListener('keydown', onEsc);
+        return () => {
+            document.removeEventListener('mousedown', onDocPointer);
+            document.removeEventListener('touchstart', onDocPointer);
+            document.removeEventListener('keydown', onEsc);
+        };
+    }, [openFilter, setOpenFilter]);
 
     const ascentDefault = userAscentUnits === 'ft'
         ? defaultAscentRanges.ft
@@ -112,7 +143,10 @@ export default function FilterComponent() {
     const isPremium = !!user && ['active', 'canceling'].includes(userProfile?.isPremium ?? '');
 
     return (
-        <div className="relative self-start flex items-start gap-4 flex-1 text-l pointer-events-auto max-md:overflow-auto max-md:pr-4 no-scrollbar">
+        <div
+            ref={rootRef}
+            className="relative self-start flex items-start gap-4 flex-1 text-l pointer-events-auto max-md:overflow-auto max-md:pr-4 no-scrollbar"
+        >
             <div
                 className={`rounded-full shadow-standard text-nowrap border pt-2 pb-2 pl-5 pr-4 flex items-center gap-2 cursor-pointer transition-all duration-300 ease-in-out max-md:hidden
                 ${anyFilterChanged ? 'bg-pebble border-slate' : 'bg-mist border-mist'}`}
@@ -175,7 +209,6 @@ export default function FilterComponent() {
                         transition={{ duration: 0.3, ease: "easeInOut" }}
                         className="w-full flex flex-wrap gap-4 max-md:gap-2 max-md:flex-nowrap max-md:px-4"
                     >
-                        {/* ...all your FilterGroup components... */}
                         <FilterGroup
                             id="friends"
                             label="Bagged Status"

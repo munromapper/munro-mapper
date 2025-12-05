@@ -16,7 +16,7 @@ interface MapPageComponentProps {
 export default function MapPageComponent({
     children
 }: MapPageComponentProps) {
-    const { loading, openFilter, setOpenFilter } = useMapState();
+    const { loading } = useMapState();
 
     return (
         <div className="relative w-full h-full overflow-hidden">
@@ -44,20 +44,16 @@ export default function MapPageComponent({
                 </SidebarWrapperComponent>
                 <FilterComponent />
 
+                {/* Portal root for mobile filter fields */}
+                <div id="filter-portal-root" className="absolute inset-0 pointer-events-none" />
+
                 <div className="absolute bottom-9 right-9 pointer-events-none max-md:top-18 max-md:right-4">
                     <MapControls />
                 </div>
             </div>
 
             {/* Map underlay */}
-            <div
-                className="w-full h-full relative z-0"
-                onClick={() => {
-                    if (openFilter) {
-                        setOpenFilter(null);
-                    }
-                }}
-            >
+            <div className="w-full h-full relative z-0">
                 <MapComponent />
             </div>
         </div>

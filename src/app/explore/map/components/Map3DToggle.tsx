@@ -217,13 +217,13 @@ function Option({
                 ${selected ? 'bg-pebble' : 'hover:bg-pebble'}`}
     >
       <div
-        className="relative w-14 h-14 rounded-md overflow-hidden flex items-center justify-center transition-colors"
+        className="relative w-12 h-12 max-md:w-14 max-md:h-14 rounded-md overflow-hidden flex items-center justify-center transition-colors"
       >
         {preview}
       </div>
       <div className="flex-1">
-        <div className="text-xxl font-body-font-family text-slate mb-1">{title}</div>
-        <div className="text-xl font-body-font-family text-moss">{description}</div>
+        <div className="text-l max-md:text-xxl font-body-font-family text-slate mb-1">{title}</div>
+        <div className="text-m max-md:text-xl font-body-font-family text-moss">{description}</div>
       </div>
     </button>
   );
