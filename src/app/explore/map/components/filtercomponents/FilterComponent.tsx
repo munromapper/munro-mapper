@@ -239,6 +239,8 @@ export default function FilterComponent() {
                         >
                             <FilterRadioGroup
                                 name="routeStyle"
+                                title="Route Style"
+                                onClose={() => setOpenFilter(null)}
                                 selectedValue={filters.routeStyle}
                                 onChange={(val) => handleRadioFilterChange('routeStyle', val, setFilters)}
                                 options={[
@@ -263,6 +265,8 @@ export default function FilterComponent() {
                         >
                             <FilterRadioGroup
                                 name="difficulty"
+                                title="Difficulty"
+                                onClose={() => setOpenFilter(null)}
                                 selectedValue={filters.difficulty}
                                 onChange={(val) => handleRadioFilterChange('difficulty', val, setFilters)}
                                 options={[

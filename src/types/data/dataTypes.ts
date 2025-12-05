@@ -145,6 +145,8 @@ export type FilterRadioGroupProps = {
     selectedValue: string;
     options: RadioOption[];
     onChange: (value: string) => void;
+    title?: string;
+    onClose?: () => void;
 }
 
 export type FilterSliderGroupProps = {
