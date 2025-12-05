@@ -10,6 +10,7 @@ import useGpxRoutes from '@/hooks/useGpxRoutes';
 import useMapNavigation from '@/hooks/useMapNavigation';
 import initialiseMap from '@/utils/map/initialiseMap';
 import { RecenterButton } from './RecenterButton';
+import { usePathname } from 'next/navigation';
 
 export default function MapComponent() {
     const { 

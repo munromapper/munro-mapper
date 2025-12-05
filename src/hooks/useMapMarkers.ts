@@ -17,6 +17,9 @@ export default function useMapMarkers({
 
     const router = useRouter();
 
+    // Treat ≤1000px as mobile
+    const isMobile = () => typeof window !== 'undefined' && window.innerWidth <= 1000;
+
     interface CreateMapMarkerProps {
         munro: Munro
         isBagged?: boolean;
@@ -70,12 +73,17 @@ export default function useMapMarkers({
             markerInner?.classList.remove("marker-enter");
         }, { once: true });
 
-        markerDiv.addEventListener('mouseenter', () => {
-            setHoveredMunro(munro);
-        });
-        markerDiv.addEventListener('mouseleave', () => {
-            setHoveredMunro(null);
-        });
+        // Disable hover interactions on mobile
+        if (!isMobile()) {
+            markerDiv.addEventListener('mouseenter', () => {
+                setHoveredMunro(munro);
+            });
+            markerDiv.addEventListener('mouseleave', () => {
+                setHoveredMunro(null);
+            });
+        }
+
+        // Click navigates to munro detail (works on both mobile and desktop)
         markerDiv.addEventListener('click', () => {
             router.push(`/explore/map/munro/${munro.slug}`);
         });
@@ -103,7 +111,7 @@ export default function useMapMarkers({
             if (markerDiv.parentNode) {
                 marker.remove();
             }
-    }, 400);
+        }, 400);
     }
 
     function setMarkerSelected(marker: mapboxgl.Marker, isSelected: boolean) {
@@ -115,7 +123,10 @@ export default function useMapMarkers({
         }
     }
 
+    // No-op on mobile: suppress popup creation completely
     const createPopup = useCallback((markerEl: HTMLElement, munro: Munro) => {
+        if (isMobile()) return;
+
         const popups = markerEl.querySelectorAll('.popup');
         popups.forEach(popup => {
             if (!popup.classList.contains('popup-exit')) {

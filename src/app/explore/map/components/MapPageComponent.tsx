@@ -8,6 +8,7 @@ import MapControls from "./MapControls";
 import { motion, AnimatePresence } from 'framer-motion';
 import SidebarWrapperComponent from "./SidebarWrapperComponent";
 import FilterComponent from "./filtercomponents/FilterComponent";
+import MobileMunroPopup from "./MobileMunroPopup";
 
 interface MapPageComponentProps {
     children: React.ReactNode;
@@ -56,6 +57,8 @@ export default function MapPageComponent({
             <div className="w-full h-full relative z-0">
                 <MapComponent />
             </div>
+
+            <MobileMunroPopup />
         </div>
     );
 }
