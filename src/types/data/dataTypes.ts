@@ -157,4 +157,6 @@ export type FilterSliderGroupProps = {
     max: number;
     step?: number;
     unit?: string;
+    title?: string;
+    onClose?: () => void;
 }

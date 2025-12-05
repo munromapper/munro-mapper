@@ -220,7 +220,9 @@ export default function FilterComponent() {
                                 resetFilter('friends', setFilters, defaultFilters);
                             }}
                         >
-                            <FilterFriendsGroup 
+                            <FilterFriendsGroup
+                                title="Compare bagged"
+                                onClose={() => setOpenFilter(null)} 
                                 value={filters.friends}
                                 onChange={val => setFilters(f => ({ ...f, friends: val }))}
                             />
@@ -280,7 +282,7 @@ export default function FilterComponent() {
                         </FilterGroup>
                         <FilterGroup
                             id="length"
-                            label="Length"
+                            label="Hike Length"
                             currentValue={lengthLabel}
                             isOpen={openFilter === 'length'}
                             isActive={lengthChanged}
@@ -295,6 +297,8 @@ export default function FilterComponent() {
                             }}
                         >
                             <FilterSliderGroup
+                                title="Hike Length"
+                                onClose={() => setOpenFilter(null)}
                                 value={lengthRange}
                                 onChange={setLengthRange}
                                 onAfterChange={val => handleSliderFilterChange('length', val, setFilters)}
@@ -306,7 +310,7 @@ export default function FilterComponent() {
                         </FilterGroup>
                         <FilterGroup
                             id="ascent"
-                            label="Ascent"
+                            label="Hike Ascent"
                             currentValue={ascentLabel}
                             isOpen={openFilter === 'ascent'}
                             isActive={ascentChanged}
@@ -321,6 +325,8 @@ export default function FilterComponent() {
                             }}
                         >
                             <FilterSliderGroup
+                                title="Hike Ascent"
+                                onClose={() => setOpenFilter(null)}
                                 value={ascentRange}
                                 onChange={setAscentRange}
                                 onAfterChange={val => handleSliderFilterChange('ascent', val, setFilters)}

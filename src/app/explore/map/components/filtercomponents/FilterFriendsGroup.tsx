@@ -4,7 +4,7 @@
 'use client';
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useState, useEffect } from "react";
-import { TickIcon } from "@/components/global/SvgComponents";
+import { TickIcon, CrossIcon } from "@/components/global/SvgComponents";
 import type { UserProfile } from "@/types/data/dataTypes";
 import RadioInput from "@/components/global/forms/RadioInput";
 import SearchInput from "@/components/global/forms/SearchInput";
@@ -18,18 +18,32 @@ interface FilterFriendsGroupProps {
         baggedMode: 'bagged' | 'incomplete';
     };
     onChange: (value: { selectedPeople: string[]; baggedMode: 'bagged' | 'incomplete' }) => void;
+
+    // Mobile header controls (optional)
+    title?: string;
+    onClose?: () => void;
 }
 
 export default function FilterFriendsGroup({ 
     value, 
-    onChange 
+    onChange,
+    title = 'Compare friends',
+    onClose
 }: FilterFriendsGroupProps) {
     const { friends, user, userProfile, openAuthModal } = useAuthContext();
     const [friendProfiles, setFriendProfiles] = useState<UserProfile[]>([]);
+    const [isMaxMd, setIsMaxMd] = useState(false);
 
     const [searchedFriends, setSearchedFriends] = useState<string>('');
     const selectedPeople = value.selectedPeople;
     const baggedMode = value.baggedMode;
+
+    useEffect(() => {
+        const check = () => setIsMaxMd(typeof window !== 'undefined' && window.innerWidth <= 1000);
+        check();
+        window.addEventListener('resize', check);
+        return () => window.removeEventListener('resize', check);
+    }, []);
 
     useEffect(() => {
         if (!user) return;
@@ -61,12 +75,31 @@ export default function FilterFriendsGroup({
             );
 
     return (
-        <div className="w-75 whitespace-normal">
-            <div className="space-y-4 mb-4 px-6 pt-6">
-                <p className="font-heading-font-family text-4xl">Compare status</p>
-                <p className="text-moss text-l">Enim mollit occaecat id proident esse in ulla eiusmod mollit laboris id pariatur.</p>  
-            </div>
-            <div className="mb-4 px-6">
+        <div className={isMaxMd ? "w-full whitespace-normal" : "w-75 whitespace-normal"}>
+            {/* Mobile header (title + close). Desktop stays exactly as before. */}
+            {isMaxMd ? (
+                <div className="flex items-center justify-between px-6 py-4 border-b border-pebble rounded-t-2xl">
+                    <span className="text-slate text-xxl">{title}</span>
+                    <button
+                        type="button"
+                        aria-label="Close"
+                        className="w-8 h-8 p-2.5 rounded-full bg-pebble flex items-center justify-center text-slate cursor-pointer"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onClose?.();
+                        }}
+                    >
+                        <CrossIcon />
+                    </button>
+                </div>
+            ) : (
+                <div className="space-y-4 mb-4 px-6 pt-6">
+                    <p className="font-heading-font-family text-4xl">Compare status</p>
+                    <p className="text-moss text-l">Enim mollit occaecat id proident esse in ulla eiusmod mollit laboris id pariatur.</p>  
+                </div>
+            )}
+
+            <div className={`mb-4 px-6 ${isMaxMd ? 'pt-4' : ''}`}>
                 <SearchInput 
                     name="friends"
                     value={searchedFriends}
