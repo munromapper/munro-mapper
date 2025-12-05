@@ -39,14 +39,14 @@ export default function MapPageComponent({
             </AnimatePresence>
 
             {/* Overlay layer ABOVE the map (not inside transformed map container) */}
-            <div className="absolute z-10 p-9 top-0 left-0 w-full h-full flex gap-9 pointer-events-none max-md:p-0 max-md:py-4">
+            <div className="absolute z-[200] p-9 top-0 left-0 w-full h-full flex gap-9 pointer-events-none max-md:p-0 max-md:py-4">
                 <SidebarWrapperComponent>
                     {children}
                 </SidebarWrapperComponent>
                 <FilterComponent />
 
                 {/* Portal root for mobile filter fields */}
-                <div id="filter-portal-root" className="absolute inset-0 pointer-events-none" />
+                <div id="filter-portal-root" className="absolute inset-0 pointer-events-none z-[201]" />
 
                 <div className="absolute bottom-9 right-9 pointer-events-none max-md:top-18 max-md:right-4">
                     <MapControls />

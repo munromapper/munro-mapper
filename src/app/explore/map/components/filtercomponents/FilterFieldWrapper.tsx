@@ -25,7 +25,7 @@ export default function FilterFieldWrapper({ isOpen, children }: FilterFieldWrap
         <AnimatePresence mode="wait">
             {isOpen && (
                 <motion.div
-                    className={`shadow-standard text-nowrap mt-2 z-10 bg-mist rounded-2xl pointer-events-auto
+                    className={`shadow-standard text-nowrap mt-2 z-[202] bg-mist rounded-2xl pointer-events-auto
                                 ${isMaxMd ? 'fixed bottom-26 left-1/2 -translate-x-1/2 w-[calc(100vw-2rem)] max-w-md' : 'absolute left-0 w-auto top-full'}`}
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}

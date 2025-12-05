@@ -84,7 +84,7 @@ export default function MobileMunroPopup() {
   const ascentText = typeof route?.ascent === 'number' ? `${route.ascent.toLocaleString()}m` : undefined;
 
   return (
-    <div className="fixed bottom-26 left-1/2 -translate-x-1/2 w-[calc(100vw-2rem)] max-w-md z-[95] pointer-events-auto">
+    <div className="fixed bottom-26 left-1/2 -translate-x-1/2 w-[calc(100vw-2rem)] max-w-md z-[90] pointer-events-auto">
       <div className="relative rounded-xl bg-mist shadow-standard p-4">
         {/* Close: go back to map and clear active selection */}
         <Link
