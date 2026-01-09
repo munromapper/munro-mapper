@@ -51,6 +51,7 @@ type MapStateContextType = {
 
     isMobileSidebarOpen: boolean;
     setMobileSidebarOpen: (open: boolean) => void;
+    closeMobileSidebar: () => void;
 }
 
 const MapStateContext = createContext<MapStateContextType | undefined>(undefined);
@@ -98,6 +99,25 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
     const [map3DMode, setMap3DMode] = useState<boolean>(true);
 
     const [isMobileSidebarOpen, setMobileSidebarOpen] = useState<boolean>(false);
+
+    const closeMobileSidebar = () => {
+        if (typeof window === 'undefined') {
+            setMobileSidebarOpen(false);
+            return;
+        }
+
+        const isMobile = window.matchMedia('(max-width: 768px)').matches;
+        const state = window.history.state as any;
+
+        // If we're on mobile and the current history entry is the synthetic
+        // "sidebar open" marker, go back one entry to consume it.
+        if (isMobile && state?.__mm_mobileSidebarOpen === true) {
+            window.history.back();
+            return;
+        }
+
+        setMobileSidebarOpen(false);
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -263,6 +283,7 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
 
                 isMobileSidebarOpen,
                 setMobileSidebarOpen,
+                closeMobileSidebar,
             } as MapStateContextType
         }>
             {children}

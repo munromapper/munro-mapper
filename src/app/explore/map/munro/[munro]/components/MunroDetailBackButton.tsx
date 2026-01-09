@@ -9,7 +9,7 @@ import { SmallArrow } from "@/components/global/SvgComponents";
 
 export default function MunroDetailBackButton() {
     const router = useRouter();
-    const { setMobileSidebarOpen } = useMapState();
+    const { closeMobileSidebar } = useMapState();
 
     return (
         <button
@@ -19,7 +19,7 @@ export default function MunroDetailBackButton() {
             onClick={() => {
                 const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
                 if (isMobile) {
-                    setMobileSidebarOpen(false);
+                    closeMobileSidebar();
                     return;
                 }
                 router.push('/explore/map');
