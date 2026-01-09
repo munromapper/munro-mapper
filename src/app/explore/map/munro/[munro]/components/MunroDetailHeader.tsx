@@ -60,7 +60,7 @@ export default function MunroDetailHeader({
                     </div>
                     <p>{munro.region || "Region"}</p>
                 </div>
-                <div>
+                <div className="max-md:hidden">
                     <button className="w-9 h-9 p-3 rounded-full flex items-center justify-center bg-pebble text-slate cursor-pointer"
                             onClick={() => setSidebarExpanded(!isSidebarExpanded)}
                             aria-label={isSidebarExpanded ? "Collapse details" : "Expand details"}

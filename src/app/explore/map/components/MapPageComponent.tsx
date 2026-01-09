@@ -17,7 +17,7 @@ interface MapPageComponentProps {
 export default function MapPageComponent({
     children
 }: MapPageComponentProps) {
-    const { loading } = useMapState();
+    const { loading, isMobileSidebarOpen } = useMapState();
 
     return (
         <div className="relative w-full h-full overflow-hidden">
@@ -39,7 +39,13 @@ export default function MapPageComponent({
             </AnimatePresence>
 
             {/* Overlay layer ABOVE the map (not inside transformed map container) */}
-            <div className="absolute z-[200] p-9 top-0 left-0 w-full h-full flex gap-9 pointer-events-none max-md:p-0 max-md:py-4">
+            <div
+                className={[
+                    'absolute z-[200] top-0 left-0 w-full h-full flex gap-9 pointer-events-none',
+                    'p-9',
+                    isMobileSidebarOpen ? 'max-md:p-0 max-md:py-0' : 'max-md:p-0 max-md:py-4',
+                ].join(' ')}
+            >
                 <SidebarWrapperComponent>
                     {children}
                 </SidebarWrapperComponent>

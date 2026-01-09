@@ -19,7 +19,7 @@ export default function ExploreSidebar() {
     const { user } = useAuthContext();
 
     return (
-        <aside className="bg-slate">
+        <aside className="bg-slate h-full">
             <div className="w-75 h-full flex flex-col justify-between pt-16 px-11 pb-9">
                 <div>
                     <SidebarGreeting />
@@ -64,7 +64,7 @@ export default function ExploreSidebar() {
                         )}
                     </div>
                 </div>
-                <div>
+                <div className="mt-auto">
                     <SidebarAccountInfo />
                 </div>
             </div>

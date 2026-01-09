@@ -27,7 +27,7 @@ export default function MobileMunroPopup() {
   const { munro: munroSlug } = (useParams() as { munro?: string }) ?? {};
   const pathname = usePathname();
   const router = useRouter();
-  const { setActiveMunro } = useMapState();
+  const { isMobileSidebarOpen, setMobileSidebarOpen } = useMapState();
 
   const [isMobile, setIsMobile] = useState(false);
   const [data, setData] = useState<PopupData | null>(null);
@@ -74,7 +74,7 @@ export default function MobileMunroPopup() {
     return () => { cancelled = true; };
   }, [onMunroPage, munroSlug]);
 
-  if (!isMobile || !onMunroPage || !data) return null;
+  if (!isMobile || !onMunroPage || !data || isMobileSidebarOpen) return null;
 
   const { munro, route } = data;
 
@@ -84,13 +84,23 @@ export default function MobileMunroPopup() {
   const ascentText = typeof route?.ascent === 'number' ? `${route.ascent.toLocaleString()}m` : undefined;
 
   return (
-    <div className="fixed bottom-26 left-1/2 -translate-x-1/2 w-[calc(100vw-2rem)] max-w-md z-[90] pointer-events-auto">
+    <div
+      className="fixed bottom-26 left-1/2 -translate-x-1/2 w-[calc(100vw-2rem)] max-w-md z-[90] pointer-events-auto"
+      role="button"
+      tabIndex={0}
+      aria-label="Open munro details"
+      onClick={() => setMobileSidebarOpen(true)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') setMobileSidebarOpen(true);
+      }}
+    >
       <div className="relative rounded-xl bg-mist shadow-standard p-4">
         {/* Close: go back to map and clear active selection */}
         <Link
           href="/explore/map"
           aria-label="Close"
           className="absolute top-2 right-2 w-8 h-8 p-2.5 rounded-full bg-pebble flex items-center justify-center text-slate cursor-pointer"
+          onClick={(e) => e.stopPropagation()}
         >
           <CrossIcon />
         </Link>

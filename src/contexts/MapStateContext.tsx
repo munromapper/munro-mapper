@@ -48,6 +48,9 @@ type MapStateContextType = {
     setMapBaseStyleMode: React.Dispatch<React.SetStateAction<'terrain' | 'satellite'>>;
     map3DMode: boolean;
     setMap3DMode: React.Dispatch<React.SetStateAction<boolean>>;
+
+    isMobileSidebarOpen: boolean;
+    setMobileSidebarOpen: (open: boolean) => void;
 }
 
 const MapStateContext = createContext<MapStateContextType | undefined>(undefined);
@@ -93,6 +96,8 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
     const [isSidebarExpanded, setSidebarExpanded] = useState<boolean>(true);
     const [mapBaseStyleMode, setMapBaseStyleMode] = useState<'terrain' | 'satellite'>('terrain');
     const [map3DMode, setMap3DMode] = useState<boolean>(true);
+
+    const [isMobileSidebarOpen, setMobileSidebarOpen] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -204,6 +209,7 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         if (!munroSlug) {
             if (activeMunro) setActiveMunro(null);
+            if (isMobileSidebarOpen) setMobileSidebarOpen(false);
             return;
         }
         if (!filteredMunros?.length) return;
@@ -211,7 +217,7 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
         if (munro && (!activeMunro || activeMunro.id !== munro.id)) {
             setActiveMunro(munro);
         }
-    }, [munroSlug, filteredMunros, activeMunro]);
+    }, [munroSlug, filteredMunros, activeMunro, isMobileSidebarOpen]);
 
     return (
         <MapStateContext.Provider value={
@@ -254,6 +260,9 @@ export function MapStateProvider({ children }: { children: React.ReactNode }) {
                 setMapBaseStyleMode,
                 map3DMode,
                 setMap3DMode,
+
+                isMobileSidebarOpen,
+                setMobileSidebarOpen,
             } as MapStateContextType
         }>
             {children}

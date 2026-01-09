@@ -15,7 +15,7 @@ export default function SidebarHeader() {
             </div>
             <div className="flex justify-between items-center gap-6">
                 <span className="text-l text-moss">{filteredMunros.length} results found</span>
-                <button className="w-9 h-9 p-3 rounded-full flex items-center justify-center bg-pebble text-slate cursor-pointer"
+                <button className="w-9 h-9 p-3 rounded-full flex items-center justify-center bg-pebble text-slate cursor-pointer max-md:hidden"
                         onClick={() => setSidebarExpanded(!isSidebarExpanded)}
                         aria-label={isSidebarExpanded ? "Collapse list" : "Expand list"}
                         aria-expanded={isSidebarExpanded}
