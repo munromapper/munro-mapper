@@ -114,7 +114,9 @@ export default function MobileMunroPopup() {
           {/* Content */}
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 mb-3">
-              <BaggedIndicator munroId={munro.id} />
+              <div onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
+                <BaggedIndicator munroId={munro.id} />
+              </div>
             </div>
 
             <div className="text-slate text-xxl">{munro.name}</div>

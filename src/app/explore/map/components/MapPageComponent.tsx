@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import SidebarWrapperComponent from "./SidebarWrapperComponent";
 import FilterComponent from "./filtercomponents/FilterComponent";
 import MobileMunroPopup from "./MobileMunroPopup";
+import { useEffect } from 'react';
 
 interface MapPageComponentProps {
     children: React.ReactNode;
@@ -17,7 +18,35 @@ interface MapPageComponentProps {
 export default function MapPageComponent({
     children
 }: MapPageComponentProps) {
-    const { loading, isMobileSidebarOpen } = useMapState();
+    const { loading, isMobileSidebarOpen, setMobileSidebarOpen } = useMapState();
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+        const isMobile = window.matchMedia('(max-width: 768px)').matches;
+        if (!isMobile) return;
+
+        const onPopState = () => {
+            if (isMobileSidebarOpen) {
+                setMobileSidebarOpen(false);
+            }
+        };
+
+        window.addEventListener('popstate', onPopState);
+        return () => window.removeEventListener('popstate', onPopState);
+    }, [isMobileSidebarOpen, setMobileSidebarOpen]);
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+        const isMobile = window.matchMedia('(max-width: 768px)').matches;
+        if (!isMobile) return;
+
+        if (isMobileSidebarOpen) {
+            const state = window.history.state as any;
+            if (!state || state.__mm_mobileSidebarOpen !== true) {
+                window.history.pushState({ ...(state ?? {}), __mm_mobileSidebarOpen: true }, '', window.location.href);
+            }
+        }
+    }, [isMobileSidebarOpen]);
 
     return (
         <div className="relative w-full h-full overflow-hidden">
